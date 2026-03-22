@@ -379,9 +379,34 @@ function resolveExoImg(exo) {
   return bodyImg(exo.id);
 }
 
-// ── STATE ──
-let workouts            = JSON.parse(localStorage.getItem('zw_workouts')        || '[]');
-let sessionHistory      = JSON.parse(localStorage.getItem('zw_session_history') || '[]');
+// ══════════════════════════════════════════════
+//  FIREBASE — données partagées entre tous
+// ══════════════════════════════════════════════
+// Remplace localStorage — tout est synchronisé en temps réel
+
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+import { getFirestore, collection, doc, onSnapshot, setDoc, deleteDoc, query, orderBy }
+  from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+
+const firebaseConfig = {
+  apiKey:            "AIzaSyDgahXu5D486AM2IiD4Em7FUeId9M_bYXU",
+  authDomain:        "zeroweight-68f12.firebaseapp.com",
+  projectId:         "zeroweight-68f12",
+  storageBucket:     "zeroweight-68f12.firebasestorage.app",
+  messagingSenderId: "369634751063",
+  appId:             "1:369634751063:web:fd45f6f18e12fd5a56e912"
+};
+
+const app = initializeApp(firebaseConfig);
+const db  = getFirestore(app);
+
+// Collections Firestore
+const workoutsCol = collection(db, 'workouts');
+const historyCol  = collection(db, 'sessionHistory');
+
+// ── STATE (chargé depuis Firestore) ──
+let workouts         = [];
+let sessionHistory   = [];
 let currentWorkout      = null;
 let sessionExercises    = [];
 let sessionSeconds      = 0;
@@ -391,8 +416,38 @@ let editingWorkoutId    = null;
 let workoutExercises    = [];
 let previewExoId        = null;
 
-if (workouts.length === 0) {
-  workouts = [
+// ── FIREBASE CRUD ──
+
+async function saveWorkoutToDb(w) {
+  await setDoc(doc(db, 'workouts', w.id), w);
+}
+async function deleteWorkoutFromDb(id) {
+  await deleteDoc(doc(db, 'workouts', id));
+}
+async function saveSessionToDb(session) {
+  await setDoc(doc(db, 'sessionHistory', session.id), session);
+}
+
+// Garde save() pour compatibilité — ne fait plus rien (Firestore gère)
+function save() {}
+
+// ── LISTENERS TEMPS RÉEL ──
+// Workouts — écoute les changements pour tous les users
+onSnapshot(query(workoutsCol), (snap) => {
+  workouts = snap.docs.map(d => d.data());
+  if (workouts.length === 0) seedDefaultWorkouts();
+  renderWorkouts();
+});
+
+// Historique — écoute les nouvelles séances
+onSnapshot(query(historyCol, orderBy('date', 'desc')), (snap) => {
+  sessionHistory = snap.docs.map(d => d.data());
+  renderHistory();
+});
+
+// ── SEED PROGRAMMES PAR DÉFAUT ──
+async function seedDefaultWorkouts() {
+  const defaults = [
     { id:'default1', name:'Full Body Débutant', days:3, duration:40, exercises:[
         { exoId:'pu',    sets:[{reps:10},{reps:10},{reps:8}] },
         { exoId:'sq',    sets:[{reps:15},{reps:15},{reps:12}] },
@@ -406,12 +461,7 @@ if (workouts.length === 0) {
         { exoId:'pike', sets:[{reps:8},{reps:8}] },
     ]},
   ];
-  save();
-}
-
-function save() {
-  localStorage.setItem('zw_workouts',        JSON.stringify(workouts));
-  localStorage.setItem('zw_session_history', JSON.stringify(sessionHistory));
+  for (const w of defaults) await saveWorkoutToDb(w);
 }
 function getExo(id) { return EXERCISES_DB.find(e => e.id === id); }
 function fmtTime(sec) { return `${Math.floor(sec/60)}:${(sec%60).toString().padStart(2,'0')}`; }
@@ -842,7 +892,7 @@ function switchTab(id, btn) {
 // ── WORKOUT MODAL ──
 function openNewWorkout(){editingWorkoutId=null;workoutExercises=[];document.getElementById('input-workout-name').value='';document.getElementById('input-workout-days').value='';document.getElementById('input-workout-duration').value='';document.getElementById('modal-workout-title').textContent='NOUVEAU PROGRAMME';renderWorkoutExoPicker();openModal('modal-workout');}
 function editWorkout(id){const w=workouts.find(x=>x.id===id);if(!w)return;editingWorkoutId=id;workoutExercises=w.exercises.map(e=>({exoId:e.exoId,sets:e.sets.map(s=>({...s}))}));document.getElementById('input-workout-name').value=w.name;document.getElementById('input-workout-days').value=w.days;document.getElementById('input-workout-duration').value=w.duration;document.getElementById('modal-workout-title').textContent='MODIFIER LE PROGRAMME';renderWorkoutExoPicker();openModal('modal-workout');}
-function deleteWorkout(id){if(!confirm('Supprimer ce programme ?'))return;workouts=workouts.filter(w=>w.id!==id);save();renderWorkouts();}
+function deleteWorkout(id){if(!confirm('Supprimer ce programme ?'))return;deleteWorkoutFromDb(id);}
 
 function renderWorkoutExoPicker() {
   const c=document.getElementById('workout-exo-picker');
@@ -882,9 +932,12 @@ function saveWorkout(){
   const duration=parseInt(document.getElementById('input-workout-duration').value)||40;
   if(!name){alert('Donne un nom au programme !');return;}
   if(!workoutExercises.length){alert('Ajoute au moins un exercice !');return;}
-  if(editingWorkoutId){const idx=workouts.findIndex(w=>w.id===editingWorkoutId);if(idx>=0)workouts[idx]={id:editingWorkoutId,name,days,duration,exercises:workoutExercises};}
-  else workouts.push({id:'w'+Date.now(),name,days,duration,exercises:workoutExercises});
-  save();renderWorkouts();closeModal('modal-workout');
+  const w = {
+    id: editingWorkoutId || 'w'+Date.now(),
+    name, days, duration, exercises: workoutExercises
+  };
+  saveWorkoutToDb(w); // Firestore → déclenche onSnapshot → renderWorkouts()
+  closeModal('modal-workout');
 }
 
 // ── EXO PICKER ──
@@ -975,8 +1028,11 @@ function endSession(){
   const allDone=sessionExercises.every(e=>e.setsStatus.every(s=>s.done));
   if(!confirm(allDone?'💪 GG ! Enregistrer cette séance ?':'Terminer maintenant ? (tous les exos ne sont pas validés)'))return;
   clearInterval(activeTimerInterval);
-  sessionHistory.push({id:'s'+Date.now(),name:currentWorkout.name,date:new Date().toISOString(),duration:sessionSeconds,exercises:sessionExercises.length});
-  save();document.getElementById('active-bar').classList.remove('visible');closeModal('modal-session');currentWorkout=null;renderHistory();
+  const session = {id:'s'+Date.now(),name:currentWorkout.name,date:new Date().toISOString(),duration:sessionSeconds,exercises:sessionExercises.length};
+  saveSessionToDb(session); // Firestore → déclenche onSnapshot → renderHistory() pour tous
+  document.getElementById('active-bar').classList.remove('visible');
+  closeModal('modal-session');
+  currentWorkout=null;
 }
 
 function openActiveSession(){if(currentWorkout)openModal('modal-session');}
