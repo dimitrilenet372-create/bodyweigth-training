@@ -182,11 +182,96 @@ function save() {
 function getExo(id) { return EXERCISES_DB.find(e => e.id === id); }
 function fmtTime(sec) { return `${Math.floor(sec/60)}:${(sec%60).toString().padStart(2,'0')}`; }
 
+// ── MUSCLE IMAGE MAP — Wikipedia anatomy images (public domain) ──
+const MUSCLE_IMG = {
+  'Tous':            null,
+  'Pecs':            'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9d/Pectoralis_major_muscle_front.png/120px-Pectoralis_major_muscle_front.png',
+  'Épaules':         'https://upload.wikimedia.org/wikipedia/commons/thumb/0/01/Deltoid_muscle_top.png/120px-Deltoid_muscle_top.png',
+  'Triceps':         'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0b/Triceps_brachii_muscle09.png/120px-Triceps_brachii_muscle09.png',
+  'Dos':             'https://upload.wikimedia.org/wikipedia/commons/thumb/4/49/Latissimus_dorsi_muscle_back3.png/120px-Latissimus_dorsi_muscle_back3.png',
+  'Biceps':          'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Biceps_brachii_muscle_biceps.png/120px-Biceps_brachii_muscle_biceps.png',
+  'Quadriceps':      'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Quadriceps_muscle.png/120px-Quadriceps_muscle.png',
+  'Fessiers':        'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6c/Gluteus_maximus_muscle.png/120px-Gluteus_maximus_muscle.png',
+  'Ischio-jambiers': 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/33/Biceps_femoris_muscle.png/120px-Biceps_femoris_muscle.png',
+  'Mollets':         'https://upload.wikimedia.org/wikipedia/commons/thumb/5/54/Gastrocnemius_muscle_-_lateral_head.png/120px-Gastrocnemius_muscle_-_lateral_head.png',
+  'Abdominaux':      'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9f/Rectus_abdominis.png/120px-Rectus_abdominis.png',
+  'Obliques':        'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/External_oblique_muscle.png/120px-External_oblique_muscle.png',
+  'Gainage':         'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/Transversus_abdominis_muscle.png/120px-Transversus_abdominis_muscle.png',
+  'Cardio':          null,
+};
+
+// ── CHIP EMOJI fallback ──
+const CHIP_EMOJI = {
+  'Tous':'🏋️','Cardio':'❤️','Gainage':'🧱',
+};
+
+// ── Chip drag state ──
+let draggedChip = null;
+let chipOrder   = [];
+
 // ── BUILD CHIPS ──
 function buildFilterChips() {
-  document.getElementById('muscle-filter-chips').innerHTML = MUSCLE_FILTERS.map((f,i) =>
-    `<div class="chip${i===0?' active':''}" onclick="filterMuscle('${f.value}',this)">${f.label}</div>`
-  ).join('');
+  chipOrder = MUSCLE_FILTERS.map(f => f.value);
+  renderChips();
+}
+
+function renderChips() {
+  const container = document.getElementById('muscle-filter-chips');
+  container.innerHTML = chipOrder.map((val, i) => {
+    const f   = MUSCLE_FILTERS.find(x => x.value === val);
+    if (!f) return '';
+    const img = MUSCLE_IMG[val];
+    const emoji = CHIP_EMOJI[val] || MUSCLE_EMOJI[val] || '💪';
+    const isAll = val === 'Tous';
+    const active = val === currentFilterMuscle;
+    return `<div class="muscle-chip${active?' active':''}${isAll?' chip-all':''}"
+                 data-muscle="${val}"
+                 draggable="true"
+                 onclick="filterMuscle('${val}', this)"
+                 ondragstart="chipDragStart(event,'${val}')"
+                 ondragover="chipDragOver(event,'${val}')"
+                 ondrop="chipDrop(event,'${val}')"
+                 ondragend="chipDragEnd(event)">
+      <div class="chip-img-wrap">
+        ${img
+          ? `<img src="${img}" alt="${f.label}" loading="lazy" onerror="this.style.display='none';this.nextSibling.style.display='flex'">
+             <span class="chip-emoji" style="display:none">${emoji}</span>`
+          : `<span class="chip-emoji">${emoji}</span>`}
+      </div>
+      <div class="chip-label">${val}</div>
+    </div>`;
+  }).join('');
+}
+
+function chipDragStart(event, muscle) {
+  draggedChip = muscle;
+  event.dataTransfer.effectAllowed = 'move';
+  setTimeout(() => {
+    const el = document.querySelector(`.muscle-chip[data-muscle="${muscle}"]`);
+    if (el) el.classList.add('dragging-chip');
+  }, 0);
+}
+function chipDragOver(event, muscle) {
+  event.preventDefault();
+  if (muscle === draggedChip) return;
+  document.querySelectorAll('.muscle-chip').forEach(c => c.classList.remove('drag-over-chip'));
+  const el = document.querySelector(`.muscle-chip[data-muscle="${muscle}"]`);
+  if (el) el.classList.add('drag-over-chip');
+  // Reorder
+  const from = chipOrder.indexOf(draggedChip);
+  const to   = chipOrder.indexOf(muscle);
+  if (from < 0 || to < 0) return;
+  chipOrder.splice(from, 1);
+  chipOrder.splice(to, 0, draggedChip);
+  renderChips();
+}
+function chipDrop(event, muscle) { event.preventDefault(); }
+function chipDragEnd(event) {
+  draggedChip = null;
+  document.querySelectorAll('.muscle-chip').forEach(c => {
+    c.classList.remove('dragging-chip');
+    c.classList.remove('drag-over-chip');
+  });
 }
 
 // ── PREVIEW ──
@@ -372,10 +457,9 @@ function dropSection(event, muscle) {
 }
 
 function filterExercices(val) { renderExercices(currentFilterMuscle, val); }
-function filterMuscle(muscle, el) {
+function filterMuscle(muscle) {
   currentFilterMuscle = muscle;
-  document.querySelectorAll('#muscle-filter-chips .chip').forEach(c=>c.classList.remove('active'));
-  el.classList.add('active');
+  renderChips();
   renderExercices(muscle, document.getElementById('exo-search').value);
 }
 
