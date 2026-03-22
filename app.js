@@ -5,15 +5,15 @@
 const EXERCISES_DB = [
 
   // ── POITRINE ──
-  { id:'pu',        name:'Pompes',                emoji:'💪', muscle:'Poitrine',        tags:['Pectoraux','Triceps'],         gif:'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/Push_up.gif/220px-Push_up.gif',         desc:'Corps droit, descends jusqu\'au sol, pousse.' },
-  { id:'puw',       name:'Pompes larges',          emoji:'🏋️', muscle:'Poitrine',        tags:['Pectoraux ext.','Épaules'],    gif:'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/Push_up.gif/220px-Push_up.gif',         desc:'Mains plus larges que les épaules, cible les pectoraux.' },
-  { id:'pud',       name:'Pompes diamant',         emoji:'💎', muscle:'Poitrine',        tags:['Triceps','Pectoraux'],         gif:'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/Push_up.gif/220px-Push_up.gif',         desc:'Mains formant un diamant sous la poitrine.' },
-  { id:'pue',       name:'Pompes explosives',      emoji:'💥', muscle:'Poitrine',        tags:['Pectoraux','Explosivité'],     gif:'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/Push_up.gif/220px-Push_up.gif',         desc:'Pousse fort pour décoller les mains du sol.' },
-  { id:'puarch',    name:'Pompes Archer',          emoji:'🏹', muscle:'Poitrine',        tags:['Pectoraux','Unilatéral'],      gif:'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/Push_up.gif/220px-Push_up.gif',         desc:'Étire un bras sur le côté à chaque rep.' },
-  { id:'pu1arm',    name:'Pompe à 1 bras',         emoji:'🦾', muscle:'Poitrine',        tags:['Pectoraux','Avancé'],          gif:'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/Push_up.gif/220px-Push_up.gif',         desc:'Le Saint Graal des pompes. Gainage total.' },
-  { id:'decline',   name:'Pompes déclinées',       emoji:'⬆️', muscle:'Poitrine',        tags:['Poitrine haute','Épaules'],    gif:'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/Push_up.gif/220px-Push_up.gif',         desc:'Pieds surélevés, cible la poitrine haute.' },
-  { id:'incline',   name:'Pompes inclinées',       emoji:'⬇️', muscle:'Poitrine',        tags:['Poitrine basse','Débutant'],   gif:'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/Push_up.gif/220px-Push_up.gif',         desc:'Mains surélevées, plus facile, poitrine basse.' },
-  { id:'pseudo',    name:'Pseudo Planche Push-up', emoji:'🧘', muscle:'Poitrine',        tags:['Pectoraux','Avancé'],          gif:'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/Push_up.gif/220px-Push_up.gif',         desc:'Mains pointées vers les pieds, corps très incliné.' },
+  { id:'pu',        name:'Pompes',                emoji:'💪', muscle:'Pecs',        tags:['Pectoraux','Triceps'],         gif:'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/Push_up.gif/220px-Push_up.gif',         desc:'Corps droit, descends jusqu\'au sol, pousse.' },
+  { id:'puw',       name:'Pompes larges',          emoji:'🏋️', muscle:'Pecs',        tags:['Pectoraux ext.','Épaules'],    gif:'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/Push_up.gif/220px-Push_up.gif',         desc:'Mains plus larges que les épaules, cible les pectoraux.' },
+  { id:'pud',       name:'Pompes diamant',         emoji:'💎', muscle:'Pecs',        tags:['Triceps','Pectoraux'],         gif:'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/Push_up.gif/220px-Push_up.gif',         desc:'Mains formant un diamant sous la poitrine.' },
+  { id:'pue',       name:'Pompes explosives',      emoji:'💥', muscle:'Pecs',        tags:['Pectoraux','Explosivité'],     gif:'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/Push_up.gif/220px-Push_up.gif',         desc:'Pousse fort pour décoller les mains du sol.' },
+  { id:'puarch',    name:'Pompes Archer',          emoji:'🏹', muscle:'Pecs',        tags:['Pectoraux','Unilatéral'],      gif:'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/Push_up.gif/220px-Push_up.gif',         desc:'Étire un bras sur le côté à chaque rep.' },
+  { id:'pu1arm',    name:'Pompe à 1 bras',         emoji:'🦾', muscle:'Pecs',        tags:['Pectoraux','Avancé'],          gif:'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/Push_up.gif/220px-Push_up.gif',         desc:'Le Saint Graal des pompes. Gainage total.' },
+  { id:'decline',   name:'Pompes déclinées',       emoji:'⬆️', muscle:'Pecs',        tags:['Pecs haute','Épaules'],    gif:'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/Push_up.gif/220px-Push_up.gif',         desc:'Pieds surélevés, cible la poitrine haute.' },
+  { id:'incline',   name:'Pompes inclinées',       emoji:'⬇️', muscle:'Pecs',        tags:['Pecs basse','Débutant'],   gif:'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/Push_up.gif/220px-Push_up.gif',         desc:'Mains surélevées, plus facile, poitrine basse.' },
+  { id:'pseudo',    name:'Pseudo Planche Push-up', emoji:'🧘', muscle:'Pecs',        tags:['Pectoraux','Avancé'],          gif:'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/Push_up.gif/220px-Push_up.gif',         desc:'Mains pointées vers les pieds, corps très incliné.' },
 
   // ── ÉPAULES ──
   { id:'pike',      name:'Pike Push-up',           emoji:'🔺', muscle:'Épaules',         tags:['Deltoïdes','Triceps'],         gif:'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/Push_up.gif/220px-Push_up.gif',         desc:'Hanches hautes en V, fléchis les coudes.' },
@@ -105,20 +105,20 @@ const EXERCISES_DB = [
 ];
 
 const MUSCLE_ORDER = [
-  'Poitrine','Épaules','Triceps','Dos','Biceps',
+  'Pecs','Épaules','Triceps','Dos','Biceps',
   'Quadriceps','Fessiers','Ischio-jambiers','Mollets',
   'Abdominaux','Obliques','Gainage','Cardio'
 ];
 
 const MUSCLE_EMOJI = {
-  'Poitrine':'🫀','Épaules':'🔵','Triceps':'💪','Dos':'🦅','Biceps':'💪',
+  'Pecs':'🫀','Épaules':'🔵','Triceps':'💪','Dos':'🦅','Biceps':'💪',
   'Quadriceps':'🦵','Fessiers':'🍑','Ischio-jambiers':'🦵','Mollets':'🦿',
   'Abdominaux':'🔥','Obliques':'🌀','Gainage':'🧱','Cardio':'❤️'
 };
 
 const MUSCLE_FILTERS = [
   { label:'Tous',           value:'Tous' },
-  { label:'🫀 Poitrine',   value:'Poitrine' },
+  { label:'🫀 Pecs',   value:'Pecs' },
   { label:'🔵 Épaules',    value:'Épaules' },
   { label:'💪 Triceps',    value:'Triceps' },
   { label:'🦅 Dos',        value:'Dos' },
@@ -263,26 +263,112 @@ function renderExercices(muscleFilter='Tous', search='') {
   if (!f.length) { list.innerHTML=`<div class="empty-state"><div class="big-icon">🔍</div><p>Aucun exercice trouvé.</p></div>`; return; }
 
   const groups = buildGroups(f);
-  list.innerHTML = Object.entries(groups).filter(([,exos])=>exos.length>0).map(([muscle,exos])=>`
-    <div class="muscle-group-header">
-      <span class="muscle-group-emoji">${MUSCLE_EMOJI[muscle]||'💪'}</span>
-      <span class="muscle-group-name">${muscle}</span>
-      <span class="muscle-group-count">${exos.length}</span>
-    </div>
-    ${exos.map(e=>{
-      const gif=resolveGif(e);
-      return `<div class="exo-item" onclick="openExoPreview('${e.id}')">
-        <div class="exo-icon-wrap">
-          ${gif?`<img src="${gif}" class="exo-thumb" loading="lazy" onerror="this.style.display='none';this.nextSibling.style.display='flex'"><div class="exo-icon" style="display:none">${e.emoji}</div>`:`<div class="exo-icon">${e.emoji}</div>`}
-        </div>
-        <div class="exo-info">
-          <div class="exo-name">${e.name}</div>
-          <div class="exo-tags">${e.tags.slice(0,3).map(t=>`<span class="exo-tag">${t}</span>`).join('')}</div>
-        </div>
-        <svg width="14" height="14" fill="none" stroke="var(--muted)" stroke-width="2.2" viewBox="0 0 24 24" style="flex-shrink:0"><path d="M9 18l6-6-6-6"/></svg>
-      </div>`;
-    }).join('')}
-  `).join('');
+  const muscleKeys = Object.entries(groups).filter(([,exos])=>exos.length>0).map(([m])=>m);
+
+  list.innerHTML = muscleKeys.map((muscle)=>{
+    const exos = groups[muscle];
+    return `
+    <div class="muscle-section" id="section-${muscle.replace(/[^a-zA-Z]/g,'')}"
+         draggable="true"
+         ondragstart="dragSection(event,'${muscle}')"
+         ondragover="dragOverSection(event,'${muscle}')"
+         ondragend="dragEndSection(event)"
+         ondrop="dropSection(event,'${muscle}')">
+      <div class="muscle-group-header">
+        <span class="drag-handle" title="Glisser pour réorganiser">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="9" cy="5" r="1.2" fill="currentColor"/><circle cx="9" cy="12" r="1.2" fill="currentColor"/><circle cx="9" cy="19" r="1.2" fill="currentColor"/><circle cx="15" cy="5" r="1.2" fill="currentColor"/><circle cx="15" cy="12" r="1.2" fill="currentColor"/><circle cx="15" cy="19" r="1.2" fill="currentColor"/></svg>
+        </span>
+        <span class="muscle-group-emoji">${MUSCLE_EMOJI[muscle]||'💪'}</span>
+        <span class="muscle-group-name">${muscle}</span>
+        <span class="muscle-group-count">${exos.length}</span>
+      </div>
+      ${exos.map(e=>{
+        const gif=resolveGif(e);
+        return `<div class="exo-item" onclick="openExoPreview('${e.id}')">
+          <div class="exo-icon-wrap" onmouseenter="showGifHover(this,'${gif||''}')" onmouseleave="hideGifHover(this)">
+            ${gif
+              ? `<img src="${gif}" class="exo-thumb exo-thumb-static" loading="lazy" onerror="this.style.display='none';this.nextSibling.style.display='flex'">
+                 <div class="exo-icon" style="display:none">${e.emoji}</div>
+                 <div class="gif-hover-overlay"></div>`
+              : `<div class="exo-icon">${e.emoji}</div>`}
+          </div>
+          <div class="exo-info">
+            <div class="exo-name">${e.name}</div>
+            <div class="exo-tags">${e.tags.slice(0,3).map(t=>`<span class="exo-tag">${t}</span>`).join('')}</div>
+          </div>
+          <svg width="14" height="14" fill="none" stroke="var(--muted)" stroke-width="2.2" viewBox="0 0 24 24" style="flex-shrink:0"><path d="M9 18l6-6-6-6"/></svg>
+        </div>`;
+      }).join('')}
+    </div>`;
+  }).join('');
+
+  // Init drag order from current muscle order
+  updateSectionOrder(muscleKeys);
+}
+
+// ── HOVER GIF ──
+function showGifHover(wrap, gifUrl) {
+  if (!gifUrl) return;
+  const overlay = wrap.querySelector('.gif-hover-overlay');
+  const staticImg = wrap.querySelector('.exo-thumb-static');
+  if (!overlay || !staticImg) return;
+  // Load animated gif into overlay as background
+  overlay.style.backgroundImage = `url('${gifUrl}')`;
+  overlay.classList.add('visible');
+  staticImg.style.filter = 'blur(2px) brightness(.4)';
+}
+function hideGifHover(wrap) {
+  const overlay = wrap.querySelector('.gif-hover-overlay');
+  const staticImg = wrap.querySelector('.exo-thumb-static');
+  if (!overlay || !staticImg) return;
+  overlay.classList.remove('visible');
+  staticImg.style.filter = '';
+}
+
+// ── DRAG & DROP muscle sections ──
+let draggedMuscle = null;
+let muscleOrder   = [...MUSCLE_ORDER];
+
+function updateSectionOrder(order) {
+  muscleOrder = order;
+}
+
+function dragSection(event, muscle) {
+  draggedMuscle = muscle;
+  event.dataTransfer.effectAllowed = 'move';
+  event.dataTransfer.setData('text/plain', muscle);
+  setTimeout(() => {
+    const el = document.getElementById('section-' + muscle.replace(/[^a-zA-Z]/g,''));
+    if (el) el.classList.add('dragging');
+  }, 0);
+}
+
+function dragOverSection(event, muscle) {
+  event.preventDefault();
+  event.dataTransfer.dropEffect = 'move';
+  if (muscle === draggedMuscle) return;
+  const list = document.getElementById('exo-list');
+  const sections = [...list.querySelectorAll('.muscle-section')];
+  const fromEl = sections.find(s => s.id === 'section-' + draggedMuscle.replace(/[^a-zA-Z]/g,''));
+  const toEl   = sections.find(s => s.id === 'section-' + muscle.replace(/[^a-zA-Z]/g,''));
+  if (!fromEl || !toEl) return;
+  // Insert before or after depending on position
+  const toRect   = toEl.getBoundingClientRect();
+  const midY     = toRect.top + toRect.height / 2;
+  if (event.clientY < midY) {
+    list.insertBefore(fromEl, toEl);
+  } else {
+    list.insertBefore(fromEl, toEl.nextSibling);
+  }
+}
+
+function dragEndSection(event) {
+  draggedMuscle = null;
+  document.querySelectorAll('.muscle-section').forEach(s => s.classList.remove('dragging'));
+}
+
+function dropSection(event, muscle) {
+  event.preventDefault();
 }
 
 function filterExercices(val) { renderExercices(currentFilterMuscle, val); }

@@ -100,19 +100,79 @@ header {
 .add-card:hover { border-color:var(--accent); color:var(--accent); background:var(--accent-glow); }
 
 /* ── MUSCLE GROUP HEADER ── */
+.muscle-section {
+  border-radius: 14px;
+  transition: opacity .2s, transform .2s;
+  margin-bottom: 4px;
+}
+.muscle-section.dragging {
+  opacity: .4;
+  transform: scale(.98);
+}
+.muscle-section[draggable="true"] { cursor: default; }
+
 .muscle-group-header {
   display:flex; align-items:center; gap:8px;
   padding: 14px 4px 8px;
   margin-top:4px;
   border-bottom: 1px solid var(--border);
   margin-bottom:8px;
+  user-select: none;
 }
-.muscle-group-emoji { font-size:18px; flex-shrink:0; }
-.muscle-group-name  { font-family:'Bebas Neue',sans-serif; font-size:18px; letter-spacing:2px; color:var(--text); flex:1; }
-.muscle-group-count { font-size:11px; font-weight:700; color:var(--muted); background:var(--surface2); border:1px solid var(--border); border-radius:20px; padding:2px 8px; }
+.drag-handle {
+  color: var(--muted2);
+  cursor: grab;
+  padding: 4px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  transition: color .15s, background .15s;
+  flex-shrink: 0;
+}
+.drag-handle:hover { color: var(--accent); background: var(--surface2); }
+.drag-handle:active { cursor: grabbing; }
+
+.muscle-group-emoji  { font-size:18px; flex-shrink:0; }
+.muscle-group-name   { font-family:'Bebas Neue',sans-serif; font-size:18px; letter-spacing:2px; color:var(--text); flex:1; }
+.muscle-group-count  { font-size:11px; font-weight:700; color:var(--muted); background:var(--surface2); border:1px solid var(--border); border-radius:20px; padding:2px 8px; }
 
 /* ── EXERCISE LIST ── */
 .exo-category { font-size:10px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:var(--muted); margin-bottom:8px; margin-top:10px; }
+
+/* ── GIF HOVER OVERLAY ── */
+.exo-icon-wrap { position: relative; cursor: pointer; }
+
+.gif-hover-overlay {
+  position: absolute;
+  inset: 0;
+  border-radius: 10px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: 0;
+  transition: opacity .25s ease;
+  pointer-events: none;
+}
+.gif-hover-overlay.visible { opacity: 1; }
+
+.exo-thumb-static {
+  transition: filter .25s ease;
+}
+
+/* Play icon hint on hover */
+.exo-icon-wrap:hover::after {
+  content: '▶';
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  color: rgba(255,255,255,.9);
+  pointer-events: none;
+  z-index: 2;
+  text-shadow: 0 1px 6px rgba(0,0,0,.8);
+}
 
 .exo-item {
   background:var(--surface); border:1px solid var(--border); border-radius:12px;
