@@ -9,70 +9,44 @@
 <body>
 <div class="app">
 
-  <!-- ── HEADER ── -->
   <header>
     <div class="logo">ZERO<span>WEIGHT</span></div>
     <div class="header-actions">
       <div class="icon-btn" onclick="openNewWorkout()" title="Nouveau programme">
-        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
-          <path d="M12 5v14M5 12h14"/>
-        </svg>
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
       </div>
       <div class="icon-btn" title="Profil">
-        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
-          <circle cx="12" cy="8" r="4"/>
-          <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
-        </svg>
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
       </div>
     </div>
   </header>
 
-  <!-- ── TABS ── -->
   <div class="tabs">
     <button class="tab active" onclick="switchTab('programmes', this)">Programmes</button>
     <button class="tab"        onclick="switchTab('exercices', this)">Exercices</button>
     <button class="tab"        onclick="switchTab('historique', this)">Historique</button>
   </div>
 
-  <!-- ══════════════════════════════════════════
-       VIEW — PROGRAMMES
-  ══════════════════════════════════════════ -->
+  <!-- PROGRAMMES -->
   <div id="view-programmes" class="view active">
     <div id="workout-list"></div>
     <div class="add-card" onclick="openNewWorkout()">
-      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
-        <path d="M12 5v14M5 12h14"/>
-      </svg>
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
       Créer un nouveau programme
     </div>
   </div>
 
-  <!-- ══════════════════════════════════════════
-       VIEW — EXERCICES
-  ══════════════════════════════════════════ -->
+  <!-- EXERCICES -->
   <div id="view-exercices" class="view">
     <div class="search-bar">
-      <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
-        <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
-      </svg>
-      <input type="text" id="exo-search"
-             placeholder="Rechercher un exercice..."
-             oninput="filterExercices(this.value)">
+      <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+      <input type="text" id="exo-search" placeholder="Rechercher un exercice..." oninput="filterExercices(this.value)">
     </div>
-    <div class="filter-chips">
-      <div class="chip active" onclick="filterChip('Tous', this)">Tous</div>
-      <div class="chip"        onclick="filterChip('Push', this)">Push 💪</div>
-      <div class="chip"        onclick="filterChip('Pull', this)">Pull 🦾</div>
-      <div class="chip"        onclick="filterChip('Legs', this)">Jambes 🦵</div>
-      <div class="chip"        onclick="filterChip('Core', this)">Core 🔥</div>
-      <div class="chip"        onclick="filterChip('Cardio', this)">Cardio ⚡</div>
-    </div>
+    <div class="filter-chips" id="muscle-filter-chips"></div>
     <div id="exo-list"></div>
   </div>
 
-  <!-- ══════════════════════════════════════════
-       VIEW — HISTORIQUE
-  ══════════════════════════════════════════ -->
+  <!-- HISTORIQUE -->
   <div id="view-historique" class="view">
     <div class="stats-grid">
       <div class="stat-card">
@@ -94,11 +68,9 @@
     <div id="history-list"></div>
   </div>
 
-</div><!-- /.app -->
+</div>
 
-<!-- ══════════════════════════════════════════
-     ACTIVE WORKOUT BAR (bottom)
-══════════════════════════════════════════ -->
+<!-- ACTIVE BAR -->
 <div class="active-workout-bar" id="active-bar" onclick="openActiveSession()">
   <div class="active-bar-inner">
     <div class="active-bar-dot"></div>
@@ -110,44 +82,56 @@
   </div>
 </div>
 
-<!-- ══════════════════════════════════════════
-     MODAL — NOUVEAU / MODIFIER PROGRAMME
-══════════════════════════════════════════ -->
+<!-- MODAL: PREVIEW EXERCICE -->
+<div class="modal-overlay" id="modal-preview">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div id="preview-gif-wrap" class="preview-gif-wrap loading">
+      <div class="preview-gif-loader">
+        <div class="loader-ring"></div>
+      </div>
+      <img id="preview-gif" class="preview-gif-img" src="" alt="Preview">
+    </div>
+    <div style="padding:4px 0 0">
+      <div style="font-size:11px;font-weight:700;letter-spacing:1.5px;color:var(--accent);text-transform:uppercase;margin-bottom:6px" id="preview-muscle"></div>
+      <div class="modal-title" id="preview-title" style="margin-bottom:6px"></div>
+      <div id="preview-tags" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px"></div>
+      <p id="preview-desc" style="font-size:14px;color:var(--muted);line-height:1.6;margin-bottom:20px"></p>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal('modal-preview')">Fermer</button>
+      <button class="btn-save"   onclick="addExoFromPreview()">+ AJOUTER</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: NOUVEAU PROGRAMME -->
 <div class="modal-overlay" id="modal-workout">
   <div class="modal">
     <div class="modal-handle"></div>
     <div class="modal-title" id="modal-workout-title">NOUVEAU PROGRAMME</div>
-
     <div class="form-group">
       <label class="form-label">Nom du programme</label>
-      <input type="text" class="form-input" id="input-workout-name"
-             placeholder="ex: Full Body Poids de Corps">
+      <input type="text" class="form-input" id="input-workout-name" placeholder="ex: Full Body Poids de Corps">
     </div>
-
     <div class="form-row">
       <div class="form-group">
         <label class="form-label">Jours / sem.</label>
-        <input type="number" class="form-input" id="input-workout-days"
-               placeholder="3" min="1" max="7">
+        <input type="number" class="form-input" id="input-workout-days" placeholder="3" min="1" max="7">
       </div>
       <div class="form-group">
         <label class="form-label">Durée (min)</label>
-        <input type="number" class="form-input" id="input-workout-duration"
-               placeholder="45" min="5">
+        <input type="number" class="form-input" id="input-workout-duration" placeholder="45" min="5">
       </div>
     </div>
-
     <div>
       <div class="section-title" style="margin-bottom:12px">EXERCICES</div>
       <div id="workout-exo-picker" style="max-height:220px;overflow-y:auto;margin-bottom:10px"></div>
       <div class="add-card" style="padding:12px;border-radius:12px" onclick="switchToExoPickerMode()">
-        <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
-          <path d="M12 5v14M5 12h14"/>
-        </svg>
+        <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
         Ajouter un exercice
       </div>
     </div>
-
     <div class="modal-actions">
       <button class="btn-cancel" onclick="closeModal('modal-workout')">Annuler</button>
       <button class="btn-save"   onclick="saveWorkout()">SAUVEGARDER</button>
@@ -155,42 +139,26 @@
   </div>
 </div>
 
-<!-- ══════════════════════════════════════════
-     MODAL — CHOISIR UN EXERCICE
-══════════════════════════════════════════ -->
+<!-- MODAL: EXO PICKER -->
 <div class="modal-overlay" id="modal-exo-picker">
   <div class="modal">
     <div class="modal-handle"></div>
     <div class="modal-title">CHOISIR UN EXERCICE</div>
-
     <div class="search-bar" style="margin-bottom:12px">
-      <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
-        <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
-      </svg>
-      <input type="text" id="picker-search"
-             placeholder="Rechercher..."
-             oninput="filterPickerExos(this.value)">
+      <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+      <input type="text" id="picker-search" placeholder="Rechercher..." oninput="filterPickerExos(this.value)">
     </div>
-
-    <div id="picker-exo-list" style="max-height:55vh;overflow-y:auto"></div>
-
+    <div id="picker-exo-list" style="max-height:60vh;overflow-y:auto"></div>
     <div class="modal-actions">
-      <button class="btn-cancel"
-              onclick="closeModal('modal-exo-picker'); openModal('modal-workout')">
-        ← Retour
-      </button>
+      <button class="btn-cancel" onclick="closeModal('modal-exo-picker'); openModal('modal-workout')">← Retour</button>
     </div>
   </div>
 </div>
 
-<!-- ══════════════════════════════════════════
-     MODAL — SESSION ACTIVE
-══════════════════════════════════════════ -->
+<!-- MODAL: SESSION -->
 <div class="modal-overlay" id="modal-session">
   <div class="modal" style="max-height:95vh">
     <div class="modal-handle"></div>
-
-    <!-- Header with title + timer -->
     <div class="session-header">
       <div class="session-header-left">
         <div class="modal-title" id="session-title" style="margin-bottom:4px">SÉANCE</div>
@@ -200,13 +168,9 @@
         <div class="session-timer-display" id="session-timer">0:00</div>
       </div>
     </div>
-
-    <!-- Progress bar -->
     <div class="session-progress-bar-wrap">
       <div class="session-progress-bar-fill" id="session-progress-bar" style="width:0%"></div>
     </div>
-
-    <!-- Exercise list + Terminer button (injected by JS) -->
     <div id="session-exo-list" style="overflow-y:auto;max-height:60vh;padding-right:2px"></div>
   </div>
 </div>
