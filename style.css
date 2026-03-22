@@ -276,3 +276,151 @@ header { padding:24px 20px 16px; display:flex; align-items:center; justify-conte
 ::-webkit-scrollbar { width:4px; }
 ::-webkit-scrollbar-track { background:transparent; }
 ::-webkit-scrollbar-thumb { background:var(--border); border-radius:2px; }
+
+/* ══════════════════════════════════════════
+   CLASSES EXTRAITES DU JS
+══════════════════════════════════════════ */
+
+/* ── Workout card actions ── */
+.card-actions-col {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+}
+.card-btn-row {
+  display: flex;
+  gap: 6px;
+}
+.card-start-wrap {
+  padding: 12px 18px 18px;
+}
+
+/* ── Icon btn variants ── */
+.icon-btn--sm {
+  width: 28px !important;
+  height: 28px !important;
+  border-radius: 7px !important;
+}
+.icon-btn--danger {
+  background: rgba(255,79,106,.1) !important;
+  border-color: rgba(255,79,106,.2) !important;
+  color: #ff4f6a !important;
+}
+.icon-btn--danger:hover {
+  background: var(--danger) !important;
+  color: #fff !important;
+  border-color: var(--danger) !important;
+}
+
+/* ── Workout card spacing ── */
+.workout-card { margin-bottom: 14px; }
+
+/* ── Picker exo card (programme modal) ── */
+.picker-exo-card {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px 14px;
+  margin-bottom: 8px;
+}
+.picker-exo-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.picker-exo-emoji { font-size: 18px; flex-shrink: 0; }
+.picker-exo-info  { flex: 1; }
+.picker-exo-name  { font-size: 14px; font-weight: 500; color: var(--text); }
+.picker-exo-muscle{ font-size: 11px; color: var(--muted); margin-top: 2px; }
+.add-set-btn--mt  { margin-top: 8px; }
+
+/* ── Exo already added ── */
+.exo-already { opacity: .5; pointer-events: none; }
+.exo-check {
+  color: var(--success);
+  font-size: 12px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+/* ── Session exercise card ── */
+.session-exo-card {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 14px 16px;
+  margin-bottom: 12px;
+  transition: border-color .3s, opacity .3s;
+}
+.session-exo-card--done {
+  border-color: rgba(61,232,160,.25);
+  opacity: .65;
+}
+.session-exo-top {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.session-exo-img {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+.session-exo-emoji { font-size: 20px; }
+.session-exo-info  { flex: 1; }
+.session-exo-name  { font-size: 15px; font-weight: 600; color: var(--text); }
+.session-exo-muscle{ font-size: 11px; color: var(--muted); margin-top: 2px; }
+.session-done-badge{
+  color: var(--success);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+/* ── Session set rows ── */
+.session-sets-list { display: flex; flex-direction: column; gap: 6px; }
+.session-set-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: var(--bg);
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  transition: border-color .2s;
+}
+.session-set-row--done { border-color: rgba(61,232,160,.2); }
+.session-set-num {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 16px;
+  color: var(--accent);
+  width: 20px;
+  flex-shrink: 0;
+}
+.session-set-reps { flex: 1; font-size: 13px; color: var(--text); }
+.session-set-reps--done { color: var(--muted); }
+
+/* ── Validate button ── */
+.btn-validate {
+  padding: 6px 16px;
+  border-radius: 8px;
+  border: 1px solid var(--border2);
+  background: var(--surface3);
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 700;
+  font-family: 'DM Sans', sans-serif;
+  transition: all .15s;
+}
+.btn-validate:hover { border-color: var(--accent); color: var(--accent); }
+.btn-validate--done {
+  border-color: var(--success);
+  background: rgba(61,232,160,.1);
+  color: var(--success);
+}
