@@ -133,106 +133,231 @@ const MUSCLE_FILTERS = [
   { label:'❤️ Cardio',     value:'Cardio' },
 ];
 
-// ── EXERCISE SVG MAP — inline SVGs par exercice ──
-// Helper: wraps SVG content in a 60x60 dark-bg container
-function svg60(c){return`<svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"><rect width="60" height="60" fill="#0e1420"/>${c}</svg>`;}
+// ══════════════════════════════════════════════════════
+//  MUSCLE BODY MAP — silhouette anatomique style app
+//  Inspiré du design rouge/rose sur corps gris-bleu
+// ══════════════════════════════════════════════════════
 
-const EXO_SVG = {
-  // PECS
-  'pu':        svg60('<line x1="8" y1="42" x2="52" y2="42" stroke="#263650" stroke-width="2"/><rect x="12" y="28" width="36" height="10" rx="3" fill="#4db8ff" opacity=".9"/><circle cx="48" cy="26" r="5" fill="#2d8fff" opacity=".9"/><line x1="12" y1="38" x2="8" y2="44" stroke="#4db8ff" stroke-width="2.5"/><line x1="48" y1="38" x2="52" y2="44" stroke="#4db8ff" stroke-width="2.5"/><line x1="12" y1="33" x2="6" y2="28" stroke="#4db8ff" stroke-width="2"/><line x1="48" y1="33" x2="54" y2="28" stroke="#4db8ff" stroke-width="2"/>'),
-  'puw':       svg60('<line x1="4" y1="42" x2="56" y2="42" stroke="#263650" stroke-width="2"/><rect x="8" y="28" width="44" height="10" rx="3" fill="#4db8ff" opacity=".85"/><circle cx="52" cy="26" r="5" fill="#2d8fff" opacity=".9"/><line x1="8" y1="38" x2="5" y2="44" stroke="#4db8ff" stroke-width="2.5"/><line x1="52" y1="38" x2="55" y2="44" stroke="#4db8ff" stroke-width="2.5"/><line x1="8" y1="33" x2="2" y2="26" stroke="#4db8ff" stroke-width="2"/><line x1="52" y1="33" x2="58" y2="26" stroke="#4db8ff" stroke-width="2"/>'),
-  'pud':       svg60('<line x1="8" y1="42" x2="52" y2="42" stroke="#263650" stroke-width="2"/><rect x="20" y="28" width="20" height="10" rx="3" fill="#4db8ff" opacity=".9"/><circle cx="44" cy="26" r="5" fill="#2d8fff" opacity=".9"/><line x1="20" y1="38" x2="14" y2="44" stroke="#4db8ff" stroke-width="2.5"/><line x1="40" y1="38" x2="46" y2="44" stroke="#4db8ff" stroke-width="2.5"/><polygon points="28,18 32,18 30,24" fill="#4db8ff" opacity=".8"/>'),
-  'pue':       svg60('<line x1="8" y1="44" x2="52" y2="44" stroke="#263650" stroke-width="2"/><rect x="12" y="30" width="36" height="10" rx="3" fill="#4db8ff" opacity=".9"/><circle cx="30" cy="16" r="5" fill="#2d8fff" opacity=".9"/><line x1="12" y1="35" x2="8" y2="26" stroke="#4db8ff" stroke-width="2"/><line x1="48" y1="35" x2="52" y2="26" stroke="#4db8ff" stroke-width="2"/><line x1="12" y1="40" x2="8" y2="46" stroke="#4db8ff" stroke-width="2.5"/><line x1="48" y1="40" x2="52" y2="46" stroke="#4db8ff" stroke-width="2.5"/><line x1="30" y1="21" x2="30" y2="30" stroke="#ff4f6a" stroke-width="2" stroke-dasharray="3,2"/>'),
-  'puarch':    svg60('<line x1="4" y1="44" x2="56" y2="44" stroke="#263650" stroke-width="2"/><rect x="12" y="30" width="22" height="9" rx="3" fill="#4db8ff" opacity=".9"/><line x1="34" y1="34" x2="52" y2="30" stroke="#4db8ff" stroke-width="2.5"/><circle cx="52" cy="28" r="4.5" fill="#2d8fff" opacity=".7"/><circle cx="40" cy="28" r="5" fill="#2d8fff" opacity=".9"/><line x1="12" y1="39" x2="8" y2="44" stroke="#4db8ff" stroke-width="2.5"/><line x1="34" y1="39" x2="36" y2="44" stroke="#4db8ff" stroke-width="2.5"/>'),
-  'pu1arm':    svg60('<line x1="6" y1="44" x2="54" y2="44" stroke="#263650" stroke-width="2"/><rect x="14" y="30" width="30" height="10" rx="3" fill="#4db8ff" opacity=".9"/><circle cx="44" cy="28" r="5" fill="#2d8fff" opacity=".9"/><line x1="14" y1="40" x2="10" y2="44" stroke="#4db8ff" stroke-width="2.5"/><line x1="44" y1="40" x2="46" y2="44" stroke="#4db8ff" stroke-width="2.5"/><line x1="14" y1="35" x2="5" y2="32" stroke="#263650" stroke-width="2.5"/>'),
-  'decline':   svg60('<line x1="4" y1="50" x2="56" y2="50" stroke="#263650" stroke-width="2"/><rect x="10" y="22" width="36" height="10" rx="3" fill="#4db8ff" opacity=".9" transform="rotate(-12,28,27)"/><circle cx="46" cy="16" r="5" fill="#2d8fff" opacity=".9"/><line x1="10" y1="38" x2="8" y2="50" stroke="#4db8ff" stroke-width="2.5"/><line x1="46" y1="38" x2="50" y2="50" stroke="#4db8ff" stroke-width="2.5"/>'),
-  'incline':   svg60('<line x1="4" y1="46" x2="56" y2="46" stroke="#263650" stroke-width="2"/><rect x="14" y="34" width="36" height="10" rx="3" fill="#4db8ff" opacity=".9" transform="rotate(12,32,39)"/><circle cx="14" cy="28" r="5" fill="#2d8fff" opacity=".9"/><line x1="14" y1="44" x2="10" y2="46" stroke="#4db8ff" stroke-width="2.5"/><line x1="50" y1="44" x2="54" y2="46" stroke="#4db8ff" stroke-width="2.5"/>'),
-  'pseudo':    svg60('<line x1="4" y1="44" x2="56" y2="44" stroke="#263650" stroke-width="2"/><rect x="10" y="30" width="38" height="10" rx="3" fill="#4db8ff" opacity=".85" transform="rotate(-8,29,35)"/><circle cx="48" cy="24" r="5" fill="#2d8fff" opacity=".9"/><line x1="10" y1="40" x2="6" y2="46" stroke="#4db8ff" stroke-width="2.5"/><line x1="46" y1="40" x2="52" y2="46" stroke="#4db8ff" stroke-width="2.5"/><line x1="10" y1="35" x2="4" y2="30" stroke="#ff4f6a" stroke-width="1.5"/>'),
-  // EPAULES
-  'pike':      svg60('<line x1="4" y1="54" x2="56" y2="54" stroke="#263650" stroke-width="2"/><circle cx="30" cy="14" r="5" fill="#2d8fff" opacity=".9"/><line x1="30" y1="19" x2="16" y2="36" stroke="#4db8ff" stroke-width="3"/><line x1="16" y1="36" x2="10" y2="54" stroke="#4db8ff" stroke-width="2.5"/><line x1="16" y1="36" x2="40" y2="54" stroke="#4db8ff" stroke-width="2.5"/><line x1="30" y1="26" x2="16" y2="22" stroke="#4db8ff" stroke-width="2"/><line x1="30" y1="26" x2="44" y2="22" stroke="#4db8ff" stroke-width="2"/>'),
-  'hs':        svg60('<line x1="4" y1="6" x2="56" y2="6" stroke="#263650" stroke-width="2"/><circle cx="30" cy="48" r="5" fill="#2d8fff" opacity=".9"/><line x1="30" y1="43" x2="30" y2="28" stroke="#4db8ff" stroke-width="3"/><line x1="30" y1="34" x2="16" y2="28" stroke="#4db8ff" stroke-width="2.5"/><line x1="30" y1="34" x2="44" y2="28" stroke="#4db8ff" stroke-width="2.5"/><line x1="16" y1="28" x2="14" y2="8" stroke="#4db8ff" stroke-width="2.5"/><line x1="44" y1="28" x2="46" y2="8" stroke="#4db8ff" stroke-width="2.5"/>'),
-  'facepull':  svg60('<rect x="2" y="6" width="4" height="48" rx="2" fill="#263650" stroke="#4db8ff" stroke-width="1.5"/><circle cx="32" cy="30" r="5" fill="#2d8fff" opacity=".9"/><line x1="6" y1="26" x2="28" y2="26" stroke="#4db8ff" stroke-width="2"/><line x1="6" y1="34" x2="28" y2="34" stroke="#4db8ff" stroke-width="2"/><line x1="32" y1="25" x2="44" y2="18" stroke="#4db8ff" stroke-width="2.5"/><line x1="32" y1="35" x2="44" y2="42" stroke="#4db8ff" stroke-width="2.5"/>'),
-  'latsraise': svg60('<line x1="4" y1="54" x2="56" y2="54" stroke="#263650" stroke-width="2"/><circle cx="30" cy="28" r="5" fill="#2d8fff" opacity=".9"/><line x1="30" y1="33" x2="30" y2="46" stroke="#4db8ff" stroke-width="3"/><line x1="30" y1="40" x2="16" y2="34" stroke="#4db8ff" stroke-width="2.5"/><line x1="30" y1="33" x2="18" y2="22" stroke="#4db8ff" stroke-width="2.5"/><circle cx="16" cy="20" r="3" fill="#ff4f6a" opacity=".8"/>'),
-  // TRICEPS
-  'dip':       svg60('<rect x="6" y="30" width="10" height="22" rx="2" fill="#263650" stroke="#4db8ff" stroke-width="1.5"/><rect x="44" y="30" width="10" height="22" rx="2" fill="#263650" stroke="#4db8ff" stroke-width="1.5"/><rect x="4" y="28" width="14" height="4" rx="2" fill="#4db8ff" opacity=".7"/><rect x="42" y="28" width="14" height="4" rx="2" fill="#4db8ff" opacity=".7"/><circle cx="30" cy="18" r="5" fill="#2d8fff" opacity=".9"/><line x1="30" y1="23" x2="30" y2="36" stroke="#4db8ff" stroke-width="3"/><line x1="30" y1="36" x2="14" y2="36" stroke="#4db8ff" stroke-width="2"/><line x1="30" y1="36" x2="46" y2="36" stroke="#4db8ff" stroke-width="2"/>'),
-  'dipdip':    svg60('<rect x="10" y="32" width="10" height="20" rx="2" fill="#263650" stroke="#4db8ff" stroke-width="1.5"/><rect x="40" y="32" width="10" height="20" rx="2" fill="#263650" stroke="#4db8ff" stroke-width="1.5"/><rect x="8" y="30" width="14" height="4" rx="2" fill="#4db8ff" opacity=".7"/><rect x="38" y="30" width="14" height="4" rx="2" fill="#4db8ff" opacity=".7"/><circle cx="30" cy="20" r="5" fill="#2d8fff" opacity=".9"/><line x1="30" y1="25" x2="30" y2="38" stroke="#4db8ff" stroke-width="3"/><line x1="30" y1="38" x2="19" y2="38" stroke="#4db8ff" stroke-width="2"/><line x1="30" y1="38" x2="41" y2="38" stroke="#4db8ff" stroke-width="2"/>'),
-  'skullcr':   svg60('<line x1="4" y1="52" x2="56" y2="52" stroke="#263650" stroke-width="2"/><circle cx="30" cy="44" r="5" fill="#2d8fff" opacity=".9"/><line x1="30" y1="39" x2="30" y2="26" stroke="#4db8ff" stroke-width="3"/><line x1="30" y1="26" x2="18" y2="18" stroke="#4db8ff" stroke-width="2.5"/><line x1="30" y1="26" x2="42" y2="18" stroke="#4db8ff" stroke-width="2.5"/>'),
-  // DOS
-  'row':       svg60('<rect x="8" y="6" width="44" height="6" rx="3" fill="#263650" stroke="#4db8ff" stroke-width="1.5"/><circle cx="30" cy="22" r="5" fill="#2d8fff" opacity=".9"/><line x1="30" y1="12" x2="30" y2="18" stroke="#4db8ff" stroke-width="2.5"/><line x1="30" y1="27" x2="30" y2="42" stroke="#4db8ff" stroke-width="3"/><line x1="30" y1="34" x2="16" y2="46" stroke="#4db8ff" stroke-width="2.5"/><line x1="30" y1="34" x2="44" y2="46" stroke="#4db8ff" stroke-width="2.5"/>'),
-  'chinup':    svg60('<rect x="8" y="6" width="44" height="6" rx="3" fill="#263650" stroke="#ff4f6a" stroke-width="1.5"/><circle cx="30" cy="22" r="5" fill="#2d8fff" opacity=".9"/><line x1="30" y1="12" x2="30" y2="18" stroke="#ff4f6a" stroke-width="2.5"/><line x1="30" y1="27" x2="30" y2="42" stroke="#4db8ff" stroke-width="3"/><line x1="30" y1="34" x2="16" y2="46" stroke="#4db8ff" stroke-width="2.5"/><line x1="30" y1="34" x2="44" y2="46" stroke="#4db8ff" stroke-width="2.5"/>'),
-  'widepull':  svg60('<rect x="2" y="6" width="56" height="6" rx="3" fill="#263650" stroke="#4db8ff" stroke-width="1.5"/><circle cx="30" cy="22" r="5" fill="#2d8fff" opacity=".9"/><line x1="30" y1="12" x2="12" y2="10" stroke="#4db8ff" stroke-width="2"/><line x1="30" y1="12" x2="48" y2="10" stroke="#4db8ff" stroke-width="2"/><line x1="30" y1="27" x2="30" y2="42" stroke="#4db8ff" stroke-width="3"/><line x1="30" y1="34" x2="16" y2="46" stroke="#4db8ff" stroke-width="2.5"/><line x1="30" y1="34" x2="44" y2="46" stroke="#4db8ff" stroke-width="2.5"/>'),
-  'neutr':     svg60('<rect x="8" y="6" width="44" height="6" rx="3" fill="#263650" stroke="#4db8ff" stroke-width="1.5"/><circle cx="30" cy="22" r="5" fill="#2d8fff" opacity=".9"/><line x1="26" y1="12" x2="26" y2="18" stroke="#4db8ff" stroke-width="2"/><line x1="34" y1="12" x2="34" y2="18" stroke="#4db8ff" stroke-width="2"/><line x1="30" y1="27" x2="30" y2="42" stroke="#4db8ff" stroke-width="3"/><line x1="30" y1="34" x2="16" y2="46" stroke="#4db8ff" stroke-width="2.5"/><line x1="30" y1="34" x2="44" y2="46" stroke="#4db8ff" stroke-width="2.5"/>'),
-  'invrow':    svg60('<rect x="4" y="24" width="52" height="5" rx="2" fill="#263650" stroke="#4db8ff" stroke-width="1.5"/><rect x="4" y="48" width="52" height="5" rx="2" fill="#263650"/><rect x="8" y="26" width="44" height="14" rx="4" fill="#4db8ff" opacity=".85"/><circle cx="52" cy="22" r="4.5" fill="#2d8fff" opacity=".9"/><line x1="8" y1="40" x2="6" y2="48" stroke="#4db8ff" stroke-width="2"/><line x1="52" y1="40" x2="54" y2="48" stroke="#4db8ff" stroke-width="2"/>'),
-  'archrow':   svg60('<rect x="4" y="24" width="52" height="5" rx="2" fill="#263650" stroke="#4db8ff" stroke-width="1.5"/><rect x="4" y="48" width="52" height="5" rx="2" fill="#263650"/><rect x="8" y="26" width="44" height="14" rx="4" fill="#4db8ff" opacity=".7"/><circle cx="52" cy="22" r="4.5" fill="#2d8fff" opacity=".9"/><line x1="8" y1="40" x2="6" y2="48" stroke="#4db8ff" stroke-width="2"/><line x1="52" y1="40" x2="54" y2="48" stroke="#4db8ff" stroke-width="2"/><line x1="8" y1="33" x2="2" y2="28" stroke="#ff4f6a" stroke-width="2.5"/>'),
-  'muscleup':  svg60('<rect x="8" y="6" width="44" height="6" rx="3" fill="#263650" stroke="#4db8ff" stroke-width="1.5"/><circle cx="30" cy="20" r="5" fill="#2d8fff" opacity=".9"/><line x1="30" y1="12" x2="30" y2="16" stroke="#4db8ff" stroke-width="2"/><line x1="30" y1="25" x2="30" y2="34" stroke="#4db8ff" stroke-width="3"/><line x1="30" y1="34" x2="16" y2="34" stroke="#4db8ff" stroke-width="2"/><line x1="30" y1="34" x2="44" y2="34" stroke="#4db8ff" stroke-width="2"/><line x1="30" y1="34" x2="30" y2="46" stroke="#ff4f6a" stroke-width="2.5" stroke-dasharray="3,2"/>'),
-  'supext':    svg60('<line x1="4" y1="38" x2="56" y2="38" stroke="#263650" stroke-width="2"/><circle cx="30" cy="30" r="5" fill="#2d8fff" opacity=".9"/><rect x="16" y="32" width="28" height="8" rx="3" fill="#4db8ff" opacity=".85"/><line x1="16" y1="34" x2="6" y2="28" stroke="#4db8ff" stroke-width="2.5"/><line x1="44" y1="34" x2="54" y2="28" stroke="#4db8ff" stroke-width="2.5"/><line x1="16" y1="37" x2="8" y2="44" stroke="#4db8ff" stroke-width="2.5"/><line x1="44" y1="37" x2="52" y2="44" stroke="#4db8ff" stroke-width="2.5"/>'),
-  // BICEPS
-  'towelcurl': svg60('<rect x="2" y="6" width="4" height="48" rx="2" fill="#263650" stroke="#4db8ff" stroke-width="1.5"/><circle cx="30" cy="36" r="5" fill="#2d8fff" opacity=".9"/><line x1="30" y1="31" x2="30" y2="20" stroke="#4db8ff" stroke-width="3"/><line x1="30" y1="41" x2="30" y2="48" stroke="#4db8ff" stroke-width="2.5"/><path d="M6 30 Q16 28 26 30" stroke="#4db8ff" stroke-width="2" fill="none"/>'),
-  'curlrow':   svg60('<rect x="4" y="22" width="52" height="5" rx="2" fill="#263650" stroke="#4db8ff" stroke-width="1.5"/><rect x="4" y="46" width="52" height="5" rx="2" fill="#263650"/><rect x="8" y="24" width="44" height="14" rx="4" fill="#263650" opacity=".8"/><circle cx="52" cy="20" r="4.5" fill="#2d8fff" opacity=".9"/><line x1="8" y1="38" x2="6" y2="46" stroke="#4db8ff" stroke-width="2"/><path d="M8 31 Q18 24 28 31" stroke="#ff4f6a" stroke-width="2.5" fill="none"/>'),
-  // QUADRICEPS
-  'sq':        svg60('<line x1="4" y1="54" x2="56" y2="54" stroke="#263650" stroke-width="2"/><circle cx="30" cy="12" r="5" fill="#2d8fff" opacity=".9"/><line x1="30" y1="17" x2="30" y2="34" stroke="#4db8ff" stroke-width="3"/><line x1="30" y1="34" x2="18" y2="54" stroke="#4db8ff" stroke-width="2.5"/><line x1="30" y1="34" x2="42" y2="54" stroke="#4db8ff" stroke-width="2.5"/><line x1="30" y1="24" x2="18" y2="30" stroke="#4db8ff" stroke-width="2"/><line x1="30" y1="24" x2="42" y2="30" stroke="#4db8ff" stroke-width="2"/>'),
-  'pistol':    svg60('<line x1="4" y1="54" x2="56" y2="54" stroke="#263650" stroke-width="2"/><circle cx="26" cy="12" r="5" fill="#2d8fff" opacity=".9"/><line x1="26" y1="17" x2="26" y2="34" stroke="#4db8ff" stroke-width="3"/><line x1="26" y1="34" x2="18" y2="54" stroke="#4db8ff" stroke-width="2.5"/><line x1="26" y1="34" x2="34" y2="44" stroke="#4db8ff" stroke-width="2.5"/><line x1="34" y1="44" x2="50" y2="42" stroke="#4db8ff" stroke-width="2.5"/><line x1="26" y1="24" x2="14" y2="26" stroke="#4db8ff" stroke-width="2"/>'),
-  'shrimp':    svg60('<line x1="4" y1="54" x2="56" y2="54" stroke="#263650" stroke-width="2"/><circle cx="28" cy="12" r="5" fill="#2d8fff" opacity=".9"/><line x1="28" y1="17" x2="28" y2="34" stroke="#4db8ff" stroke-width="3"/><line x1="28" y1="34" x2="20" y2="54" stroke="#4db8ff" stroke-width="2.5"/><path d="M28 34 Q36 44 38 54" stroke="#4db8ff" stroke-width="2.5" fill="none"/>'),
-  'wallsit':   svg60('<rect x="50" y="6" width="6" height="52" rx="2" fill="#263650" stroke="#4db8ff" stroke-width="1.5"/><circle cx="26" cy="14" r="5" fill="#2d8fff" opacity=".9"/><line x1="26" y1="19" x2="38" y2="30" stroke="#4db8ff" stroke-width="3"/><line x1="38" y1="30" x2="50" y2="30" stroke="#4db8ff" stroke-width="2.5"/><line x1="38" y1="30" x2="30" y2="52" stroke="#4db8ff" stroke-width="2.5"/><line x1="26" y1="24" x2="14" y2="26" stroke="#4db8ff" stroke-width="2"/>'),
-  'stepup':    svg60('<line x1="4" y1="54" x2="56" y2="54" stroke="#263650" stroke-width="2"/><rect x="28" y="40" width="28" height="14" rx="2" fill="#263650" stroke="#4db8ff" stroke-width="1.5"/><circle cx="22" cy="14" r="5" fill="#2d8fff" opacity=".9"/><line x1="22" y1="19" x2="22" y2="34" stroke="#4db8ff" stroke-width="3"/><line x1="22" y1="34" x2="14" y2="54" stroke="#4db8ff" stroke-width="2.5"/><line x1="22" y1="34" x2="36" y2="40" stroke="#4db8ff" stroke-width="2.5"/>'),
-  'sqj':       svg60('<line x1="4" y1="54" x2="56" y2="54" stroke="#263650" stroke-width="2"/><circle cx="30" cy="10" r="5" fill="#2d8fff" opacity=".9"/><line x1="30" y1="15" x2="30" y2="30" stroke="#4db8ff" stroke-width="3"/><line x1="30" y1="30" x2="20" y2="46" stroke="#4db8ff" stroke-width="2.5"/><line x1="30" y1="30" x2="40" y2="46" stroke="#4db8ff" stroke-width="2.5"/><line x1="30" y1="22" x2="18" y2="26" stroke="#4db8ff" stroke-width="2"/><line x1="30" y1="22" x2="42" y2="26" stroke="#4db8ff" stroke-width="2"/><line x1="30" y1="8" x2="24" y2="2" stroke="#ff4f6a" stroke-width="2" stroke-dasharray="2,2"/><line x1="30" y1="8" x2="36" y2="2" stroke="#ff4f6a" stroke-width="2" stroke-dasharray="2,2"/>'),
-  // FESSIERS
-  'glute':     svg60('<line x1="4" y1="54" x2="56" y2="54" stroke="#263650" stroke-width="2"/><circle cx="30" cy="28" r="5" fill="#2d8fff" opacity=".9"/><rect x="14" y="32" width="32" height="10" rx="4" fill="#4db8ff" opacity=".85"/><line x1="14" y1="42" x2="10" y2="54" stroke="#4db8ff" stroke-width="2.5"/><line x1="46" y1="42" x2="50" y2="54" stroke="#4db8ff" stroke-width="2.5"/>'),
-  'bsq':       svg60('<line x1="4" y1="54" x2="56" y2="54" stroke="#263650" stroke-width="2"/><rect x="40" y="36" width="16" height="18" rx="2" fill="#263650" stroke="#4db8ff" stroke-width="1.5"/><circle cx="20" cy="12" r="5" fill="#2d8fff" opacity=".9"/><line x1="20" y1="17" x2="20" y2="32" stroke="#4db8ff" stroke-width="3"/><line x1="20" y1="32" x2="12" y2="54" stroke="#4db8ff" stroke-width="2.5"/><line x1="20" y1="32" x2="38" y2="36" stroke="#4db8ff" stroke-width="2.5"/>'),
-  'lunge':     svg60('<line x1="4" y1="54" x2="56" y2="54" stroke="#263650" stroke-width="2"/><circle cx="26" cy="10" r="5" fill="#2d8fff" opacity=".9"/><line x1="26" y1="15" x2="26" y2="30" stroke="#4db8ff" stroke-width="3"/><line x1="26" y1="30" x2="14" y2="44" stroke="#4db8ff" stroke-width="2.5"/><line x1="14" y1="44" x2="14" y2="54" stroke="#4db8ff" stroke-width="2.5"/><line x1="26" y1="30" x2="38" y2="36" stroke="#4db8ff" stroke-width="2.5"/><line x1="38" y1="36" x2="44" y2="54" stroke="#4db8ff" stroke-width="2.5"/>'),
-  'lungerev':  svg60('<line x1="4" y1="54" x2="56" y2="54" stroke="#263650" stroke-width="2"/><circle cx="34" cy="10" r="5" fill="#2d8fff" opacity=".9"/><line x1="34" y1="15" x2="34" y2="30" stroke="#4db8ff" stroke-width="3"/><line x1="34" y1="30" x2="46" y2="44" stroke="#4db8ff" stroke-width="2.5"/><line x1="46" y1="44" x2="46" y2="54" stroke="#4db8ff" stroke-width="2.5"/><line x1="34" y1="30" x2="22" y2="36" stroke="#4db8ff" stroke-width="2.5"/><line x1="22" y1="36" x2="16" y2="54" stroke="#4db8ff" stroke-width="2.5"/>'),
-  'lungej':    svg60('<line x1="4" y1="54" x2="56" y2="54" stroke="#263650" stroke-width="2"/><circle cx="30" cy="10" r="5" fill="#2d8fff" opacity=".9"/><line x1="30" y1="15" x2="30" y2="28" stroke="#4db8ff" stroke-width="3"/><line x1="30" y1="28" x2="18" y2="44" stroke="#4db8ff" stroke-width="2.5"/><line x1="30" y1="28" x2="42" y2="38" stroke="#4db8ff" stroke-width="2.5"/><line x1="42" y1="38" x2="48" y2="54" stroke="#4db8ff" stroke-width="2.5"/><line x1="30" y1="8" x2="30" y2="2" stroke="#ff4f6a" stroke-width="2" stroke-dasharray="2,2"/>'),
-  'donkey':    svg60('<line x1="4" y1="50" x2="56" y2="50" stroke="#263650" stroke-width="2"/><circle cx="20" cy="28" r="5" fill="#2d8fff" opacity=".9"/><line x1="20" y1="33" x2="20" y2="44" stroke="#4db8ff" stroke-width="2.5"/><line x1="20" y1="44" x2="10" y2="50" stroke="#4db8ff" stroke-width="2.5"/><line x1="20" y1="35" x2="38" y2="34" stroke="#4db8ff" stroke-width="3"/><line x1="38" y1="34" x2="48" y2="22" stroke="#ff4f6a" stroke-width="2.5"/>'),
-  'clamshell': svg60('<line x1="4" y1="50" x2="56" y2="50" stroke="#263650" stroke-width="2"/><circle cx="20" cy="26" r="5" fill="#2d8fff" opacity=".9"/><line x1="20" y1="31" x2="20" y2="44" stroke="#4db8ff" stroke-width="2.5"/><line x1="20" y1="44" x2="10" y2="50" stroke="#4db8ff" stroke-width="2.5"/><line x1="20" y1="37" x2="38" y2="36" stroke="#4db8ff" stroke-width="3"/><line x1="38" y1="36" x2="52" y2="28" stroke="#ff4f6a" stroke-width="2.5"/>'),
-  // ISCHIO
-  'nordham':   svg60('<line x1="4" y1="54" x2="56" y2="54" stroke="#263650" stroke-width="2"/><circle cx="38" cy="16" r="5" fill="#2d8fff" opacity=".9"/><line x1="38" y1="21" x2="38" y2="36" stroke="#4db8ff" stroke-width="3"/><path d="M38 36 Q30 46 20 54" stroke="#4db8ff" stroke-width="2.5" fill="none"/><line x1="38" y1="36" x2="50" y2="54" stroke="#4db8ff" stroke-width="2.5"/>'),
-  'goodmorn':  svg60('<line x1="4" y1="54" x2="56" y2="54" stroke="#263650" stroke-width="2"/><circle cx="34" cy="14" r="5" fill="#2d8fff" opacity=".9"/><line x1="34" y1="19" x2="22" y2="38" stroke="#4db8ff" stroke-width="3"/><line x1="22" y1="38" x2="16" y2="54" stroke="#4db8ff" stroke-width="2.5"/><line x1="22" y1="38" x2="32" y2="54" stroke="#4db8ff" stroke-width="2.5"/><line x1="34" y1="22" x2="48" y2="18" stroke="#4db8ff" stroke-width="2"/>'),
-  'legcurl':   svg60('<line x1="4" y1="46" x2="56" y2="46" stroke="#263650" stroke-width="2"/><circle cx="30" cy="36" r="5" fill="#2d8fff" opacity=".9"/><rect x="10" y="38" width="40" height="8" rx="3" fill="#4db8ff" opacity=".7"/><path d="M46 38 Q50 28 42 20" stroke="#ff4f6a" stroke-width="2.5" fill="none"/>'),
-  // MOLLETS
-  'calf':      svg60('<line x1="4" y1="54" x2="56" y2="54" stroke="#263650" stroke-width="2"/><circle cx="30" cy="10" r="5" fill="#2d8fff" opacity=".9"/><line x1="30" y1="15" x2="30" y2="32" stroke="#4db8ff" stroke-width="3"/><line x1="30" y1="32" x2="20" y2="50" stroke="#4db8ff" stroke-width="2.5"/><line x1="30" y1="32" x2="40" y2="50" stroke="#4db8ff" stroke-width="2.5"/><line x1="18" y1="50" x2="22" y2="46" stroke="#ff4f6a" stroke-width="3"/><line x1="38" y1="50" x2="42" y2="46" stroke="#ff4f6a" stroke-width="3"/>'),
-  'calfseated':svg60('<rect x="10" y="30" width="40" height="10" rx="3" fill="#263650" stroke="#4db8ff" stroke-width="1.5"/><circle cx="30" cy="20" r="5" fill="#2d8fff" opacity=".9"/><line x1="30" y1="25" x2="30" y2="32" stroke="#4db8ff" stroke-width="3"/><line x1="16" y1="40" x2="16" y2="52" stroke="#4db8ff" stroke-width="2.5"/><line x1="44" y1="40" x2="44" y2="52" stroke="#4db8ff" stroke-width="2.5"/><line x1="14" y1="52" x2="18" y2="48" stroke="#ff4f6a" stroke-width="3"/><line x1="42" y1="52" x2="46" y2="48" stroke="#ff4f6a" stroke-width="3"/>'),
-  'calfhop':   svg60('<line x1="4" y1="54" x2="56" y2="54" stroke="#263650" stroke-width="2"/><circle cx="30" cy="10" r="5" fill="#2d8fff" opacity=".9"/><line x1="30" y1="15" x2="30" y2="30" stroke="#4db8ff" stroke-width="3"/><line x1="30" y1="30" x2="22" y2="50" stroke="#4db8ff" stroke-width="2.5"/><line x1="30" y1="30" x2="38" y2="50" stroke="#4db8ff" stroke-width="2.5"/><line x1="20" y1="50" x2="24" y2="46" stroke="#ff4f6a" stroke-width="3"/><line x1="36" y1="50" x2="40" y2="46" stroke="#ff4f6a" stroke-width="3"/><line x1="30" y1="8" x2="30" y2="3" stroke="#ff4f6a" stroke-width="2" stroke-dasharray="2,2"/>'),
-  // ABDOMINAUX
-  'crunch':    svg60('<line x1="4" y1="52" x2="56" y2="52" stroke="#263650" stroke-width="2"/><circle cx="30" cy="20" r="5" fill="#2d8fff" opacity=".9"/><path d="M18 52 Q18 38 26 30 Q30 26 34 30 Q42 38 42 52" stroke="#4db8ff" stroke-width="2.5" fill="none"/><line x1="30" y1="25" x2="18" y2="26" stroke="#4db8ff" stroke-width="2"/><line x1="30" y1="25" x2="42" y2="26" stroke="#4db8ff" stroke-width="2"/>'),
-  'lleg':      svg60('<line x1="4" y1="52" x2="56" y2="52" stroke="#263650" stroke-width="2"/><circle cx="30" cy="40" r="5" fill="#2d8fff" opacity=".9"/><rect x="10" y="42" width="40" height="10" rx="3" fill="#263650" stroke="#4db8ff" stroke-width="1.5"/><line x1="16" y1="42" x2="12" y2="22" stroke="#4db8ff" stroke-width="2.5"/><line x1="44" y1="42" x2="48" y2="22" stroke="#4db8ff" stroke-width="2.5"/><line x1="12" y1="22" x2="48" y2="22" stroke="#4db8ff" stroke-width="2"/>'),
-  'vup':       svg60('<line x1="4" y1="54" x2="56" y2="54" stroke="#263650" stroke-width="2"/><path d="M10 52 L30 22 L50 52" stroke="#4db8ff" stroke-width="2.5" fill="none"/><circle cx="30" cy="18" r="5" fill="#2d8fff" opacity=".9"/>'),
-  'hollow':    svg60('<line x1="4" y1="38" x2="56" y2="38" stroke="#263650" stroke-width="2"/><circle cx="30" cy="30" r="5" fill="#2d8fff" opacity=".9"/><rect x="12" y="32" width="36" height="8" rx="3" fill="#4db8ff" opacity=".8"/><line x1="12" y1="35" x2="4" y2="26" stroke="#4db8ff" stroke-width="2.5"/><line x1="48" y1="35" x2="56" y2="26" stroke="#4db8ff" stroke-width="2.5"/><line x1="12" y1="37" x2="6" y2="44" stroke="#4db8ff" stroke-width="2.5"/><line x1="48" y1="37" x2="54" y2="44" stroke="#4db8ff" stroke-width="2.5"/>'),
-  'tuckup':    svg60('<line x1="4" y1="54" x2="56" y2="54" stroke="#263650" stroke-width="2"/><circle cx="30" cy="24" r="5" fill="#2d8fff" opacity=".9"/><line x1="30" y1="29" x2="30" y2="40" stroke="#4db8ff" stroke-width="2.5"/><line x1="30" y1="40" x2="20" y2="50" stroke="#4db8ff" stroke-width="2.5"/><line x1="30" y1="40" x2="40" y2="50" stroke="#4db8ff" stroke-width="2.5"/><line x1="30" y1="30" x2="18" y2="34" stroke="#4db8ff" stroke-width="2"/><line x1="30" y1="30" x2="42" y2="34" stroke="#4db8ff" stroke-width="2"/><line x1="20" y1="50" x2="26" y2="42" stroke="#ff4f6a" stroke-width="2"/><line x1="40" y1="50" x2="34" y2="42" stroke="#ff4f6a" stroke-width="2"/>'),
-  'dragon':    svg60('<line x1="4" y1="52" x2="56" y2="52" stroke="#263650" stroke-width="2"/><circle cx="10" cy="42" r="5" fill="#2d8fff" opacity=".9"/><rect x="14" y="36" width="40" height="10" rx="3" fill="#4db8ff" opacity=".85"/><line x1="10" y1="47" x2="10" y2="52" stroke="#4db8ff" stroke-width="3"/><line x1="54" y1="46" x2="54" y2="52" stroke="#4db8ff" stroke-width="3"/>'),
-  'lsit':      svg60('<line x1="4" y1="38" x2="56" y2="38" stroke="#263650" stroke-width="1"/><circle cx="16" cy="22" r="5" fill="#2d8fff" opacity=".9"/><circle cx="44" cy="22" r="5" fill="#2d8fff" opacity=".9"/><line x1="16" y1="27" x2="16" y2="36" stroke="#4db8ff" stroke-width="2.5"/><line x1="44" y1="27" x2="44" y2="36" stroke="#4db8ff" stroke-width="2.5"/><line x1="21" y1="28" x2="40" y2="28" stroke="#4db8ff" stroke-width="3"/><line x1="21" y1="28" x2="14" y2="46" stroke="#4db8ff" stroke-width="2.5"/><line x1="40" y1="28" x2="46" y2="46" stroke="#4db8ff" stroke-width="2.5"/>'),
-  'abswheel':  svg60('<line x1="4" y1="54" x2="56" y2="54" stroke="#263650" stroke-width="2"/><circle cx="30" cy="40" r="8" fill="none" stroke="#4db8ff" stroke-width="2.5"/><circle cx="30" cy="22" r="5" fill="#2d8fff" opacity=".9"/><line x1="30" y1="27" x2="30" y2="33" stroke="#4db8ff" stroke-width="3"/><line x1="30" y1="28" x2="18" y2="26" stroke="#4db8ff" stroke-width="2"/><line x1="30" y1="28" x2="42" y2="26" stroke="#4db8ff" stroke-width="2"/>'),
-  'deadbug':   svg60('<line x1="4" y1="38" x2="56" y2="38" stroke="#263650" stroke-width="2"/><circle cx="30" cy="30" r="5" fill="#2d8fff" opacity=".9"/><rect x="14" y="32" width="32" height="8" rx="3" fill="#4db8ff" opacity=".8"/><line x1="14" y1="35" x2="4" y2="24" stroke="#4db8ff" stroke-width="2.5"/><line x1="46" y1="37" x2="56" y2="48" stroke="#4db8ff" stroke-width="2.5"/>'),
-  'mntclimb':  svg60('<line x1="4" y1="48" x2="56" y2="48" stroke="#263650" stroke-width="2"/><rect x="6" y="32" width="38" height="10" rx="4" fill="#4db8ff" opacity=".85"/><circle cx="46" cy="30" r="5" fill="#2d8fff" opacity=".9"/><line x1="6" y1="42" x2="4" y2="48" stroke="#4db8ff" stroke-width="2.5"/><line x1="44" y1="42" x2="46" y2="48" stroke="#4db8ff" stroke-width="2.5"/><line x1="22" y1="32" x2="16" y2="22" stroke="#ff4f6a" stroke-width="2.5"/><line x1="30" y1="32" x2="36" y2="22" stroke="#4db8ff" stroke-width="2"/>'),
-  // OBLIQUES
-  'russ':      svg60('<line x1="4" y1="54" x2="56" y2="54" stroke="#263650" stroke-width="2"/><circle cx="30" cy="20" r="5" fill="#2d8fff" opacity=".9"/><path d="M18 54 Q20 40 30 34 Q40 40 42 54" stroke="#4db8ff" stroke-width="2.5" fill="none"/><line x1="30" y1="25" x2="30" y2="34" stroke="#4db8ff" stroke-width="2.5"/><line x1="30" y1="28" x2="14" y2="32" stroke="#ff4f6a" stroke-width="2"/><line x1="30" y1="28" x2="46" y2="32" stroke="#ff4f6a" stroke-width="2"/>'),
-  'bicycle':   svg60('<line x1="4" y1="54" x2="56" y2="54" stroke="#263650" stroke-width="2"/><circle cx="30" cy="18" r="5" fill="#2d8fff" opacity=".9"/><path d="M18 54 Q20 40 30 34 Q40 40 42 54" stroke="#4db8ff" stroke-width="2" fill="none"/><line x1="30" y1="23" x2="30" y2="34" stroke="#4db8ff" stroke-width="2.5"/><line x1="30" y1="26" x2="44" y2="36" stroke="#ff4f6a" stroke-width="2"/><line x1="18" y1="44" x2="30" y2="34" stroke="#ff4f6a" stroke-width="2"/>'),
-  'plankside': svg60('<line x1="4" y1="50" x2="56" y2="50" stroke="#263650" stroke-width="2"/><circle cx="52" cy="26" r="5" fill="#2d8fff" opacity=".9"/><rect x="10" y="28" width="40" height="10" rx="3" fill="#4db8ff" opacity=".85" transform="rotate(-6,30,33)"/><line x1="10" y1="38" x2="8" y2="50" stroke="#4db8ff" stroke-width="2.5"/><line x1="14" y1="30" x2="6" y2="22" stroke="#4db8ff" stroke-width="2"/>'),
-  'windshield':svg60('<line x1="4" y1="44" x2="56" y2="44" stroke="#263650" stroke-width="2"/><circle cx="30" cy="34" r="5" fill="#2d8fff" opacity=".9"/><rect x="14" y="36" width="32" height="8" rx="3" fill="#263650" opacity=".8"/><line x1="16" y1="36" x2="8" y2="18" stroke="#4db8ff" stroke-width="2.5"/><line x1="44" y1="36" x2="52" y2="18" stroke="#4db8ff" stroke-width="2.5"/><path d="M8 18 Q30 10 52 18" stroke="#ff4f6a" stroke-width="2" fill="none"/>'),
-  'sidebend':  svg60('<line x1="4" y1="50" x2="56" y2="50" stroke="#263650" stroke-width="2"/><circle cx="30" cy="28" r="5" fill="#2d8fff" opacity=".9"/><line x1="30" y1="33" x2="30" y2="46" stroke="#4db8ff" stroke-width="3"/><line x1="30" y1="46" x2="20" y2="50" stroke="#4db8ff" stroke-width="2.5"/><line x1="30" y1="46" x2="40" y2="50" stroke="#4db8ff" stroke-width="2.5"/><line x1="30" y1="30" x2="14" y2="24" stroke="#4db8ff" stroke-width="2.5"/><line x1="30" y1="30" x2="46" y2="38" stroke="#ff4f6a" stroke-width="2.5"/>'),
-  // GAINAGE
-  'plank':     svg60('<line x1="4" y1="46" x2="56" y2="46" stroke="#263650" stroke-width="2"/><rect x="10" y="30" width="40" height="10" rx="3" fill="#4db8ff" opacity=".9"/><circle cx="52" cy="28" r="5" fill="#2d8fff" opacity=".9"/><line x1="10" y1="40" x2="8" y2="46" stroke="#4db8ff" stroke-width="2.5"/><line x1="22" y1="40" x2="20" y2="46" stroke="#4db8ff" stroke-width="2.5"/>'),
-  'plankup':   svg60('<line x1="4" y1="48" x2="56" y2="48" stroke="#263650" stroke-width="2"/><rect x="10" y="30" width="40" height="10" rx="3" fill="#4db8ff" opacity=".85"/><circle cx="52" cy="28" r="5" fill="#2d8fff" opacity=".9"/><line x1="10" y1="40" x2="8" y2="48" stroke="#4db8ff" stroke-width="2.5"/><line x1="22" y1="40" x2="20" y2="48" stroke="#4db8ff" stroke-width="2.5"/><line x1="22" y1="35" x2="22" y2="44" stroke="#ff4f6a" stroke-width="2"/>'),
-  'birddog':   svg60('<line x1="4" y1="46" x2="56" y2="46" stroke="#263650" stroke-width="2"/><circle cx="20" cy="26" r="5" fill="#2d8fff" opacity=".9"/><line x1="20" y1="31" x2="20" y2="40" stroke="#4db8ff" stroke-width="2.5"/><line x1="20" y1="40" x2="10" y2="46" stroke="#4db8ff" stroke-width="2.5"/><line x1="20" y1="35" x2="40" y2="34" stroke="#4db8ff" stroke-width="3"/><line x1="20" y1="32" x2="6" y2="26" stroke="#ff4f6a" stroke-width="2.5"/><line x1="40" y1="34" x2="54" y2="42" stroke="#ff4f6a" stroke-width="2.5"/>'),
-  // CARDIO
-  'burpee':    svg60('<line x1="4" y1="54" x2="56" y2="54" stroke="#263650" stroke-width="2"/><circle cx="30" cy="8" r="4.5" fill="#2d8fff" opacity=".9"/><line x1="30" y1="12" x2="30" y2="24" stroke="#4db8ff" stroke-width="2.5"/><line x1="30" y1="16" x2="20" y2="22" stroke="#4db8ff" stroke-width="2"/><line x1="30" y1="16" x2="40" y2="22" stroke="#4db8ff" stroke-width="2"/><line x1="30" y1="24" x2="22" y2="34" stroke="#4db8ff" stroke-width="2.5"/><line x1="30" y1="24" x2="38" y2="34" stroke="#4db8ff" stroke-width="2.5"/><path d="M16 50 L20 40 L30 44 L40 40 L44 50" stroke="#ff4f6a" stroke-width="2" fill="none" stroke-dasharray="3,2"/>'),
-  'jj':        svg60('<line x1="4" y1="54" x2="56" y2="54" stroke="#263650" stroke-width="2"/><circle cx="30" cy="10" r="5" fill="#2d8fff" opacity=".9"/><line x1="30" y1="15" x2="30" y2="34" stroke="#4db8ff" stroke-width="3"/><line x1="30" y1="34" x2="14" y2="54" stroke="#4db8ff" stroke-width="2.5"/><line x1="30" y1="34" x2="46" y2="54" stroke="#4db8ff" stroke-width="2.5"/><line x1="30" y1="22" x2="10" y2="30" stroke="#4db8ff" stroke-width="2"/><line x1="30" y1="22" x2="50" y2="30" stroke="#4db8ff" stroke-width="2"/>'),
-  'highk':     svg60('<line x1="4" y1="54" x2="56" y2="54" stroke="#263650" stroke-width="2"/><circle cx="28" cy="10" r="5" fill="#2d8fff" opacity=".9"/><line x1="28" y1="15" x2="28" y2="32" stroke="#4db8ff" stroke-width="3"/><line x1="28" y1="32" x2="22" y2="46" stroke="#4db8ff" stroke-width="2.5"/><line x1="22" y1="46" x2="22" y2="54" stroke="#4db8ff" stroke-width="2.5"/><line x1="28" y1="32" x2="38" y2="20" stroke="#ff4f6a" stroke-width="2.5"/>'),
-  'butkick':   svg60('<line x1="4" y1="54" x2="56" y2="54" stroke="#263650" stroke-width="2"/><circle cx="28" cy="10" r="5" fill="#2d8fff" opacity=".9"/><line x1="28" y1="15" x2="28" y2="32" stroke="#4db8ff" stroke-width="3"/><line x1="28" y1="32" x2="22" y2="46" stroke="#4db8ff" stroke-width="2.5"/><line x1="22" y1="46" x2="22" y2="54" stroke="#4db8ff" stroke-width="2.5"/><path d="M28 38 Q38 44 38 34" stroke="#ff4f6a" stroke-width="2.5" fill="none"/>'),
-  'skater':    svg60('<line x1="4" y1="54" x2="56" y2="54" stroke="#263650" stroke-width="2"/><circle cx="14" cy="18" r="5" fill="#2d8fff" opacity=".9"/><line x1="14" y1="23" x2="14" y2="38" stroke="#4db8ff" stroke-width="3"/><line x1="14" y1="38" x2="8" y2="54" stroke="#4db8ff" stroke-width="2.5"/><line x1="14" y1="38" x2="26" y2="46" stroke="#4db8ff" stroke-width="2.5"/><path d="M26 46 Q40 38 46 26" stroke="#ff4f6a" stroke-width="2" fill="none" stroke-dasharray="4,2"/><circle cx="46" cy="24" r="4" fill="#2d8fff" opacity=".4"/>'),
-  'boxjump':   svg60('<line x1="4" y1="54" x2="56" y2="54" stroke="#263650" stroke-width="2"/><rect x="28" y="38" width="28" height="16" rx="2" fill="#263650" stroke="#4db8ff" stroke-width="1.5"/><circle cx="14" cy="14" r="5" fill="#2d8fff" opacity=".9"/><line x1="14" y1="19" x2="14" y2="34" stroke="#4db8ff" stroke-width="3"/><line x1="14" y1="34" x2="8" y2="48" stroke="#4db8ff" stroke-width="2.5"/><line x1="14" y1="34" x2="28" y2="38" stroke="#4db8ff" stroke-width="2.5"/><path d="M14 12 Q22 4 36 8" stroke="#ff4f6a" stroke-width="2" fill="none" stroke-dasharray="3,2"/>'),
-  'bearcrawl': svg60('<line x1="4" y1="50" x2="56" y2="50" stroke="#263650" stroke-width="2"/><circle cx="18" cy="26" r="5" fill="#2d8fff" opacity=".9"/><line x1="18" y1="31" x2="18" y2="40" stroke="#4db8ff" stroke-width="2.5"/><line x1="18" y1="40" x2="8" y2="50" stroke="#4db8ff" stroke-width="2.5"/><line x1="18" y1="35" x2="42" y2="34" stroke="#4db8ff" stroke-width="3"/><line x1="42" y1="34" x2="42" y2="42" stroke="#4db8ff" stroke-width="2.5"/><line x1="42" y1="42" x2="52" y2="50" stroke="#4db8ff" stroke-width="2.5"/>'),
-  'starhop':   svg60('<line x1="4" y1="54" x2="56" y2="54" stroke="#263650" stroke-width="2"/><circle cx="30" cy="10" r="5" fill="#2d8fff" opacity=".9"/><line x1="30" y1="15" x2="30" y2="30" stroke="#4db8ff" stroke-width="3"/><line x1="30" y1="30" x2="14" y2="48" stroke="#4db8ff" stroke-width="2.5"/><line x1="30" y1="30" x2="46" y2="48" stroke="#4db8ff" stroke-width="2.5"/><line x1="30" y1="20" x2="8" y2="20" stroke="#4db8ff" stroke-width="2"/><line x1="30" y1="20" x2="52" y2="20" stroke="#4db8ff" stroke-width="2"/>'),
-  'sprint':    svg60('<line x1="4" y1="54" x2="56" y2="54" stroke="#263650" stroke-width="2"/><circle cx="26" cy="10" r="5" fill="#2d8fff" opacity=".9"/><line x1="26" y1="15" x2="26" y2="30" stroke="#4db8ff" stroke-width="3"/><line x1="26" y1="30" x2="18" y2="46" stroke="#4db8ff" stroke-width="2.5"/><line x1="18" y1="46" x2="18" y2="54" stroke="#4db8ff" stroke-width="2.5"/><line x1="26" y1="30" x2="38" y2="20" stroke="#ff4f6a" stroke-width="2.5"/><line x1="26" y1="20" x2="12" y2="16" stroke="#4db8ff" stroke-width="2"/>'),
+// Couleurs
+const C = {
+  bg:     '#0e1420',   // fond carte
+  body:   '#1d2e45',   // silhouette corps
+  muscle: '#e05070',   // muscle actif (rose/rouge)
+  muscle2:'#c03050',   // muscle très actif
+  dim:    '#152236',   // muscle inactif
+  line:   '#0a111c',   // contours
 };
+
+// ── SILHOUETTE DE BASE — vue de face (80x120) ──
+// Chaque zone est un <path> ou <ellipse> qu'on peut activer
+function bodyFront(active = {}) {
+  // active = { pecs, shoulders, biceps, triceps, abs, obliques, quads, hip }
+  const m = (k) => active[k] ? C.muscle : C.dim;
+  const m2 = (k) => active[k] ? C.muscle2 : C.dim;
+  return `<svg viewBox="0 0 80 120" xmlns="http://www.w3.org/2000/svg">
+  <rect width="80" height="120" fill="${C.bg}"/>
+  <!-- HEAD -->
+  <ellipse cx="40" cy="10" rx="9" ry="10" fill="${C.body}" stroke="${C.line}" stroke-width=".8"/>
+  <!-- NECK -->
+  <rect x="36" y="18" width="8" height="7" rx="2" fill="${C.body}" stroke="${C.line}" stroke-width=".6"/>
+  <!-- SHOULDERS -->
+  <ellipse cx="20" cy="29" rx="9" ry="8" fill="${m('shoulders')}" stroke="${C.line}" stroke-width=".6"/>
+  <ellipse cx="60" cy="29" rx="9" ry="8" fill="${m('shoulders')}" stroke="${C.line}" stroke-width=".6"/>
+  <!-- PECS -->
+  <ellipse cx="30" cy="34" rx="10" ry="8" fill="${m('pecs')}" stroke="${C.line}" stroke-width=".6"/>
+  <ellipse cx="50" cy="34" rx="10" ry="8" fill="${m('pecs')}" stroke="${C.line}" stroke-width=".6"/>
+  <!-- UPPER ARMS biceps -->
+  <ellipse cx="14" cy="42" rx="5.5" ry="11" fill="${m('biceps')}" stroke="${C.line}" stroke-width=".6"/>
+  <ellipse cx="66" cy="42" rx="5.5" ry="11" fill="${m('biceps')}" stroke="${C.line}" stroke-width=".6"/>
+  <!-- FOREARMS -->
+  <ellipse cx="11" cy="62" rx="4" ry="10" fill="${C.body}" stroke="${C.line}" stroke-width=".6"/>
+  <ellipse cx="69" cy="62" rx="4" ry="10" fill="${C.body}" stroke="${C.line}" stroke-width=".6"/>
+  <!-- TORSO -->
+  <path d="M22 26 Q20 50 22 68 L58 68 Q60 50 58 26 Q50 22 40 22 Q30 22 22 26Z" fill="${C.body}" stroke="${C.line}" stroke-width=".6"/>
+  <!-- ABS (6-pack) -->
+  <rect x="33" y="42" width="6" height="5" rx="1.5" fill="${m('abs')}" stroke="${C.line}" stroke-width=".5"/>
+  <rect x="41" y="42" width="6" height="5" rx="1.5" fill="${m('abs')}" stroke="${C.line}" stroke-width=".5"/>
+  <rect x="33" y="50" width="6" height="5" rx="1.5" fill="${m('abs')}" stroke="${C.line}" stroke-width=".5"/>
+  <rect x="41" y="50" width="6" height="5" rx="1.5" fill="${m('abs')}" stroke="${C.line}" stroke-width=".5"/>
+  <rect x="33" y="58" width="6" height="5" rx="1.5" fill="${m('abs')}" stroke="${C.line}" stroke-width=".5"/>
+  <rect x="41" y="58" width="6" height="5" rx="1.5" fill="${m('abs')}" stroke="${C.line}" stroke-width=".5"/>
+  <!-- OBLIQUES -->
+  <path d="M22 38 Q18 52 20 66 L26 66 Q24 52 26 38Z" fill="${m('obliques')}" stroke="${C.line}" stroke-width=".5"/>
+  <path d="M58 38 Q62 52 60 66 L54 66 Q56 52 54 38Z" fill="${m('obliques')}" stroke="${C.line}" stroke-width=".5"/>
+  <!-- HIPS / QUADS top -->
+  <path d="M22 68 Q20 76 22 90 L36 90 Q38 80 40 76 Q42 80 44 90 L58 90 Q60 76 58 68Z" fill="${m('quads')}" stroke="${C.line}" stroke-width=".6"/>
+  <!-- GLUTES hint -->
+  <ellipse cx="34" cy="72" rx="8" ry="6" fill="${m('glutes')}" stroke="${C.line}" stroke-width=".5"/>
+  <ellipse cx="46" cy="72" rx="8" ry="6" fill="${m('glutes')}" stroke="${C.line}" stroke-width=".5"/>
+  <!-- LOWER LEGS -->
+  <ellipse cx="31" cy="104" rx="5.5" ry="12" fill="${C.body}" stroke="${C.line}" stroke-width=".6"/>
+  <ellipse cx="49" cy="104" rx="5.5" ry="12" fill="${C.body}" stroke="${C.line}" stroke-width=".6"/>
+  <!-- CALVES hint -->
+  <ellipse cx="31" cy="106" rx="4" ry="8" fill="${m('calves')}" stroke="${C.line}" stroke-width=".5"/>
+  <ellipse cx="49" cy="106" rx="4" ry="8" fill="${m('calves')}" stroke="${C.line}" stroke-width=".5"/>
+</svg>`;
+}
+
+function bodyBack(active = {}) {
+  const m = (k) => active[k] ? C.muscle : C.dim;
+  return `<svg viewBox="0 0 80 120" xmlns="http://www.w3.org/2000/svg">
+  <rect width="80" height="120" fill="${C.bg}"/>
+  <!-- HEAD -->
+  <ellipse cx="40" cy="10" rx="9" ry="10" fill="${C.body}" stroke="${C.line}" stroke-width=".8"/>
+  <!-- NECK -->
+  <rect x="36" y="18" width="8" height="7" rx="2" fill="${C.body}" stroke="${C.line}" stroke-width=".6"/>
+  <!-- SHOULDERS (rear delts) -->
+  <ellipse cx="20" cy="29" rx="9" ry="8" fill="${m('shoulders')}" stroke="${C.line}" stroke-width=".6"/>
+  <ellipse cx="60" cy="29" rx="9" ry="8" fill="${m('shoulders')}" stroke="${C.line}" stroke-width=".6"/>
+  <!-- UPPER ARMS triceps -->
+  <ellipse cx="14" cy="42" rx="5.5" ry="11" fill="${m('triceps')}" stroke="${C.line}" stroke-width=".6"/>
+  <ellipse cx="66" cy="42" rx="5.5" ry="11" fill="${m('triceps')}" stroke="${C.line}" stroke-width=".6"/>
+  <!-- FOREARMS -->
+  <ellipse cx="11" cy="62" rx="4" ry="10" fill="${C.body}" stroke="${C.line}" stroke-width=".6"/>
+  <ellipse cx="69" cy="62" rx="4" ry="10" fill="${C.body}" stroke="${C.line}" stroke-width=".6"/>
+  <!-- TORSO BACK -->
+  <path d="M22 26 Q20 50 22 68 L58 68 Q60 50 58 26 Q50 22 40 22 Q30 22 22 26Z" fill="${C.body}" stroke="${C.line}" stroke-width=".6"/>
+  <!-- TRAPS -->
+  <path d="M32 22 Q40 18 48 22 Q44 28 40 28 Q36 28 32 22Z" fill="${m('traps')}" stroke="${C.line}" stroke-width=".5"/>
+  <!-- LATS -->
+  <path d="M22 30 Q16 44 18 62 L26 62 Q24 46 26 30Z" fill="${m('lats')}" stroke="${C.line}" stroke-width=".5"/>
+  <path d="M58 30 Q64 44 62 62 L54 62 Q56 46 54 30Z" fill="${m('lats')}" stroke="${C.line}" stroke-width=".5"/>
+  <!-- RHOMBOIDS / MID BACK -->
+  <path d="M28 30 Q40 28 52 30 Q50 44 40 46 Q30 44 28 30Z" fill="${m('lats')}" stroke="${C.line}" stroke-width=".5"/>
+  <!-- LOWER BACK -->
+  <rect x="32" y="55" width="16" height="12" rx="3" fill="${m('lowerback')}" stroke="${C.line}" stroke-width=".5"/>
+  <!-- GLUTES -->
+  <ellipse cx="34" cy="74" rx="10" ry="9" fill="${m('glutes')}" stroke="${C.line}" stroke-width=".6"/>
+  <ellipse cx="46" cy="74" rx="10" ry="9" fill="${m('glutes')}" stroke="${C.line}" stroke-width=".6"/>
+  <!-- HAMSTRINGS -->
+  <ellipse cx="33" cy="90" rx="6.5" ry="13" fill="${m('hamstrings')}" stroke="${C.line}" stroke-width=".6"/>
+  <ellipse cx="47" cy="90" rx="6.5" ry="13" fill="${m('hamstrings')}" stroke="${C.line}" stroke-width=".6"/>
+  <!-- CALVES -->
+  <ellipse cx="31" cy="108" rx="5" ry="10" fill="${m('calves')}" stroke="${C.line}" stroke-width=".6"/>
+  <ellipse cx="49" cy="108" rx="5" ry="10" fill="${m('calves')}" stroke="${C.line}" stroke-width=".6"/>
+</svg>`;
+}
+
+// ── MUSCLE MAP par exercice ──
+// Chaque exercice définit quels muscles sont actifs (front/back)
+const MUSCLE_MAPS = {
+  // PECS
+  'pu':        { front: {pecs:1, triceps:1, shoulders:1} },
+  'puw':       { front: {pecs:1, shoulders:1} },
+  'pud':       { front: {pecs:1, triceps:1} },
+  'pue':       { front: {pecs:1, triceps:1} },
+  'puarch':    { front: {pecs:1} },
+  'pu1arm':    { front: {pecs:1, triceps:1, abs:1} },
+  'decline':   { front: {pecs:1, shoulders:1} },
+  'incline':   { front: {pecs:1} },
+  'pseudo':    { front: {pecs:1, shoulders:1, abs:1} },
+  // EPAULES
+  'pike':      { front: {shoulders:1}, back: {shoulders:1, triceps:1} },
+  'hs':        { front: {shoulders:1}, back: {shoulders:1} },
+  'facepull':  { back:  {shoulders:1, traps:1} },
+  'latsraise': { front: {shoulders:1}, back: {shoulders:1} },
+  // TRICEPS
+  'dip':       { back:  {triceps:1, shoulders:1} },
+  'dipdip':    { back:  {triceps:1} },
+  'skullcr':   { back:  {triceps:1} },
+  // DOS
+  'row':       { back:  {lats:1, traps:1} },
+  'chinup':    { back:  {lats:1}, front: {biceps:1} },
+  'widepull':  { back:  {lats:1, traps:1} },
+  'neutr':     { back:  {lats:1}, front: {biceps:1} },
+  'invrow':    { back:  {lats:1, traps:1} },
+  'archrow':   { back:  {lats:1} },
+  'muscleup':  { back:  {lats:1}, front: {triceps:1} },
+  'supext':    { back:  {lowerback:1, glutes:1} },
+  // BICEPS
+  'towelcurl': { front: {biceps:1} },
+  'curlrow':   { front: {biceps:1}, back: {lats:1} },
+  // QUADRICEPS
+  'sq':        { front: {quads:1, glutes:1} },
+  'pistol':    { front: {quads:1, glutes:1} },
+  'shrimp':    { front: {quads:1} },
+  'wallsit':   { front: {quads:1} },
+  'stepup':    { front: {quads:1, glutes:1} },
+  'sqj':       { front: {quads:1, glutes:1} },
+  // FESSIERS
+  'glute':     { back:  {glutes:1, hamstrings:1} },
+  'bsq':       { front: {quads:1, glutes:1}, back: {hamstrings:1} },
+  'lunge':     { front: {quads:1, glutes:1} },
+  'lungerev':  { front: {quads:1, glutes:1} },
+  'lungej':    { front: {quads:1, glutes:1} },
+  'donkey':    { back:  {glutes:1} },
+  'clamshell': { back:  {glutes:1} },
+  // ISCHIO
+  'nordham':   { back:  {hamstrings:1, glutes:1} },
+  'goodmorn':  { back:  {hamstrings:1, lowerback:1} },
+  'legcurl':   { back:  {hamstrings:1, calves:1} },
+  // MOLLETS
+  'calf':      { back:  {calves:1} },
+  'calfseated':{ back:  {calves:1} },
+  'calfhop':   { back:  {calves:1} },
+  // ABS
+  'crunch':    { front: {abs:1} },
+  'lleg':      { front: {abs:1} },
+  'vup':       { front: {abs:1} },
+  'hollow':    { front: {abs:1, obliques:1} },
+  'tuckup':    { front: {abs:1} },
+  'dragon':    { front: {abs:1} },
+  'lsit':      { front: {abs:1, obliques:1} },
+  'abswheel':  { front: {abs:1, obliques:1}, back: {lowerback:1} },
+  'deadbug':   { front: {abs:1} },
+  'mntclimb':  { front: {abs:1, obliques:1, shoulders:1} },
+  // OBLIQUES
+  'russ':      { front: {obliques:1, abs:1} },
+  'bicycle':   { front: {obliques:1, abs:1} },
+  'plankside': { front: {obliques:1}, back: {lats:1} },
+  'windshield':{ front: {obliques:1, abs:1} },
+  'sidebend':  { front: {obliques:1} },
+  // GAINAGE
+  'plank':     { front: {abs:1, shoulders:1}, back: {lowerback:1} },
+  'plankup':   { front: {obliques:1, abs:1}, back: {lowerback:1} },
+  'birddog':   { back:  {lowerback:1, glutes:1}, front: {abs:1} },
+  // CARDIO
+  'burpee':    { front: {pecs:1, quads:1, abs:1}, back: {lats:1} },
+  'jj':        { front: {shoulders:1, quads:1} },
+  'highk':     { front: {quads:1, abs:1} },
+  'butkick':   { back:  {hamstrings:1, glutes:1} },
+  'skater':    { front: {quads:1, glutes:1} },
+  'boxjump':   { front: {quads:1, glutes:1}, back: {hamstrings:1} },
+  'bearcrawl': { front: {shoulders:1, abs:1}, back: {lats:1} },
+  'starhop':   { front: {quads:1, shoulders:1} },
+  'sprint':    { front: {quads:1, abs:1}, back: {hamstrings:1, glutes:1} },
+};
+
+// Génère une image combinée front+back selon les muscles actifs
+function bodyImg(exoId) {
+  const map = MUSCLE_MAPS[exoId] || {};
+  const hasFront = map.front && Object.keys(map.front).length > 0;
+  const hasBack  = map.back  && Object.keys(map.back).length  > 0;
+
+  if (hasFront && hasBack) {
+    // Côte à côte : front gauche, back droite
+    const f = bodyFront(map.front);
+    const b = bodyBack(map.back);
+    const combined = `<svg viewBox="0 0 160 120" xmlns="http://www.w3.org/2000/svg">
+      <rect width="160" height="120" fill="${C.bg}"/>
+      <g transform="translate(0,0)">${f.replace(/<svg[^>]*>|<\/svg>/g,'')}</g>
+      <g transform="translate(80,0)">${b.replace(/<svg[^>]*>|<\/svg>/g,'')}</g>
+    </svg>`;
+    return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(combined);
+  } else if (hasBack) {
+    return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(bodyBack(map.back));
+  } else {
+    return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(bodyFront(map.front || {}));
+  }
+}
+
+// EXO_SVG et svg60 gardés pour compatibilité mais remplacés par bodyImg
+function svg60(c){return`<svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"><rect width="60" height="60" fill="#0e1420"/>${c}</svg>`;}
+const EXO_SVG = {};
 
 
 function resolveExoImg(exo) {
-  const svg = EXO_SVG[exo.id];
-  if (svg) return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
-  // fallback: muscle chip SVG
-  const muscleSvg = MUSCLE_SVG[exo.muscle];
-  if (muscleSvg) return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(muscleSvg);
-  return null;
+  return bodyImg(exo.id);
 }
 
 // ── STATE ──
@@ -292,7 +417,23 @@ const MUSCLE_SVG = {
 };
 
 function getMuscleImg(muscle) {
-  const svg = MUSCLE_SVG[muscle];
+  const maps = {
+    'Pecs':            bodyFront({pecs:1}),
+    'Épaules':         bodyFront({shoulders:1}),
+    'Triceps':         bodyBack({triceps:1}),
+    'Dos':             bodyBack({lats:1, traps:1}),
+    'Biceps':          bodyFront({biceps:1}),
+    'Quadriceps':      bodyFront({quads:1}),
+    'Fessiers':        bodyBack({glutes:1}),
+    'Ischio-jambiers': bodyBack({hamstrings:1}),
+    'Mollets':         bodyBack({calves:1}),
+    'Abdominaux':      bodyFront({abs:1}),
+    'Obliques':        bodyFront({obliques:1}),
+    'Gainage':         bodyFront({abs:1, obliques:1}),
+    'Cardio':          null,
+    'Tous':            null,
+  };
+  const svg = maps[muscle];
   if (!svg) return null;
   return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
 }
