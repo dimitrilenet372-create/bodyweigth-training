@@ -151,151 +151,170 @@ const C = {
 // ── SILHOUETTE DE BASE — vue de face (80x120) ──
 // Chaque zone est un <path> ou <ellipse> qu'on peut activer
 function bodyFront(active = {}) {
-  // active = { pecs, shoulders, biceps, triceps, abs, obliques, quads, hip }
-  const m = (k) => active[k] ? C.muscle : C.dim;
-  const m2 = (k) => active[k] ? C.muscle2 : C.dim;
+  const m  = (k) => active[k] ? C.muscle  : C.dim;
+  const on = (k) => !!active[k];
   return `<svg viewBox="0 0 80 120" xmlns="http://www.w3.org/2000/svg">
   <rect width="80" height="120" fill="${C.bg}"/>
-  <!-- HEAD -->
-  <ellipse cx="40" cy="10" rx="9" ry="10" fill="${C.body}" stroke="${C.line}" stroke-width=".8"/>
-  <!-- NECK -->
-  <rect x="36" y="18" width="8" height="7" rx="2" fill="${C.body}" stroke="${C.line}" stroke-width=".6"/>
-  <!-- SHOULDERS -->
-  <ellipse cx="20" cy="29" rx="9" ry="8" fill="${m('shoulders')}" stroke="${C.line}" stroke-width=".6"/>
-  <ellipse cx="60" cy="29" rx="9" ry="8" fill="${m('shoulders')}" stroke="${C.line}" stroke-width=".6"/>
-  <!-- PECS -->
-  <ellipse cx="30" cy="34" rx="10" ry="8" fill="${m('pecs')}" stroke="${C.line}" stroke-width=".6"/>
-  <ellipse cx="50" cy="34" rx="10" ry="8" fill="${m('pecs')}" stroke="${C.line}" stroke-width=".6"/>
-  <!-- UPPER ARMS biceps -->
-  <ellipse cx="14" cy="42" rx="5.5" ry="11" fill="${m('biceps')}" stroke="${C.line}" stroke-width=".6"/>
-  <ellipse cx="66" cy="42" rx="5.5" ry="11" fill="${m('biceps')}" stroke="${C.line}" stroke-width=".6"/>
-  <!-- FOREARMS -->
-  <ellipse cx="11" cy="62" rx="4" ry="10" fill="${C.body}" stroke="${C.line}" stroke-width=".6"/>
-  <ellipse cx="69" cy="62" rx="4" ry="10" fill="${C.body}" stroke="${C.line}" stroke-width=".6"/>
-  <!-- TORSO -->
-  <path d="M22 26 Q20 50 22 68 L58 68 Q60 50 58 26 Q50 22 40 22 Q30 22 22 26Z" fill="${C.body}" stroke="${C.line}" stroke-width=".6"/>
-  <!-- ABS (6-pack) -->
-  <rect x="33" y="42" width="6" height="5" rx="1.5" fill="${m('abs')}" stroke="${C.line}" stroke-width=".5"/>
-  <rect x="41" y="42" width="6" height="5" rx="1.5" fill="${m('abs')}" stroke="${C.line}" stroke-width=".5"/>
-  <rect x="33" y="50" width="6" height="5" rx="1.5" fill="${m('abs')}" stroke="${C.line}" stroke-width=".5"/>
-  <rect x="41" y="50" width="6" height="5" rx="1.5" fill="${m('abs')}" stroke="${C.line}" stroke-width=".5"/>
-  <rect x="33" y="58" width="6" height="5" rx="1.5" fill="${m('abs')}" stroke="${C.line}" stroke-width=".5"/>
-  <rect x="41" y="58" width="6" height="5" rx="1.5" fill="${m('abs')}" stroke="${C.line}" stroke-width=".5"/>
-  <!-- OBLIQUES -->
-  <path d="M22 38 Q18 52 20 66 L26 66 Q24 52 26 38Z" fill="${m('obliques')}" stroke="${C.line}" stroke-width=".5"/>
-  <path d="M58 38 Q62 52 60 66 L54 66 Q56 52 54 38Z" fill="${m('obliques')}" stroke="${C.line}" stroke-width=".5"/>
-  <!-- HIPS / QUADS top -->
-  <path d="M22 68 Q20 76 22 90 L36 90 Q38 80 40 76 Q42 80 44 90 L58 90 Q60 76 58 68Z" fill="${m('quads')}" stroke="${C.line}" stroke-width=".6"/>
-  <!-- GLUTES hint -->
-  <ellipse cx="34" cy="72" rx="8" ry="6" fill="${m('glutes')}" stroke="${C.line}" stroke-width=".5"/>
-  <ellipse cx="46" cy="72" rx="8" ry="6" fill="${m('glutes')}" stroke="${C.line}" stroke-width=".5"/>
-  <!-- LOWER LEGS -->
-  <ellipse cx="31" cy="104" rx="5.5" ry="12" fill="${C.body}" stroke="${C.line}" stroke-width=".6"/>
-  <ellipse cx="49" cy="104" rx="5.5" ry="12" fill="${C.body}" stroke="${C.line}" stroke-width=".6"/>
-  <!-- CALVES hint -->
-  <ellipse cx="31" cy="106" rx="4" ry="8" fill="${m('calves')}" stroke="${C.line}" stroke-width=".5"/>
-  <ellipse cx="49" cy="106" rx="4" ry="8" fill="${m('calves')}" stroke="${C.line}" stroke-width=".5"/>
+
+  <!-- BASE SILHOUETTE (gris-bleu, dessiné EN PREMIER) -->
+  <!-- Torse -->
+  <path d="M24 25 Q22 50 23 68 L57 68 Q58 50 56 25 Q48 21 40 21 Q32 21 24 25Z" fill="${C.body}" stroke="${C.line}" stroke-width=".7"/>
+  <!-- Bras gauche -->
+  <ellipse cx="14" cy="42" rx="6" ry="13" fill="${C.body}" stroke="${C.line}" stroke-width=".7"/>
+  <ellipse cx="11" cy="62" rx="4.5" ry="10" fill="${C.body}" stroke="${C.line}" stroke-width=".6"/>
+  <!-- Bras droit -->
+  <ellipse cx="66" cy="42" rx="6" ry="13" fill="${C.body}" stroke="${C.line}" stroke-width=".7"/>
+  <ellipse cx="69" cy="62" rx="4.5" ry="10" fill="${C.body}" stroke="${C.line}" stroke-width=".6"/>
+  <!-- Cuisses -->
+  <ellipse cx="32" cy="82" rx="8" ry="14" fill="${C.body}" stroke="${C.line}" stroke-width=".7"/>
+  <ellipse cx="48" cy="82" rx="8" ry="14" fill="${C.body}" stroke="${C.line}" stroke-width=".7"/>
+  <!-- Tibias -->
+  <ellipse cx="30" cy="106" rx="5.5" ry="12" fill="${C.body}" stroke="${C.line}" stroke-width=".6"/>
+  <ellipse cx="50" cy="106" rx="5.5" ry="12" fill="${C.body}" stroke="${C.line}" stroke-width=".6"/>
+  <!-- Tête + cou -->
+  <rect x="36" y="19" width="8" height="7" rx="2" fill="${C.body}" stroke="${C.line}" stroke-width=".6"/>
+  <ellipse cx="40" cy="11" rx="9" ry="10" fill="${C.body}" stroke="${C.line}" stroke-width=".8"/>
+
+  <!-- MUSCLES ACTIFS (dessinés PAR-DESSUS) -->
+  <!-- Épaules (deltoïdes) -->
+  <ellipse cx="19" cy="28" rx="8" ry="7" fill="${m('shoulders')}" stroke="${C.line}" stroke-width=".6" opacity="${on('shoulders')?1:.6}"/>
+  <ellipse cx="61" cy="28" rx="8" ry="7" fill="${m('shoulders')}" stroke="${C.line}" stroke-width=".6" opacity="${on('shoulders')?1:.6}"/>
+  <!-- Pecs -->
+  <ellipse cx="31" cy="35" rx="9" ry="8" fill="${m('pecs')}" stroke="${C.line}" stroke-width=".6" opacity="${on('pecs')?1:.6}"/>
+  <ellipse cx="49" cy="35" rx="9" ry="8" fill="${m('pecs')}" stroke="${C.line}" stroke-width=".6" opacity="${on('pecs')?1:.6}"/>
+  <!-- Biceps (avant du bras) -->
+  <ellipse cx="14" cy="40" rx="4.5" ry="8" fill="${m('biceps')}" stroke="${C.line}" stroke-width=".5" opacity="${on('biceps')?1:.6}"/>
+  <ellipse cx="66" cy="40" rx="4.5" ry="8" fill="${m('biceps')}" stroke="${C.line}" stroke-width=".5" opacity="${on('biceps')?1:.6}"/>
+  <!-- Triceps (visible de face sur le côté) -->
+  <ellipse cx="11" cy="44" rx="3" ry="7" fill="${m('triceps')}" stroke="${C.line}" stroke-width=".5" opacity="${on('triceps')?1:.5}"/>
+  <ellipse cx="69" cy="44" rx="3" ry="7" fill="${m('triceps')}" stroke="${C.line}" stroke-width=".5" opacity="${on('triceps')?1:.5}"/>
+  <!-- Obliques -->
+  <path d="M24 38 Q20 52 22 66 L27 66 Q25 52 28 38Z" fill="${m('obliques')}" stroke="${C.line}" stroke-width=".5" opacity="${on('obliques')?1:.6}"/>
+  <path d="M56 38 Q60 52 58 66 L53 66 Q55 52 52 38Z" fill="${m('obliques')}" stroke="${C.line}" stroke-width=".5" opacity="${on('obliques')?1:.6}"/>
+  <!-- Abdos (6-pack) -->
+  <rect x="33" y="40" width="6" height="5" rx="1.5" fill="${m('abs')}" stroke="${C.line}" stroke-width=".4" opacity="${on('abs')?1:.6}"/>
+  <rect x="41" y="40" width="6" height="5" rx="1.5" fill="${m('abs')}" stroke="${C.line}" stroke-width=".4" opacity="${on('abs')?1:.6}"/>
+  <rect x="33" y="48" width="6" height="5" rx="1.5" fill="${m('abs')}" stroke="${C.line}" stroke-width=".4" opacity="${on('abs')?1:.6}"/>
+  <rect x="41" y="48" width="6" height="5" rx="1.5" fill="${m('abs')}" stroke="${C.line}" stroke-width=".4" opacity="${on('abs')?1:.6}"/>
+  <rect x="33" y="56" width="6" height="5" rx="1.5" fill="${m('abs')}" stroke="${C.line}" stroke-width=".4" opacity="${on('abs')?1:.6}"/>
+  <rect x="41" y="56" width="6" height="5" rx="1.5" fill="${m('abs')}" stroke="${C.line}" stroke-width=".4" opacity="${on('abs')?1:.6}"/>
+  <!-- Quadriceps (avant cuisse) -->
+  <ellipse cx="32" cy="80" rx="7" ry="12" fill="${m('quads')}" stroke="${C.line}" stroke-width=".5" opacity="${on('quads')?1:.6}"/>
+  <ellipse cx="48" cy="80" rx="7" ry="12" fill="${m('quads')}" stroke="${C.line}" stroke-width=".5" opacity="${on('quads')?1:.6}"/>
+  <!-- Fessiers (léger de face) -->
+  <ellipse cx="33" cy="70" rx="7" ry="5" fill="${m('glutes')}" stroke="${C.line}" stroke-width=".5" opacity="${on('glutes')?1:.5}"/>
+  <ellipse cx="47" cy="70" rx="7" ry="5" fill="${m('glutes')}" stroke="${C.line}" stroke-width=".5" opacity="${on('glutes')?1:.5}"/>
+  <!-- Mollets -->
+  <ellipse cx="30" cy="108" rx="4" ry="8" fill="${m('calves')}" stroke="${C.line}" stroke-width=".5" opacity="${on('calves')?1:.6}"/>
+  <ellipse cx="50" cy="108" rx="4" ry="8" fill="${m('calves')}" stroke="${C.line}" stroke-width=".5" opacity="${on('calves')?1:.6}"/>
 </svg>`;
 }
 
 function bodyBack(active = {}) {
-  const m = (k) => active[k] ? C.muscle : C.dim;
+  const m  = (k) => active[k] ? C.muscle  : C.dim;
+  const on = (k) => !!active[k];
   return `<svg viewBox="0 0 80 120" xmlns="http://www.w3.org/2000/svg">
   <rect width="80" height="120" fill="${C.bg}"/>
-  <!-- HEAD -->
-  <ellipse cx="40" cy="10" rx="9" ry="10" fill="${C.body}" stroke="${C.line}" stroke-width=".8"/>
-  <!-- NECK -->
-  <rect x="36" y="18" width="8" height="7" rx="2" fill="${C.body}" stroke="${C.line}" stroke-width=".6"/>
-  <!-- SHOULDERS (rear delts) -->
-  <ellipse cx="20" cy="29" rx="9" ry="8" fill="${m('shoulders')}" stroke="${C.line}" stroke-width=".6"/>
-  <ellipse cx="60" cy="29" rx="9" ry="8" fill="${m('shoulders')}" stroke="${C.line}" stroke-width=".6"/>
-  <!-- UPPER ARMS triceps -->
-  <ellipse cx="14" cy="42" rx="5.5" ry="11" fill="${m('triceps')}" stroke="${C.line}" stroke-width=".6"/>
-  <ellipse cx="66" cy="42" rx="5.5" ry="11" fill="${m('triceps')}" stroke="${C.line}" stroke-width=".6"/>
-  <!-- FOREARMS -->
-  <ellipse cx="11" cy="62" rx="4" ry="10" fill="${C.body}" stroke="${C.line}" stroke-width=".6"/>
-  <ellipse cx="69" cy="62" rx="4" ry="10" fill="${C.body}" stroke="${C.line}" stroke-width=".6"/>
-  <!-- TORSO BACK -->
-  <path d="M22 26 Q20 50 22 68 L58 68 Q60 50 58 26 Q50 22 40 22 Q30 22 22 26Z" fill="${C.body}" stroke="${C.line}" stroke-width=".6"/>
-  <!-- TRAPS -->
-  <path d="M32 22 Q40 18 48 22 Q44 28 40 28 Q36 28 32 22Z" fill="${m('traps')}" stroke="${C.line}" stroke-width=".5"/>
-  <!-- LATS -->
-  <path d="M22 30 Q16 44 18 62 L26 62 Q24 46 26 30Z" fill="${m('lats')}" stroke="${C.line}" stroke-width=".5"/>
-  <path d="M58 30 Q64 44 62 62 L54 62 Q56 46 54 30Z" fill="${m('lats')}" stroke="${C.line}" stroke-width=".5"/>
-  <!-- RHOMBOIDS / MID BACK -->
-  <path d="M28 30 Q40 28 52 30 Q50 44 40 46 Q30 44 28 30Z" fill="${m('lats')}" stroke="${C.line}" stroke-width=".5"/>
-  <!-- LOWER BACK -->
-  <rect x="32" y="55" width="16" height="12" rx="3" fill="${m('lowerback')}" stroke="${C.line}" stroke-width=".5"/>
-  <!-- GLUTES -->
-  <ellipse cx="34" cy="74" rx="10" ry="9" fill="${m('glutes')}" stroke="${C.line}" stroke-width=".6"/>
-  <ellipse cx="46" cy="74" rx="10" ry="9" fill="${m('glutes')}" stroke="${C.line}" stroke-width=".6"/>
-  <!-- HAMSTRINGS -->
-  <ellipse cx="33" cy="90" rx="6.5" ry="13" fill="${m('hamstrings')}" stroke="${C.line}" stroke-width=".6"/>
-  <ellipse cx="47" cy="90" rx="6.5" ry="13" fill="${m('hamstrings')}" stroke="${C.line}" stroke-width=".6"/>
-  <!-- CALVES -->
-  <ellipse cx="31" cy="108" rx="5" ry="10" fill="${m('calves')}" stroke="${C.line}" stroke-width=".6"/>
-  <ellipse cx="49" cy="108" rx="5" ry="10" fill="${m('calves')}" stroke="${C.line}" stroke-width=".6"/>
+
+  <!-- BASE SILHOUETTE -->
+  <path d="M24 25 Q22 50 23 68 L57 68 Q58 50 56 25 Q48 21 40 21 Q32 21 24 25Z" fill="${C.body}" stroke="${C.line}" stroke-width=".7"/>
+  <ellipse cx="14" cy="42" rx="6" ry="13" fill="${C.body}" stroke="${C.line}" stroke-width=".7"/>
+  <ellipse cx="11" cy="62" rx="4.5" ry="10" fill="${C.body}" stroke="${C.line}" stroke-width=".6"/>
+  <ellipse cx="66" cy="42" rx="6" ry="13" fill="${C.body}" stroke="${C.line}" stroke-width=".7"/>
+  <ellipse cx="69" cy="62" rx="4.5" ry="10" fill="${C.body}" stroke="${C.line}" stroke-width=".6"/>
+  <ellipse cx="32" cy="82" rx="8" ry="14" fill="${C.body}" stroke="${C.line}" stroke-width=".7"/>
+  <ellipse cx="48" cy="82" rx="8" ry="14" fill="${C.body}" stroke="${C.line}" stroke-width=".7"/>
+  <ellipse cx="30" cy="106" rx="5.5" ry="12" fill="${C.body}" stroke="${C.line}" stroke-width=".6"/>
+  <ellipse cx="50" cy="106" rx="5.5" ry="12" fill="${C.body}" stroke="${C.line}" stroke-width=".6"/>
+  <rect x="36" y="19" width="8" height="7" rx="2" fill="${C.body}" stroke="${C.line}" stroke-width=".6"/>
+  <ellipse cx="40" cy="11" rx="9" ry="10" fill="${C.body}" stroke="${C.line}" stroke-width=".8"/>
+
+  <!-- MUSCLES ACTIFS PAR-DESSUS -->
+  <!-- Épaules arrière -->
+  <ellipse cx="19" cy="28" rx="8" ry="7" fill="${m('shoulders')}" stroke="${C.line}" stroke-width=".6" opacity="${on('shoulders')?1:.6}"/>
+  <ellipse cx="61" cy="28" rx="8" ry="7" fill="${m('shoulders')}" stroke="${C.line}" stroke-width=".6" opacity="${on('shoulders')?1:.6}"/>
+  <!-- Triceps (arrière bras) -->
+  <ellipse cx="14" cy="44" rx="4.5" ry="9" fill="${m('triceps')}" stroke="${C.line}" stroke-width=".5" opacity="${on('triceps')?1:.6}"/>
+  <ellipse cx="66" cy="44" rx="4.5" ry="9" fill="${m('triceps')}" stroke="${C.line}" stroke-width=".5" opacity="${on('triceps')?1:.6}"/>
+  <!-- Trapèzes -->
+  <path d="M32 22 Q40 18 48 22 Q45 30 40 30 Q35 30 32 22Z" fill="${m('traps')}" stroke="${C.line}" stroke-width=".5" opacity="${on('traps')?1:.6}"/>
+  <!-- Grand dorsal (lats) -->
+  <path d="M23 28 Q17 44 20 62 L27 62 Q25 46 28 30Z" fill="${m('lats')}" stroke="${C.line}" stroke-width=".5" opacity="${on('lats')?1:.6}"/>
+  <path d="M57 28 Q63 44 60 62 L53 62 Q55 46 52 30Z" fill="${m('lats')}" stroke="${C.line}" stroke-width=".5" opacity="${on('lats')?1:.6}"/>
+  <!-- Rhomboïdes / milieu du dos -->
+  <path d="M29 30 Q40 27 51 30 Q49 44 40 46 Q31 44 29 30Z" fill="${m('lats')}" stroke="${C.line}" stroke-width=".5" opacity="${on('lats')?1:.6}"/>
+  <!-- Bas du dos -->
+  <rect x="33" y="54" width="14" height="13" rx="3" fill="${m('lowerback')}" stroke="${C.line}" stroke-width=".5" opacity="${on('lowerback')?1:.6}"/>
+  <!-- Fessiers -->
+  <ellipse cx="33" cy="74" rx="10" ry="9" fill="${m('glutes')}" stroke="${C.line}" stroke-width=".6" opacity="${on('glutes')?1:.6}"/>
+  <ellipse cx="47" cy="74" rx="10" ry="9" fill="${m('glutes')}" stroke="${C.line}" stroke-width=".6" opacity="${on('glutes')?1:.6}"/>
+  <!-- Ischio-jambiers -->
+  <ellipse cx="32" cy="86" rx="7" ry="12" fill="${m('hamstrings')}" stroke="${C.line}" stroke-width=".5" opacity="${on('hamstrings')?1:.6}"/>
+  <ellipse cx="48" cy="86" rx="7" ry="12" fill="${m('hamstrings')}" stroke="${C.line}" stroke-width=".5" opacity="${on('hamstrings')?1:.6}"/>
+  <!-- Mollets -->
+  <ellipse cx="30" cy="108" rx="4.5" ry="9" fill="${m('calves')}" stroke="${C.line}" stroke-width=".5" opacity="${on('calves')?1:.6}"/>
+  <ellipse cx="50" cy="108" rx="4.5" ry="9" fill="${m('calves')}" stroke="${C.line}" stroke-width=".5" opacity="${on('calves')?1:.6}"/>
 </svg>`;
 }
 
 // ── MUSCLE MAP par exercice ──
 // Chaque exercice définit quels muscles sont actifs (front/back)
 const MUSCLE_MAPS = {
-  // PECS
-  'pu':        { front: {pecs:1, triceps:1, shoulders:1} },
+  // PECS — pecs+shoulders vue face, triceps vue dos
+  'pu':        { front: {pecs:1, shoulders:1}, back: {triceps:1} },
   'puw':       { front: {pecs:1, shoulders:1} },
-  'pud':       { front: {pecs:1, triceps:1} },
-  'pue':       { front: {pecs:1, triceps:1} },
-  'puarch':    { front: {pecs:1} },
-  'pu1arm':    { front: {pecs:1, triceps:1, abs:1} },
+  'pud':       { front: {pecs:1}, back: {triceps:1} },
+  'pue':       { front: {pecs:1, shoulders:1}, back: {triceps:1} },
+  'puarch':    { front: {pecs:1, shoulders:1} },
+  'pu1arm':    { front: {pecs:1, abs:1}, back: {triceps:1} },
   'decline':   { front: {pecs:1, shoulders:1} },
   'incline':   { front: {pecs:1} },
   'pseudo':    { front: {pecs:1, shoulders:1, abs:1} },
-  // EPAULES
+  // ÉPAULES
   'pike':      { front: {shoulders:1}, back: {shoulders:1, triceps:1} },
-  'hs':        { front: {shoulders:1}, back: {shoulders:1} },
+  'hs':        { front: {shoulders:1}, back: {shoulders:1, triceps:1} },
   'facepull':  { back:  {shoulders:1, traps:1} },
-  'latsraise': { front: {shoulders:1}, back: {shoulders:1} },
+  'latsraise': { front: {shoulders:1} },
   // TRICEPS
   'dip':       { back:  {triceps:1, shoulders:1} },
   'dipdip':    { back:  {triceps:1} },
   'skullcr':   { back:  {triceps:1} },
   // DOS
   'row':       { back:  {lats:1, traps:1} },
-  'chinup':    { back:  {lats:1}, front: {biceps:1} },
+  'chinup':    { front: {biceps:1}, back: {lats:1} },
   'widepull':  { back:  {lats:1, traps:1} },
-  'neutr':     { back:  {lats:1}, front: {biceps:1} },
+  'neutr':     { front: {biceps:1}, back: {lats:1} },
   'invrow':    { back:  {lats:1, traps:1} },
   'archrow':   { back:  {lats:1} },
-  'muscleup':  { back:  {lats:1}, front: {triceps:1} },
+  'muscleup':  { front: {biceps:1}, back: {lats:1, triceps:1} },
   'supext':    { back:  {lowerback:1, glutes:1} },
   // BICEPS
   'towelcurl': { front: {biceps:1} },
   'curlrow':   { front: {biceps:1}, back: {lats:1} },
   // QUADRICEPS
-  'sq':        { front: {quads:1, glutes:1} },
-  'pistol':    { front: {quads:1, glutes:1} },
+  'sq':        { front: {quads:1}, back: {glutes:1} },
+  'pistol':    { front: {quads:1} },
   'shrimp':    { front: {quads:1} },
   'wallsit':   { front: {quads:1} },
-  'stepup':    { front: {quads:1, glutes:1} },
-  'sqj':       { front: {quads:1, glutes:1} },
+  'stepup':    { front: {quads:1}, back: {glutes:1} },
+  'sqj':       { front: {quads:1}, back: {glutes:1} },
   // FESSIERS
   'glute':     { back:  {glutes:1, hamstrings:1} },
-  'bsq':       { front: {quads:1, glutes:1}, back: {hamstrings:1} },
-  'lunge':     { front: {quads:1, glutes:1} },
-  'lungerev':  { front: {quads:1, glutes:1} },
-  'lungej':    { front: {quads:1, glutes:1} },
+  'bsq':       { front: {quads:1}, back: {glutes:1, hamstrings:1} },
+  'lunge':     { front: {quads:1}, back: {glutes:1} },
+  'lungerev':  { front: {quads:1}, back: {glutes:1} },
+  'lungej':    { front: {quads:1}, back: {glutes:1} },
   'donkey':    { back:  {glutes:1} },
   'clamshell': { back:  {glutes:1} },
   // ISCHIO
   'nordham':   { back:  {hamstrings:1, glutes:1} },
   'goodmorn':  { back:  {hamstrings:1, lowerback:1} },
-  'legcurl':   { back:  {hamstrings:1, calves:1} },
+  'legcurl':   { back:  {hamstrings:1} },
   // MOLLETS
   'calf':      { back:  {calves:1} },
   'calfseated':{ back:  {calves:1} },
   'calfhop':   { back:  {calves:1} },
-  // ABS
+  // ABDOMINAUX
   'crunch':    { front: {abs:1} },
   'lleg':      { front: {abs:1} },
   'vup':       { front: {abs:1} },
@@ -315,14 +334,14 @@ const MUSCLE_MAPS = {
   // GAINAGE
   'plank':     { front: {abs:1, shoulders:1}, back: {lowerback:1} },
   'plankup':   { front: {obliques:1, abs:1}, back: {lowerback:1} },
-  'birddog':   { back:  {lowerback:1, glutes:1}, front: {abs:1} },
+  'birddog':   { front: {abs:1}, back: {lowerback:1, glutes:1} },
   // CARDIO
-  'burpee':    { front: {pecs:1, quads:1, abs:1}, back: {lats:1} },
+  'burpee':    { front: {pecs:1, quads:1, abs:1}, back: {glutes:1} },
   'jj':        { front: {shoulders:1, quads:1} },
   'highk':     { front: {quads:1, abs:1} },
   'butkick':   { back:  {hamstrings:1, glutes:1} },
-  'skater':    { front: {quads:1, glutes:1} },
-  'boxjump':   { front: {quads:1, glutes:1}, back: {hamstrings:1} },
+  'skater':    { front: {quads:1}, back: {glutes:1} },
+  'boxjump':   { front: {quads:1}, back: {glutes:1, hamstrings:1} },
   'bearcrawl': { front: {shoulders:1, abs:1}, back: {lats:1} },
   'starhop':   { front: {quads:1, shoulders:1} },
   'sprint':    { front: {quads:1, abs:1}, back: {hamstrings:1, glutes:1} },
