@@ -111,7 +111,7 @@ const MUSCLE_ORDER = [
 ];
 
 const MUSCLE_EMOJI = {
-  'Pecs':'🫀','Épaules':'🔵','Triceps':'💪','Dos':'🦅','Biceps':'💪',
+  'Pecs':'🫀','Épaules':'🔵','Triceps':'💪','Dos':'🏋️','Biceps':'💪',
   'Quadriceps':'🦵','Fessiers':'🍑','Ischio-jambiers':'🦵','Mollets':'🦿',
   'Abdominaux':'🔥','Obliques':'🌀','Gainage':'🧱','Cardio':'❤️'
 };
@@ -121,7 +121,7 @@ const MUSCLE_FILTERS = [
   { label:'🫀 Pecs',   value:'Pecs' },
   { label:'🔵 Épaules',    value:'Épaules' },
   { label:'💪 Triceps',    value:'Triceps' },
-  { label:'🦅 Dos',        value:'Dos' },
+  { label:'🏋️ Dos',        value:'Dos' },
   { label:'💪 Biceps',     value:'Biceps' },
   { label:'🦵 Quadriceps', value:'Quadriceps' },
   { label:'🍑 Fessiers',   value:'Fessiers' },
@@ -153,7 +153,7 @@ const C = {
 function bodyFront(active = {}) {
   const m  = (k) => active[k] ? C.muscle  : C.dim;
   const on = (k) => !!active[k];
-  return `<svg viewBox="0 0 80 120" xmlns="http://www.w3.org/2000/svg">
+  return `<svg viewBox="0 0 80 105" xmlns="http://www.w3.org/2000/svg">
   <rect width="80" height="120" fill="${C.bg}"/>
 
   <!-- BASE SILHOUETTE (gris-bleu, dessiné EN PREMIER) -->
@@ -213,7 +213,7 @@ function bodyFront(active = {}) {
 function bodyBack(active = {}) {
   const m  = (k) => active[k] ? C.muscle  : C.dim;
   const on = (k) => !!active[k];
-  return `<svg viewBox="0 0 80 120" xmlns="http://www.w3.org/2000/svg">
+  return `<svg viewBox="0 0 80 105" xmlns="http://www.w3.org/2000/svg">
   <rect width="80" height="120" fill="${C.bg}"/>
 
   <!-- BASE SILHOUETTE -->
@@ -357,7 +357,7 @@ function bodyImg(exoId) {
     // Côte à côte : front gauche, back droite
     const f = bodyFront(map.front);
     const b = bodyBack(map.back);
-    const combined = `<svg viewBox="0 0 160 120" xmlns="http://www.w3.org/2000/svg">
+    const combined = `<svg viewBox="0 0 160 105" xmlns="http://www.w3.org/2000/svg">
       <rect width="160" height="120" fill="${C.bg}"/>
       <g transform="translate(0,0)">${f.replace(/<svg[^>]*>|<\/svg>/g,'')}</g>
       <g transform="translate(80,0)">${b.replace(/<svg[^>]*>|<\/svg>/g,'')}</g>
