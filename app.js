@@ -1060,6 +1060,27 @@ Object.assign(window, {
   toggleSet, endSession,
   // Drag sections
   sectionDragStart,
+
+<script type="module">
+  // Import the functions you need from the SDKs you need
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
+  // TODO: Add SDKs for Firebase products that you want to use
+  // https://firebase.google.com/docs/web/setup#available-libraries
+
+  // Your web app's Firebase configuration
+  const firebaseConfig = {
+    apiKey: "AIzaSyBdb3K3X-sysepTYeVUFXhoQrgwl7VWpIA",
+    authDomain: "zeroweigth.firebaseapp.com",
+    databaseURL: "https://zeroweigth-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "zeroweigth",
+    storageBucket: "zeroweigth.firebasestorage.app",
+    messagingSenderId: "830641664692",
+    appId: "1:830641664692:web:fc1eed3ad8da709f635de1"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+</script>
 });
 
 buildFilterChips();
