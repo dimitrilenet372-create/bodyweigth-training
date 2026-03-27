@@ -389,14 +389,14 @@ import { getFirestore, collection, doc, onSnapshot, setDoc, deleteDoc, query, or
   from 'https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js';
 
 const firebaseConfig = {
-  apiKey:            "AIzaSyBdb3K3X-sysepTYeVUFXhoQrgwl7VWpIA",
-  authDomain:        "zeroweigth.firebaseapp.com",
-  projectId:         "zeroweigth",
-  storageBucket:     "zeroweigth.firebasestorage.app",
+  apiKey: "AIzaSyBdb3K3X-sysepTYeVUFXhoQrgwl7VWpIA",
+  authDomain: "zeroweigth.firebaseapp.com",
+  databaseURL: "https://zeroweigth-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "zeroweigth",
+  storageBucket: "zeroweigth.firebasestorage.app",
   messagingSenderId: "830641664692",
-  appId:             "1:830641664692:web:fc1eed3ad8da709f635de1"
+  appId: "1:830641664692:web:fc1eed3ad8da709f635de1"
 };
-
 const app = initializeApp(firebaseConfig);
 const db  = getFirestore(app);
 
