@@ -384,8 +384,8 @@ function resolveExoImg(exo) {
 // ══════════════════════════════════════════════
 // Remplace localStorage — tout est synchronisé en temps réel
 
-import { initializeApp } from "firebase/app";
-import { getFirestore } from "firebase/firestore";
+// import { initializeApp } from "firebase/app";
+// import { getFirestore } from "firebase/firestore";
 const firebaseConfig = {
   apiKey: "AIzaSyBdb3K3X-sysepTYeVUFXhoQrgwl7VWpIA",
   authDomain: "zeroweigth.firebaseapp.com",
