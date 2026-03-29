@@ -384,20 +384,27 @@ function resolveExoImg(exo) {
 // ══════════════════════════════════════════════
 // Remplace localStorage — tout est synchronisé en temps réel
 
- import { initializeApp } from "https://zeroweigth-default-rtdb.europe-west1.firebasedatabase.app";
- import { getFirestore } from "https://zeroweigth-default-rtdb.europe-west1.firebasedatabase.app";
+// Importer les modules nécessaires
+import { initializeApp } from "firebase/app";
+import { getDatabase } from "firebase/database"; // <-- Importez getDatabase pour Realtime Database
+
+// Votre objet de configuration Firebase (à récupérer depuis la console !)
 const firebaseConfig = {
-  apiKey: "AIzaSyBdb3K3X-sysepTYeVUFXhoQrgwl7VWpIA",
-  authDomain: "zeroweigth.firebaseapp.com",
-  databaseURL: "https://zeroweigth-default-rtdb.europe-west1.firebasedatabase.app",
-  projectId: "zeroweigth",
-  storageBucket: "zeroweigth.firebasestorage.app",
-  messagingSenderId: "830641664692",
-  appId: "1:830641664692:web:fc1eed3ad8da709f635de1"
+  apiKey: "AIzaSyBdb3K3X-sysepTYeVUFXhoQrgwl7VWpIA",                     // Exemple: "AIzaSyBnRKitQGBX0u8k4COtDTILYxCJuMf7xzE"
+  authDomain: "zeroweigth.firebaseapp.com",             // Exemple: "exchange-rates-adcf6.firebaseapp.com"
+  databaseURL: "https://zeroweigth-default-rtdb.europe-west1.firebasedatabase.app", // Votre URL de Realtime Database
+  projectId: "zeroweigth",                     // Votre ID de projet
+  storageBucket: "zeroweigth.firebasestorage.app",       // Exemple: "exchange-rates-adcf6.firebasestorage.app"
+  messagingSenderId: "830641664692",        // Exemple: "875614679042"
+  appId: "VOTRE_A830641664692PP_ID"                        // Exemple: "1:875614679042:web:5813c3e70a33e91ba0371b"
 };
 
+// Initialiser Firebase
 const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+
+// Obtenir une instance de Realtime Database
+const database = getDatabase(app); // <-- Utilisez getDatabase ici
+
 
 // Collections Firestore
 const workoutsCol = collection(db, 'workouts');
