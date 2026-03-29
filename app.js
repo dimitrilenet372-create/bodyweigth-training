@@ -386,14 +386,14 @@ function resolveExoImg(exo) {
 
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
-
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_AUTH_DOMAIN",
-  projectId: "zeroweigth", // <<< Make sure this is correct
-  storageBucket: "YOUR_STORAGE_BUCKET",
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-  appId: "YOUR_APP_ID"
+  apiKey: "AIzaSyBdb3K3X-sysepTYeVUFXhoQrgwl7VWpIA",
+  authDomain: "zeroweigth.firebaseapp.com",
+  databaseURL: "https://zeroweigth-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "zeroweigth",
+  storageBucket: "zeroweigth.firebasestorage.app",
+  messagingSenderId: "830641664692",
+  appId: "1:830641664692:web:fc1eed3ad8da709f635de1"
 };
 
 const app = initializeApp(firebaseConfig);
