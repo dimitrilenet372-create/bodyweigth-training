@@ -378,17 +378,11 @@ const EXO_SVG = {};
 function resolveExoImg(exo) {
   return bodyImg(exo.id);
 }
+ import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js';
+  import { getDatabase } from 'https://www.gstatic.com/firebasejs/10.11.0/firebase-database.js';
 
-// ══════════════════════════════════════════════
-//  FIREBASE — données partagées entre tous
-// ══════════════════════════════════════════════
-// Remplace localStorage — tout est synchronisé en temps réel
-
-// Importer les modules nécessaires
-import { initializeApp } from "firebase/app";
-import { getDatabase } from "firebase/database"; // <-- Importez getDatabase pour Realtime Database
-
-// Votre objet de configuration Firebase (à récupérer depuis la console !)
+  // Votre configuration Firebase
+  // REMPLACEZ LES VALEURS "VOTRE_..." par vos vraies informations de la console Firebase !
 const firebaseConfig = {
   apiKey: "AIzaSyBdb3K3X-sysepTYeVUFXhoQrgwl7VWpIA",                     // Exemple: "AIzaSyBnRKitQGBX0u8k4COtDTILYxCJuMf7xzE"
   authDomain: "zeroweigth.firebaseapp.com",             // Exemple: "exchange-rates-adcf6.firebaseapp.com"
@@ -399,11 +393,23 @@ const firebaseConfig = {
   appId: "VOTRE_A830641664692PP_ID"                        // Exemple: "1:875614679042:web:5813c3e70a33e91ba0371b"
 };
 
-// Initialiser Firebase
-const app = initializeApp(firebaseConfig);
+  // 1. Initialise votre application Firebase
+  const app = initializeApp(firebaseConfig);
 
-// Obtenir une instance de Realtime Database
-const database = getDatabase(app); // <-- Utilisez getDatabase ici
+  // 2. Obtient une référence à votre Realtime Database
+  const database = getDatabase(app);
+
+  // À partir d'ici, 'app' est votre application Firebase et 'database' est votre Realtime Database.
+  // Vous pouvez maintenant commencer à lire ou écrire des données en utilisant la variable 'database'.
+  console.log("Firebase et Realtime Database initialisées avec succès !");
+
+  // Par exemple, pour vérifier que la base de données fonctionne :
+  // Vous pouvez décommenter la ligne ci-dessous si vous avez un élément <p id="message"></p> dans votre HTML
+  // document.getElementById('message').innerText = "Firebase est prête !";
+// ══════════════════════════════════════════════
+//  FIREBASE — données partagées entre tous
+// ══════════════════════════════════════════════
+// Remplace localStorage — tout est synchronisé en temps réel
 
 
 // Collections Firestore
