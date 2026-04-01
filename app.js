@@ -1039,13 +1039,53 @@ function updateSessionProgress(){
 }
 function endSession(){
   const allDone=sessionExercises.every(e=>e.setsStatus.every(s=>s.done));
-  if(!confirm(allDone?'💪 GG ! Enregistrer cette séance ?':'Terminer maintenant ? (tous les exos ne sont pas validés)'))return;
-  clearInterval(activeTimerInterval);
-  const session = {id:'s'+Date.now(),name:currentWorkout.name,date:new Date().toISOString(),duration:sessionSeconds,exercises:sessionExercises.length};
-  saveSessionToDb(session); // Firestore → déclenche onSnapshot → renderHistory() pour tous
-  document.getElementById('active-bar').classList.remove('visible');
+  const done=sessionExercises.filter(e=>e.setsStatus.every(s=>s.done)).length;
+  const total=sessionExercises.length;
+  const mins=Math.floor(sessionSeconds/60);
+
+  // Remplir le modal de confirmation
+  const icon=document.getElementById('confirm-end-icon');
+  const title=document.getElementById('confirm-end-title');
+  const desc=document.getElementById('confirm-end-desc');
+  const stats=document.getElementById('confirm-end-stats');
+  const btn=document.getElementById('btn-confirm-end');
+
+  if(allDone){
+    icon.className='confirm-icon confirm-icon--success';
+    icon.innerHTML=`<svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>`;
+    title.textContent='BRAVO ! 🏆';
+    desc.textContent='Tu as complété tous les exercices. Enregistrer cette séance ?';
+    btn.className='btn-end-confirm btn-end-confirm--success';
+    btn.innerHTML='🏆 ENREGISTRER';
+  } else {
+    icon.className='confirm-icon confirm-icon--warn';
+    icon.innerHTML=`<svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>`;
+    title.textContent='ES-TU SÛR ?';
+    desc.textContent=`Tu as complété ${done}/${total} exercices. Veux-tu vraiment terminer maintenant ?`;
+    btn.className='btn-end-confirm';
+    btn.innerHTML='⏹ TERMINER QUAND MÊME';
+  }
+
+  stats.innerHTML=`
+    <div class="confirm-stat"><div class="confirm-stat-val">${mins}min</div><div class="confirm-stat-lbl">Durée</div></div>
+    <div class="confirm-stat-sep"></div>
+    <div class="confirm-stat"><div class="confirm-stat-val">${done}/${total}</div><div class="confirm-stat-lbl">Exercices</div></div>
+    <div class="confirm-stat-sep"></div>
+    <div class="confirm-stat"><div class="confirm-stat-val">${sessionExercises.reduce((a,e)=>a+e.setsStatus.filter(s=>s.done).length,0)}</div><div class="confirm-stat-lbl">Séries</div></div>
+  `;
+
+  btn.onclick=()=>{
+    clearInterval(activeTimerInterval);
+    const session={id:'s'+Date.now(),name:currentWorkout.name,date:new Date().toISOString(),duration:sessionSeconds,exercises:sessionExercises.length};
+    saveSessionToDb(session);
+    document.getElementById('active-bar').classList.remove('visible');
+    closeModal('modal-confirm-end');
+    closeModal('modal-session');
+    currentWorkout=null;
+  };
+
   closeModal('modal-session');
-  currentWorkout=null;
+  openModal('modal-confirm-end');
 }
 
 function openActiveSession(){if(currentWorkout)openModal('modal-session');}
