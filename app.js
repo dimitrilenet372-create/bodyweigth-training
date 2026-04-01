@@ -2,6 +2,88 @@
 //  ZEROWEIGHT — app.js  (classement par muscle)
 // ═══════════════════════════════════════════════
 
+
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js';
+import { getFirestore, collection, doc, onSnapshot, setDoc, deleteDoc, query, orderBy }
+  from 'https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js';
+
+const firebaseConfig = {
+  apiKey:            "AIzaSyBdb3K3X-sysepTYeVUFXhoQrgwl7VWpIA",
+  authDomain:        "zeroweigth.firebaseapp.com",
+  projectId:         "zeroweigth",
+  storageBucket:     "zeroweigth.firebasestorage.app",
+  messagingSenderId: "830641664692",
+  appId:             "1:830641664692:web:fc1eed3ad8da709f635de1"
+};
+
+const app = initializeApp(firebaseConfig);
+const db  = getFirestore(app);
+
+// Collections Firestore
+const workoutsCol = collection(db, 'workouts');
+const historyCol  = collection(db, 'sessionHistory');
+
+// ── STATE (chargé depuis Firestore) ──
+let workouts         = [];
+let sessionHistory   = [];
+let currentWorkout      = null;
+let sessionExercises    = [];
+let sessionSeconds      = 0;
+let activeTimerInterval = null;
+let currentFilterMuscle = 'Tous';
+let editingWorkoutId    = null;
+let workoutExercises    = [];
+let previewExoId        = null;
+
+// ── FIREBASE CRUD ──
+
+async function saveWorkoutToDb(w) {
+  await setDoc(doc(db, 'workouts', w.id), w);
+}
+async function deleteWorkoutFromDb(id) {
+  await deleteDoc(doc(db, 'workouts', id));
+}
+async function saveSessionToDb(session) {
+  await setDoc(doc(db, 'sessionHistory', session.id), session);
+}
+
+// Garde save() pour compatibilité — ne fait plus rien (Firestore gère)
+function save() {}
+
+// ── LISTENERS TEMPS RÉEL ──
+// Workouts — écoute les changements pour tous les users
+onSnapshot(query(workoutsCol), (snap) => {
+  workouts = snap.docs.map(d => d.data());
+  if (workouts.length === 0) seedDefaultWorkouts();
+  renderWorkouts();
+});
+
+// Historique — écoute les nouvelles séances
+onSnapshot(query(historyCol, orderBy('date', 'desc')), (snap) => {
+  sessionHistory = snap.docs.map(d => d.data());
+  renderHistory();
+});
+
+// ── SEED PROGRAMMES PAR DÉFAUT ──
+async function seedDefaultWorkouts() {
+  const defaults = [
+    { id:'default1', name:'Full Body Débutant', days:3, duration:40, exercises:[
+        { exoId:'pu',    sets:[{reps:10},{reps:10},{reps:8}] },
+        { exoId:'sq',    sets:[{reps:15},{reps:15},{reps:12}] },
+        { exoId:'plank', sets:[{reps:30},{reps:30},{reps:20}] },
+        { exoId:'lunge', sets:[{reps:10},{reps:10}] },
+    ]},
+    { id:'default2', name:'Upper Body Burn', days:2, duration:35, exercises:[
+        { exoId:'pu',   sets:[{reps:12},{reps:12},{reps:10}] },
+        { exoId:'pud',  sets:[{reps:8},{reps:8}] },
+        { exoId:'dip',  sets:[{reps:10},{reps:10}] },
+        { exoId:'pike', sets:[{reps:8},{reps:8}] },
+    ]},
+  ];
+  for (const w of defaults) await saveWorkoutToDb(w);
+}
+
+
 const EXERCISES_DB = [
 
   // ── POITRINE ──
@@ -378,103 +460,12 @@ const EXO_SVG = {};
 function resolveExoImg(exo) {
   return bodyImg(exo.id);
 }
- import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js';
-  import { getDatabase } from 'https://www.gstatic.com/firebasejs/10.11.0/firebase-database.js';
 
-  // Votre configuration Firebase
-  // REMPLACEZ LES VALEURS "VOTRE_..." par vos vraies informations de la console Firebase !
-const firebaseConfig = {
-  apiKey: "AIzaSyBdb3K3X-sysepTYeVUFXhoQrgwl7VWpIA",                     // Exemple: "AIzaSyBnRKitQGBX0u8k4COtDTILYxCJuMf7xzE"
-  authDomain: "zeroweigth.firebaseapp.com",             // Exemple: "exchange-rates-adcf6.firebaseapp.com"
-  databaseURL: "https://zeroweigth-default-rtdb.europe-west1.firebasedatabase.app", // Votre URL de Realtime Database
-  projectId: "zeroweigth",                     // Votre ID de projet
-  storageBucket: "zeroweigth.firebasestorage.app",       // Exemple: "exchange-rates-adcf6.firebasestorage.app"
-  messagingSenderId: "830641664692",        // Exemple: "875614679042"
-  appId: "VOTRE_A830641664692PP_ID"                        // Exemple: "1:875614679042:web:5813c3e70a33e91ba0371b"
-};
-
-  // 1. Initialise votre application Firebase
-  const app = initializeApp(firebaseConfig);
-
-  // 2. Obtient une référence à votre Realtime Database
-  const database = getDatabase(app);
-
-  // À partir d'ici, 'app' est votre application Firebase et 'database' est votre Realtime Database.
-  // Vous pouvez maintenant commencer à lire ou écrire des données en utilisant la variable 'database'.
-  console.log("Firebase et Realtime Database initialisées avec succès !");
-
-  // Par exemple, pour vérifier que la base de données fonctionne :
-  // Vous pouvez décommenter la ligne ci-dessous si vous avez un élément <p id="message"></p> dans votre HTML
-  // document.getElementById('message').innerText = "Firebase est prête !";
 // ══════════════════════════════════════════════
 //  FIREBASE — données partagées entre tous
 // ══════════════════════════════════════════════
 // Remplace localStorage — tout est synchronisé en temps réel
 
-
-// Collections Firestore
-const workoutsCol = collection(db, 'workouts');
-const historyCol  = collection(db, 'sessionHistory');
-
-// ── STATE (chargé depuis Firestore) ──
-let workouts         = [];
-let sessionHistory   = [];
-let currentWorkout      = null;
-let sessionExercises    = [];
-let sessionSeconds      = 0;
-let activeTimerInterval = null;
-let currentFilterMuscle = 'Tous';
-let editingWorkoutId    = null;
-let workoutExercises    = [];
-let previewExoId        = null;
-
-// ── FIREBASE CRUD ──
-
-async function saveWorkoutToDb(w) {
-  await setDoc(doc(db, 'workouts', w.id), w);
-}
-async function deleteWorkoutFromDb(id) {
-  await deleteDoc(doc(db, 'workouts', id));
-}
-async function saveSessionToDb(session) {
-  await setDoc(doc(db, 'sessionHistory', session.id), session);
-}
-
-// Garde save() pour compatibilité — ne fait plus rien (Firestore gère)
-function save() {}
-
-// ── LISTENERS TEMPS RÉEL ──
-// Workouts — écoute les changements pour tous les users
-onSnapshot(query(workoutsCol), (snap) => {
-  workouts = snap.docs.map(d => d.data());
-  if (workouts.length === 0) seedDefaultWorkouts();
-  renderWorkouts();
-});
-
-// Historique — écoute les nouvelles séances
-onSnapshot(query(historyCol, orderBy('date', 'desc')), (snap) => {
-  sessionHistory = snap.docs.map(d => d.data());
-  renderHistory();
-});
-
-// ── SEED PROGRAMMES PAR DÉFAUT ──
-async function seedDefaultWorkouts() {
-  const defaults = [
-    { id:'default1', name:'Full Body Débutant', days:3, duration:40, exercises:[
-        { exoId:'pu',    sets:[{reps:10},{reps:10},{reps:8}] },
-        { exoId:'sq',    sets:[{reps:15},{reps:15},{reps:12}] },
-        { exoId:'plank', sets:[{reps:30},{reps:30},{reps:20}] },
-        { exoId:'lunge', sets:[{reps:10},{reps:10}] },
-    ]},
-    { id:'default2', name:'Upper Body Burn', days:2, duration:35, exercises:[
-        { exoId:'pu',   sets:[{reps:12},{reps:12},{reps:10}] },
-        { exoId:'pud',  sets:[{reps:8},{reps:8}] },
-        { exoId:'dip',  sets:[{reps:10},{reps:10}] },
-        { exoId:'pike', sets:[{reps:8},{reps:8}] },
-    ]},
-  ];
-  for (const w of defaults) await saveWorkoutToDb(w);
-}
 function getExo(id) { return EXERCISES_DB.find(e => e.id === id); }
 function fmtTime(sec) { return `${Math.floor(sec/60)}:${(sec%60).toString().padStart(2,'0')}`; }
 
