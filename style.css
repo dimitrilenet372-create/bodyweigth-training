@@ -514,7 +514,7 @@ header { padding:24px 20px 16px; display:flex; align-items:center; justify-conte
   border-radius: 8px;
   color: var(--danger);
   font-family: 'Bebas Neue', sans-serif;
-  font-size: 11px;
+  font-size: 20px;
   letter-spacing: 1.5px;
   cursor: pointer;
   transition: all .2s;
