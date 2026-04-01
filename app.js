@@ -895,7 +895,14 @@ function switchTab(id, btn) {
 // ── WORKOUT MODAL ──
 function openNewWorkout(){editingWorkoutId=null;workoutExercises=[];document.getElementById('input-workout-name').value='';document.getElementById('input-workout-days').value='';document.getElementById('input-workout-duration').value='';document.getElementById('modal-workout-title').textContent='NOUVEAU PROGRAMME';renderWorkoutExoPicker();openModal('modal-workout');}
 function editWorkout(id){const w=workouts.find(x=>x.id===id);if(!w)return;editingWorkoutId=id;workoutExercises=w.exercises.map(e=>({exoId:e.exoId,sets:e.sets.map(s=>({...s}))}));document.getElementById('input-workout-name').value=w.name;document.getElementById('input-workout-days').value=w.days;document.getElementById('input-workout-duration').value=w.duration;document.getElementById('modal-workout-title').textContent='MODIFIER LE PROGRAMME';renderWorkoutExoPicker();openModal('modal-workout');}
-function deleteWorkout(id){if(!confirm('Supprimer ce programme ?'))return;deleteWorkoutFromDb(id);}
+function deleteWorkout(id){
+  const w = workouts.find(x => x.id === id);
+  if (!w) return;
+  document.getElementById('confirm-delete-name').textContent = w.name;
+  const btn = document.getElementById('btn-confirm-delete');
+  btn.onclick = () => { deleteWorkoutFromDb(id); closeModal('modal-confirm-delete'); };
+  openModal('modal-confirm-delete');
+}
 
 function renderWorkoutExoPicker() {
   const c=document.getElementById('workout-exo-picker');
@@ -988,6 +995,12 @@ function renderSession(){
   const total=sessionExercises.length;
   const done=sessionExercises.filter(e=>e.setsStatus.every(s=>s.done)).length;
   const allDoneGlobal=done===total&&total>0;
+  // Update top button state
+  const topBtn=document.getElementById('btn-end-session-top');
+  if(topBtn){
+    topBtn.className='btn-end-session-top'+(allDoneGlobal?' all-done':'');
+    topBtn.innerHTML=allDoneGlobal?'🏆 SÉANCE TERMINÉE !':'⏹ TERMINER';
+  }
   document.getElementById('session-exo-list').innerHTML=
     sessionExercises.map((we,i)=>{
       const ex=getExo(we.exoId);if(!ex)return'';
@@ -1013,10 +1026,7 @@ function renderSession(){
           </div>`).join('')}
         </div>
       </div>`;
-    }).join('')+
-    `<button class="btn-end-session ${allDoneGlobal?'all-done':''}" onclick="endSession()">
-      ${allDoneGlobal?'🏆 SÉANCE TERMINÉE !':'⏹ TERMINER LA SÉANCE'}
-    </button>`;
+    }).join('');
 }
 
 function toggleSet(exoI,setI){sessionExercises[exoI].setsStatus[setI].done=!sessionExercises[exoI].setsStatus[setI].done;renderSession();updateSessionProgress();}

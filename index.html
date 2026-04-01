@@ -16,9 +16,6 @@
       <div class="icon-btn" onclick="openNewWorkout()" title="Nouveau programme">
         <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
       </div>
-      <div class="icon-btn" title="Profil">
-        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
-      </div>
     </div>
   </header>
 
@@ -153,7 +150,7 @@
 
 <!-- MODAL: SESSION -->
 <div class="modal-overlay" id="modal-session">
-  <div class="modal" style="max-height:95vh">
+  <div class="modal session-modal">
     <div class="modal-handle"></div>
     <div class="session-header">
       <div class="session-header-left">
@@ -167,7 +164,27 @@
     <div class="session-progress-bar-wrap">
       <div class="session-progress-bar-fill" id="session-progress-bar" style="width:0%"></div>
     </div>
-    <div id="session-exo-list" style="overflow-y:auto;max-height:60vh;padding-right:2px"></div>
+    <button class="btn-end-session-top" id="btn-end-session-top" onclick="endSession()">⏹ TERMINER</button>
+    <div id="session-exo-list" style="overflow-y:auto;flex:1;padding-right:2px;padding-bottom:8px"></div>
+  </div>
+</div>
+
+<!-- MODAL: CONFIRM DELETE -->
+<div class="modal-overlay" id="modal-confirm-delete">
+  <div class="modal modal-confirm">
+    <div class="modal-handle"></div>
+    <div class="confirm-icon-wrap">
+      <div class="confirm-icon">
+        <svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2"/></svg>
+      </div>
+    </div>
+    <div class="confirm-title">Supprimer ce programme ?</div>
+    <div class="confirm-name" id="confirm-delete-name"></div>
+    <div class="confirm-desc">Cette action est irréversible.<br>Toutes les séances associées seront conservées.</div>
+    <div class="modal-actions" style="gap:10px">
+      <button class="btn-cancel" onclick="closeModal('modal-confirm-delete')">Annuler</button>
+      <button class="btn-danger-confirm" id="btn-confirm-delete">🗑 SUPPRIMER</button>
+    </div>
   </div>
 </div>
 
