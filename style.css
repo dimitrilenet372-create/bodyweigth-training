@@ -624,3 +624,112 @@ header { padding:24px 20px 16px; display:flex; align-items:center; justify-conte
   color: #000;
   box-shadow: 0 4px 24px rgba(61,232,160,.35);
 }
+
+/* ── HISTORY DAY NAVIGATOR ── */
+.history-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 10px 14px;
+}
+.history-nav-btn {
+  width: 36px;
+  height: 36px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all .15s;
+  flex-shrink: 0;
+}
+.history-nav-btn:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
+.history-nav-btn:disabled { cursor: default; }
+.history-nav-date {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 18px;
+  letter-spacing: 2px;
+  color: var(--text);
+  text-align: center;
+  flex: 1;
+}
+
+/* ── RESET BUTTON (hidden by default) ── */
+.btn-reset-history {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 14px;
+  background: rgba(255,79,106,.08);
+  border: 1.5px solid rgba(255,79,106,.3);
+  border-radius: 12px;
+  color: var(--danger);
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 17px;
+  letter-spacing: 2px;
+  cursor: pointer;
+  transition: all .2s;
+  margin-top: 8px;
+}
+.btn-reset-history:hover {
+  background: var(--danger);
+  color: #fff;
+  border-color: var(--danger);
+  box-shadow: 0 4px 24px rgba(255,79,106,.35);
+}
+
+/* ── PIN CODE MODAL ── */
+.pin-display {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  margin: 20px 0 28px;
+}
+.pin-display span {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--surface3);
+  border: 2px solid var(--border2);
+  transition: all .15s;
+}
+.pin-display span.filled {
+  background: var(--accent);
+  border-color: var(--accent);
+  box-shadow: 0 0 10px var(--accent-glow);
+}
+@keyframes pinShake {
+  0%,100% { transform: translateX(0); }
+  20%,60% { transform: translateX(-8px); }
+  40%,80% { transform: translateX(8px); }
+}
+.pin-shake { animation: pinShake .4s ease; }
+.pin-pad {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+.pin-btn {
+  padding: 18px 10px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 20px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all .15s;
+}
+.pin-btn:hover { border-color: var(--accent2); color: var(--accent); }
+.pin-btn:active { transform: scale(.93); }
+.pin-btn--action { color: var(--muted); font-size: 18px; }
+.pin-btn--cancel { color: var(--danger); font-size: 16px; }

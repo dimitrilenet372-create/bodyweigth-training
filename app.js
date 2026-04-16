@@ -415,6 +415,8 @@ let currentFilterMuscle = 'Tous';
 let editingWorkoutId    = null;
 let workoutExercises    = [];
 let previewExoId        = null;
+let historyViewDate     = (() => { const d = new Date(); d.setHours(0,0,0,0); return d; })();
+let pinCurrent          = '';
 
 // ── FIREBASE CRUD ──
 
@@ -872,25 +874,121 @@ function filterMuscle(muscle) {
 
 // ── HISTORY ──
 function renderHistory() {
-  const sessions=sessionHistory.slice().reverse();
-  document.getElementById('stat-sessions').textContent=sessions.filter(s=>new Date(s.date).getMonth()===new Date().getMonth()).length;
-  let streak=0; const today=new Date(); today.setHours(0,0,0,0);
-  for(let i=0;i<30;i++){const d=new Date(today);d.setDate(d.getDate()-i);if(sessions.some(s=>new Date(s.date).toDateString()===d.toDateString()))streak++;else if(i>0)break;}
-  document.getElementById('stat-streak').innerHTML=`${streak}<span>j</span>`;
-  const days=['L','M','M','J','V','S','D'];
-  document.getElementById('streak-row').innerHTML=Array.from({length:7},(_,i)=>{
-    const d=new Date(today);d.setDate(d.getDate()-(6-i));
-    const done=sessions.some(s=>new Date(s.date).toDateString()===d.toDateString());
-    const isToday=d.toDateString()===today.toDateString();
+  const all = sessionHistory.slice(); // desc order from Firestore
+  const today = new Date(); today.setHours(0,0,0,0);
+
+  // Global stats
+  document.getElementById('stat-sessions').textContent = all.filter(s => new Date(s.date).getMonth() === new Date().getMonth()).length;
+  let streak = 0;
+  for(let i = 0; i < 30; i++){
+    const d = new Date(today); d.setDate(d.getDate()-i);
+    if(all.some(s => new Date(s.date).toDateString() === d.toDateString())) streak++;
+    else if(i > 0) break;
+  }
+  document.getElementById('stat-streak').innerHTML = `${streak}<span>j</span>`;
+  const days = ['L','M','M','J','V','S','D'];
+  document.getElementById('streak-row').innerHTML = Array.from({length:7}, (_,i) => {
+    const d = new Date(today); d.setDate(d.getDate()-(6-i));
+    const done = all.some(s => new Date(s.date).toDateString() === d.toDateString());
+    const isToday = d.toDateString() === today.toDateString();
     return `<div class="streak-day${done?' done':''}${isToday&&!done?' today':''}">${days[d.getDay()===0?6:d.getDay()-1]}</div>`;
   }).join('');
-  const hl=document.getElementById('history-list');
-  if(!sessions.length){hl.innerHTML=`<div class="empty-state"><div class="big-icon">📋</div><p>Aucune séance terminée.<br>Lance ton premier entraînement !</p></div>`;return;}
-  hl.innerHTML=sessions.slice(0,20).map(s=>{
-    const d=new Date(s.date);
+
+  // Day navigator
+  const isToday = historyViewDate.toDateString() === today.toDateString();
+  document.getElementById('history-nav-date').textContent = isToday
+    ? "AUJOURD'HUI"
+    : historyViewDate.toLocaleDateString('fr-FR', {weekday:'short', day:'numeric', month:'short'}).toUpperCase();
+  const nextBtn = document.getElementById('history-nav-next');
+  nextBtn.disabled = historyViewDate >= today;
+  nextBtn.style.opacity = historyViewDate >= today ? '0.3' : '1';
+  document.getElementById('history-section-title').textContent = isToday ? 'SÉANCES DU JOUR' : 'SÉANCES';
+
+  // Filter by selected day
+  const daySessions = all.filter(s => new Date(s.date).toDateString() === historyViewDate.toDateString());
+  const hl = document.getElementById('history-list');
+  if(!daySessions.length){
+    hl.innerHTML = `<div class="empty-state"><div class="big-icon">📋</div><p>${isToday ? 'Aucune séance aujourd\'hui.<br>Lance ton premier entraînement !' : 'Aucune séance ce jour-là.'}</p></div>`;
+    return;
+  }
+  hl.innerHTML = daySessions.map(s => {
+    const d = new Date(s.date);
     return `<div class="history-item"><div class="history-dot"></div><div class="history-info"><div class="history-name">${s.name}</div><div class="history-date">${d.toLocaleDateString('fr-FR',{weekday:'short',day:'numeric',month:'short'})} · ${s.exercises} exercices</div></div><div class="history-duration">${Math.floor(s.duration/60)}min</div></div>`;
   }).join('');
 }
+
+function historyChangeDay(delta) {
+  const next = new Date(historyViewDate);
+  next.setDate(next.getDate() + delta);
+  historyViewDate = next;
+  renderHistory();
+}
+
+// ── RESET HISTORY (code 9833) ──
+function pinInput(digit) {
+  if(pinCurrent.length >= 4) return;
+  pinCurrent += digit;
+  updatePinDisplay();
+  if(pinCurrent.length === 4) {
+    if(pinCurrent === '9833') {
+      document.getElementById('btn-reset-history').style.display = 'flex';
+      closeModal('modal-pin');
+    } else {
+      document.getElementById('pin-display').classList.add('pin-shake');
+      setTimeout(() => {
+        document.getElementById('pin-display').classList.remove('pin-shake');
+        pinCurrent = '';
+        updatePinDisplay();
+      }, 500);
+    }
+    if(pinCurrent === '9833') pinCurrent = '';
+  }
+}
+
+function pinBackspace() {
+  pinCurrent = pinCurrent.slice(0, -1);
+  updatePinDisplay();
+}
+
+function updatePinDisplay() {
+  const spans = document.querySelectorAll('#pin-display span');
+  spans.forEach((s, i) => {
+    s.classList.toggle('filled', i < pinCurrent.length);
+  });
+}
+
+async function resetAllHistory() {
+  if(!confirm('Effacer tout l\'historique ? Cette action est irréversible.')) return;
+  await Promise.all(sessionHistory.map(s => deleteDoc(doc(db, 'sessionHistory', s.id))));
+  document.getElementById('btn-reset-history').style.display = 'none';
+}
+
+// Long-press on section title to open PIN
+(function() {
+  let t = null;
+  function start() { t = setTimeout(() => openModal('modal-pin'), 700); }
+  function cancel() { clearTimeout(t); }
+  const el = document.getElementById('history-section-title');
+  if(!el) return;
+  el.addEventListener('touchstart', start, {passive:true});
+  el.addEventListener('touchend', cancel);
+  el.addEventListener('mousedown', start);
+  el.addEventListener('mouseup', cancel);
+  el.addEventListener('mouseleave', cancel);
+})();
+
+// Keyboard sequence 9-8-3-3
+(function() {
+  let seq = '';
+  document.addEventListener('keydown', e => {
+    if('9833'.startsWith(seq + e.key)) {
+      seq += e.key;
+      if(seq === '9833') { openModal('modal-pin'); seq = ''; }
+    } else {
+      seq = '9833'.startsWith(e.key) ? e.key : '';
+    }
+  });
+})()
 
 // ── TABS ──
 function switchTab(id, btn) {
