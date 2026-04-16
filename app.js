@@ -468,6 +468,141 @@ async function seedDefaultWorkouts() {
 function getExo(id) { return EXERCISES_DB.find(e => e.id === id); }
 function fmtTime(sec) { return `${Math.floor(sec/60)}:${(sec%60).toString().padStart(2,'0')}`; }
 
+// ── PROGRAMMES GUIDÉS ──
+const GUIDED_PROGRAMS = [
+  {
+    id:'debutant-complet',
+    name:'Débutant Complet',
+    emoji:'🌱',
+    tag:'Débutant',
+    tagColor:'#3de8a0',
+    level:'Débutant',
+    duration:'6 semaines',
+    freq:'3x / semaine',
+    desc:'Le programme idéal pour partir de zéro. Full body progressif, zéro matériel, résultats visibles en 6 semaines.',
+    preview:['Pompes inclinées','Squats','Planche','Fentes avant','Crunchs','Hip Thrust sol'],
+  },
+  {
+    id:'zero-tractions',
+    name:'30 jours — 1ère traction',
+    emoji:'🏆',
+    tag:'Force',
+    tagColor:'#4db8ff',
+    level:'Débutant → Intermédiaire',
+    duration:'4 semaines',
+    freq:'3x / semaine',
+    desc:'Programme progressif pour réaliser ta première traction complète. De zéro à héros en 30 jours.',
+    preview:['Rowing inversé','Chin-ups négatifs','Dead Hang','Tractions assistées','Tractions larges'],
+  },
+  {
+    id:'cent-pompes',
+    name:'De zéro à 100 pompes',
+    emoji:'💪',
+    tag:'Endurance',
+    tagColor:'#ff9f43',
+    level:'Intermédiaire',
+    duration:'6 semaines',
+    freq:'4x / semaine',
+    desc:'Le défi ultime. Progression semaine par semaine jusqu\'à 100 pompes d\'affilée.',
+    preview:['Pompes classiques','Pompes larges','Pompes diamant','Pompes explosives','Pompes Archer'],
+  },
+  {
+    id:'abdos-8sem',
+    name:'Abdos visibles — 8 semaines',
+    emoji:'✨',
+    tag:'Définition',
+    tagColor:'#a29bfe',
+    level:'Intermédiaire',
+    duration:'8 semaines',
+    freq:'5x / semaine',
+    desc:'Programme complet abdos + cardio HIIT pour révéler ta sangle abdominale en 8 semaines.',
+    preview:['Crunchs','Levé de jambes','Mountain Climbers','Planche','V-ups','Russian Twist'],
+  },
+  {
+    id:'masse-bw',
+    name:'Prise de masse poids de corps',
+    emoji:'🔥',
+    tag:'Masse',
+    tagColor:'#ff4f6a',
+    level:'Avancé',
+    duration:'12 semaines',
+    freq:'4x / semaine',
+    desc:'Hypertrophie maximale sans matériel. Programme PPL adapté au poids de corps pour prendre du volume.',
+    preview:['Pompes Archer','Pistol Squat','Dips étroits','Tractions larges','Muscle-up'],
+  },
+  {
+    id:'hiit-maison',
+    name:'HIIT Cardio Maison',
+    emoji:'🌪️',
+    tag:'Cardio',
+    tagColor:'#ffd32a',
+    level:'Tous niveaux',
+    duration:'4 semaines',
+    freq:'3x / semaine',
+    desc:'Séances HIIT de 20 min pour brûler un maximum de calories sans bouger de chez toi.',
+    preview:['Burpees','Jumping Jacks','High Knees','Squats sautés','Mountain Climbers','Fentes sautées'],
+  },
+  {
+    id:'force-mobilite',
+    name:'Force & Mobilité',
+    emoji:'🧘',
+    tag:'Équilibre',
+    tagColor:'#00d2d3',
+    level:'Intermédiaire',
+    duration:'8 semaines',
+    freq:'3x / semaine',
+    desc:'Combine renforcement et mobilité pour un corps performant et sans douleur au quotidien.',
+    preview:['Bird Dog','Hip Thrust sol','Planche latérale','Good Morning','Clamshell','Dead Bug'],
+  },
+  {
+    id:'handstand',
+    name:'Handstand Progressif',
+    emoji:'🤸',
+    tag:'Skill',
+    tagColor:'#fd79a8',
+    level:'Avancé',
+    duration:'8 semaines',
+    freq:'4x / semaine',
+    desc:'Apprends le handstand étape par étape. Du mur au freestand, progression structurée et sécurisée.',
+    preview:['Pike Push-up','Crow Stand','Hollow Body Hold','Handstand Push-up','Planche'],
+  },
+];
+
+function renderGuidedPrograms() {
+  document.getElementById('guided-list').innerHTML = GUIDED_PROGRAMS.map(p => `
+    <div class="guided-card" onclick="openGuidedProgram('${p.id}')">
+      <div class="guided-card-left">
+        <div class="guided-card-emoji">${p.emoji}</div>
+        <div class="guided-card-info">
+          <div class="guided-card-name">${p.name}</div>
+          <div class="guided-card-meta">
+            <span class="guided-tag-pill" style="color:${p.tagColor};border-color:${p.tagColor}20;background:${p.tagColor}15">${p.tag}</span>
+            <span class="guided-card-stat">${p.duration}</span>
+            <span class="guided-card-stat">${p.freq}</span>
+          </div>
+        </div>
+      </div>
+      <div class="guided-lock-icon">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+      </div>
+    </div>
+  `).join('');
+}
+
+function openGuidedProgram(id) {
+  const p = GUIDED_PROGRAMS.find(x => x.id === id);
+  if(!p) return;
+  document.getElementById('guided-modal-emoji').textContent = p.emoji;
+  document.getElementById('guided-modal-name').textContent = p.name;
+  document.getElementById('guided-modal-tag').innerHTML = `<span class="guided-tag-pill" style="color:${p.tagColor};border-color:${p.tagColor}20;background:${p.tagColor}15">${p.tag}</span>`;
+  document.getElementById('guided-modal-meta').innerHTML = `<span>${p.level}</span> · <span>${p.duration}</span> · <span>${p.freq}</span>`;
+  document.getElementById('guided-modal-desc').textContent = p.desc;
+  document.getElementById('guided-modal-preview').innerHTML = p.preview.map(e =>
+    `<div class="guided-preview-item"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>${e}</div>`
+  ).join('');
+  openModal('modal-guided');
+}
+
 // ── MUSCLE IMAGE MAP — SVG inline via data URI (no CORS issues) ──
 // Silhouettes anatomiques simples en SVG
 const MUSCLE_SVG = {
@@ -1229,8 +1364,11 @@ Object.assign(window, {
   historyChangeDay, historySetDay,
   // PIN / reset
   pinInput, pinBackspace,
+  // Programmes guidés
+  openGuidedProgram,
 });
 
 buildFilterChips();
 renderWorkouts();
 renderExercices();
+renderGuidedPrograms();
