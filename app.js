@@ -1347,63 +1347,80 @@ document.querySelectorAll('.modal-overlay').forEach(overlay=>{
 });
 
 // ── AUTH ──
-function openAuth(mode = 'login') {
-  document.getElementById('auth-error').textContent = '';
-  document.getElementById('auth-email').value = '';
-  document.getElementById('auth-password').value = '';
-  document.getElementById('auth-confirm-wrap').style.display = mode === 'signup' ? 'block' : 'none';
-  document.getElementById('auth-confirm').value = '';
-  document.getElementById('auth-modal-title').textContent = mode === 'signup' ? 'CRÉER UN COMPTE' : 'CONNEXION';
-  document.getElementById('auth-submit-btn').textContent = mode === 'signup' ? 'CRÉER MON COMPTE' : 'SE CONNECTER';
-  document.getElementById('auth-toggle-text').innerHTML = mode === 'signup'
-    ? 'Déjà un compte ? <a onclick="openAuth(\'login\')" style="color:var(--accent);cursor:pointer">Se connecter</a>'
-    : 'Pas encore de compte ? <a onclick="openAuth(\'signup\')" style="color:var(--accent);cursor:pointer">S\'inscrire</a>';
-  document.getElementById('auth-submit-btn').dataset.mode = mode;
-  openModal('modal-auth');
+const AUTH_ERRORS = {
+  'auth/email-already-in-use': 'Cet email est déjà utilisé.',
+  'auth/invalid-email':        'Adresse email invalide.',
+  'auth/weak-password':        'Mot de passe trop court (6 car. min).',
+  'auth/invalid-credential':   'Email ou mot de passe incorrect.',
+  'auth/user-not-found':       'Aucun compte avec cet email.',
+  'auth/wrong-password':       'Mot de passe incorrect.',
+};
+
+function openAuth(mode = 'welcome') {
+  const screen = document.getElementById('auth-screen');
+  screen.classList.add('visible');
+  ['welcome','signup','login'].forEach(s => {
+    document.getElementById(`auth-slide-${s}`).classList.toggle('auth-slide--hidden', s !== mode);
+  });
+  document.getElementById('auth-error-signup') && (document.getElementById('auth-error-signup').textContent = '');
+  document.getElementById('auth-error-login')  && (document.getElementById('auth-error-login').textContent  = '');
 }
 
-async function authSubmit() {
-  const mode     = document.getElementById('auth-submit-btn').dataset.mode;
-  const email    = document.getElementById('auth-email').value.trim();
-  const password = document.getElementById('auth-password').value;
-  const confirm  = document.getElementById('auth-confirm').value;
-  const errEl    = document.getElementById('auth-error');
+function closeAuthScreen() {
+  document.getElementById('auth-screen').classList.remove('visible');
+}
+
+function togglePwd(id, el) {
+  const inp = document.getElementById(id);
+  inp.type = inp.type === 'password' ? 'text' : 'password';
+  el.style.color = inp.type === 'text' ? 'var(--accent)' : 'var(--muted)';
+}
+
+async function authSubmit(mode) {
+  const errEl = document.getElementById(`auth-error-${mode}`);
   errEl.textContent = '';
-  if(!email || !password) { errEl.textContent = 'Remplis tous les champs.'; return; }
-  if(mode === 'signup' && password !== confirm) { errEl.textContent = 'Les mots de passe ne correspondent pas.'; return; }
+  let email, password;
+  if(mode === 'signup') {
+    const name    = document.getElementById('auth-name').value.trim();
+    email         = document.getElementById('auth-email').value.trim();
+    password      = document.getElementById('auth-password').value;
+    const confirm = document.getElementById('auth-confirm').value;
+    if(!name || !email || !password) { errEl.textContent = 'Remplis tous les champs.'; return; }
+    if(password !== confirm)         { errEl.textContent = 'Les mots de passe ne correspondent pas.'; return; }
+  } else {
+    email    = document.getElementById('auth-login-email').value.trim();
+    password = document.getElementById('auth-login-password').value;
+    if(!email || !password) { errEl.textContent = 'Remplis tous les champs.'; return; }
+  }
+  const btn = document.getElementById(mode === 'signup' ? 'auth-signup-btn' : null);
   try {
     if(mode === 'signup') await createUserWithEmailAndPassword(auth, email, password);
-    else await signInWithEmailAndPassword(auth, email, password);
-    closeModal('modal-auth');
+    else                  await signInWithEmailAndPassword(auth, email, password);
+    closeAuthScreen();
   } catch(e) {
-    const msgs = {
-      'auth/email-already-in-use': 'Email déjà utilisé.',
-      'auth/invalid-email': 'Email invalide.',
-      'auth/weak-password': 'Mot de passe trop court (6 car. min).',
-      'auth/invalid-credential': 'Email ou mot de passe incorrect.',
-      'auth/user-not-found': 'Aucun compte avec cet email.',
-      'auth/wrong-password': 'Mot de passe incorrect.',
-    };
-    errEl.textContent = msgs[e.code] || 'Erreur : ' + e.message;
+    errEl.textContent = AUTH_ERRORS[e.code] || 'Une erreur est survenue.';
   }
 }
 
 async function authSignOut() {
   await signOut(auth);
+  openAuth('welcome');
 }
 
 onAuthStateChanged(auth, user => {
   const btn = document.getElementById('auth-header-btn');
   if(!btn) return;
   if(user) {
-    const initials = user.email.slice(0,2).toUpperCase();
+    const initials = (user.displayName || user.email).slice(0,2).toUpperCase();
     btn.innerHTML = `<span class="auth-avatar">${initials}</span>`;
     btn.title = user.email;
     btn.onclick = () => { if(confirm(`Déconnexion de ${user.email} ?`)) authSignOut(); };
+    closeAuthScreen();
   } else {
     btn.innerHTML = `<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`;
     btn.title = 'Connexion / Inscription';
-    btn.onclick = () => openAuth('login');
+    btn.onclick = () => openAuth('welcome');
+    openAuth('welcome');
   }
 });
 
@@ -1431,7 +1448,7 @@ Object.assign(window, {
   // Programmes guidés
   openGuidedProgram,
   // Auth
-  openAuth, authSubmit, authSignOut,
+  openAuth, authSubmit, authSignOut, closeAuthScreen, togglePwd,
 });
 
 buildFilterChips();
