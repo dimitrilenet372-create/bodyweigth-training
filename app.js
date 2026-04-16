@@ -943,10 +943,9 @@ function pinInput(digit) {
   updatePinDisplay();
   if(pinCurrent.length === 4) {
     if(pinCurrent === '9833') {
-      const btn = document.getElementById('btn-reset-history');
-      btn.style.display = btn.style.display === 'flex' ? 'none' : 'flex';
       pinCurrent = '';
       closeModal('modal-pin');
+      resetAllHistory();
     } else {
       document.getElementById('pin-display').classList.add('pin-shake');
       setTimeout(() => {
@@ -971,15 +970,18 @@ function updatePinDisplay() {
 }
 
 async function resetAllHistory() {
-  if(!confirm('Effacer tout l\'historique ? Cette action est irréversible.')) return;
   await Promise.all(sessionHistory.map(s => deleteDoc(doc(db, 'sessionHistory', s.id))));
   document.getElementById('btn-reset-history').style.display = 'none';
 }
 
-// Long-press on section title to open PIN
+function showResetBtn() {
+  document.getElementById('btn-reset-history').style.display = 'flex';
+}
+
+// Long-press on section title to reveal reset button
 (function() {
   let t = null;
-  function start() { t = setTimeout(() => openModal('modal-pin'), 700); }
+  function start() { t = setTimeout(showResetBtn, 700); }
   function cancel() { clearTimeout(t); }
   const el = document.getElementById('history-section-title');
   if(!el) return;
@@ -990,13 +992,13 @@ async function resetAllHistory() {
   el.addEventListener('mouseleave', cancel);
 })();
 
-// Keyboard sequence 9-8-3-3
+// Keyboard sequence 9-8-3-3 to reveal reset button
 (function() {
   let seq = '';
   document.addEventListener('keydown', e => {
     if('9833'.startsWith(seq + e.key)) {
       seq += e.key;
-      if(seq === '9833') { openModal('modal-pin'); seq = ''; }
+      if(seq === '9833') { showResetBtn(); seq = ''; }
     } else {
       seq = '9833'.startsWith(e.key) ? e.key : '';
     }
