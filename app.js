@@ -894,9 +894,8 @@ function renderHistory() {
     const done = all.some(s => new Date(s.date).toDateString() === d.toDateString());
     const isToday = d.toDateString() === today.toDateString();
     const isSelected = d.toDateString() === historyViewDate.toDateString();
-    const isFuture = d > today;
     const iso = d.toISOString();
-    return `<div class="streak-day${done&&!isFuture?' done':''}${isToday?' today':''}${isSelected?' selected':''}${isFuture?' future':''}" onclick="historySetDay('${iso}')">${dayLabels[i]}</div>`;
+    return `<div class="streak-day${done?' done':''}${isToday?' today':''}${isSelected?' selected':''}" onclick="historySetDay('${iso}')">${dayLabels[i]}</div>`;
   }).join('');
 
   // Day navigator
