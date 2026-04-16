@@ -1226,6 +1226,10 @@ Object.assign(window, {
   toggleSet, endSession,
   // Drag sections
   sectionDragStart,
+  // Historique navigation
+  historyChangeDay, historySetDay,
+  // PIN / reset
+  pinInput, pinBackspace,
 });
 
 buildFilterChips();
