@@ -387,6 +387,8 @@ function resolveExoImg(exo) {
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js';
 import { getFirestore, collection, doc, onSnapshot, setDoc, deleteDoc, query, orderBy }
   from 'https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js';
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut }
+  from 'https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js';
 
 const firebaseConfig = {
   apiKey:            "AIzaSyBdb3K3X-sysepTYeVUFXhoQrgwl7VWpIA",
@@ -397,8 +399,9 @@ const firebaseConfig = {
   appId:             "1:830641664692:web:fc1eed3ad8da709f635de1"
 };
 
-const app = initializeApp(firebaseConfig);
-const db  = getFirestore(app);
+const app  = initializeApp(firebaseConfig);
+const db   = getFirestore(app);
+const auth = getAuth(app);
 
 // Collections Firestore
 const workoutsCol = collection(db, 'workouts');
@@ -1343,6 +1346,67 @@ document.querySelectorAll('.modal-overlay').forEach(overlay=>{
   overlay.addEventListener('click',e=>{if(e.target!==overlay||overlay.id==='modal-session')return;closeModal(overlay.id);});
 });
 
+// ── AUTH ──
+function openAuth(mode = 'login') {
+  document.getElementById('auth-error').textContent = '';
+  document.getElementById('auth-email').value = '';
+  document.getElementById('auth-password').value = '';
+  document.getElementById('auth-confirm-wrap').style.display = mode === 'signup' ? 'block' : 'none';
+  document.getElementById('auth-confirm').value = '';
+  document.getElementById('auth-modal-title').textContent = mode === 'signup' ? 'CRÉER UN COMPTE' : 'CONNEXION';
+  document.getElementById('auth-submit-btn').textContent = mode === 'signup' ? 'CRÉER MON COMPTE' : 'SE CONNECTER';
+  document.getElementById('auth-toggle-text').innerHTML = mode === 'signup'
+    ? 'Déjà un compte ? <a onclick="openAuth(\'login\')" style="color:var(--accent);cursor:pointer">Se connecter</a>'
+    : 'Pas encore de compte ? <a onclick="openAuth(\'signup\')" style="color:var(--accent);cursor:pointer">S\'inscrire</a>';
+  document.getElementById('auth-submit-btn').dataset.mode = mode;
+  openModal('modal-auth');
+}
+
+async function authSubmit() {
+  const mode     = document.getElementById('auth-submit-btn').dataset.mode;
+  const email    = document.getElementById('auth-email').value.trim();
+  const password = document.getElementById('auth-password').value;
+  const confirm  = document.getElementById('auth-confirm').value;
+  const errEl    = document.getElementById('auth-error');
+  errEl.textContent = '';
+  if(!email || !password) { errEl.textContent = 'Remplis tous les champs.'; return; }
+  if(mode === 'signup' && password !== confirm) { errEl.textContent = 'Les mots de passe ne correspondent pas.'; return; }
+  try {
+    if(mode === 'signup') await createUserWithEmailAndPassword(auth, email, password);
+    else await signInWithEmailAndPassword(auth, email, password);
+    closeModal('modal-auth');
+  } catch(e) {
+    const msgs = {
+      'auth/email-already-in-use': 'Email déjà utilisé.',
+      'auth/invalid-email': 'Email invalide.',
+      'auth/weak-password': 'Mot de passe trop court (6 car. min).',
+      'auth/invalid-credential': 'Email ou mot de passe incorrect.',
+      'auth/user-not-found': 'Aucun compte avec cet email.',
+      'auth/wrong-password': 'Mot de passe incorrect.',
+    };
+    errEl.textContent = msgs[e.code] || 'Erreur : ' + e.message;
+  }
+}
+
+async function authSignOut() {
+  await signOut(auth);
+}
+
+onAuthStateChanged(auth, user => {
+  const btn = document.getElementById('auth-header-btn');
+  if(!btn) return;
+  if(user) {
+    const initials = user.email.slice(0,2).toUpperCase();
+    btn.innerHTML = `<span class="auth-avatar">${initials}</span>`;
+    btn.title = user.email;
+    btn.onclick = () => { if(confirm(`Déconnexion de ${user.email} ?`)) authSignOut(); };
+  } else {
+    btn.innerHTML = `<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`;
+    btn.title = 'Connexion / Inscription';
+    btn.onclick = () => openAuth('login');
+  }
+});
+
 // ── EXPOSITION GLOBALE (requis pour type="module") ──
 // Les onclick="" dans le HTML ne voient pas les fonctions de module sans ça
 Object.assign(window, {
@@ -1366,6 +1430,8 @@ Object.assign(window, {
   pinInput, pinBackspace,
   // Programmes guidés
   openGuidedProgram,
+  // Auth
+  openAuth, authSubmit, authSignOut,
 });
 
 buildFilterChips();
