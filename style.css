@@ -197,7 +197,6 @@ header { padding:24px 20px 16px; display:flex; align-items:center; justify-conte
 .streak-day.done { background:rgba(77,184,255,.1); border-color:rgba(77,184,255,.3); color:var(--accent); }
 .streak-day.today { border-color:var(--accent); color:var(--accent); }
 .streak-day.selected { background:var(--accent); border-color:var(--accent); color:#000; font-weight:800; box-shadow:0 0 10px var(--accent-glow); }
-.streak-day.future { opacity:.4; }
 .history-item { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:14px 16px; display:flex; align-items:center; gap:14px; margin-bottom:8px; }
 .history-dot { width:8px; height:8px; border-radius:50%; background:var(--accent); flex-shrink:0; box-shadow:0 0 8px var(--accent); }
 .history-info { flex:1; }
