@@ -886,12 +886,17 @@ function renderHistory() {
     else if(i > 0) break;
   }
   document.getElementById('stat-streak').innerHTML = `${streak}<span>j</span>`;
-  const days = ['L','M','M','J','V','S','D'];
+  const dayLabels = ['L','M','M','J','V','S','D'];
+  const monday = new Date(today);
+  monday.setDate(today.getDate() - (today.getDay() === 0 ? 6 : today.getDay() - 1));
   document.getElementById('streak-row').innerHTML = Array.from({length:7}, (_,i) => {
-    const d = new Date(today); d.setDate(d.getDate()-(6-i));
+    const d = new Date(monday); d.setDate(monday.getDate() + i);
     const done = all.some(s => new Date(s.date).toDateString() === d.toDateString());
     const isToday = d.toDateString() === today.toDateString();
-    return `<div class="streak-day${done?' done':''}${isToday&&!done?' today':''}">${days[d.getDay()===0?6:d.getDay()-1]}</div>`;
+    const isSelected = d.toDateString() === historyViewDate.toDateString();
+    const isFuture = d > today;
+    const iso = d.toISOString();
+    return `<div class="streak-day${done&&!isFuture?' done':''}${isToday?' today':''}${isSelected?' selected':''}${isFuture?' future':''}" onclick="historySetDay('${iso}')">${dayLabels[i]}</div>`;
   }).join('');
 
   // Day navigator
@@ -924,6 +929,13 @@ function historyChangeDay(delta) {
   renderHistory();
 }
 
+function historySetDay(iso) {
+  historyViewDate = new Date(iso);
+  historyViewDate.setHours(0,0,0,0);
+  renderHistory();
+  document.getElementById('history-list').scrollIntoView({behavior:'smooth', block:'start'});
+}
+
 // ── RESET HISTORY (code 9833) ──
 function pinInput(digit) {
   if(pinCurrent.length >= 4) return;
@@ -931,7 +943,9 @@ function pinInput(digit) {
   updatePinDisplay();
   if(pinCurrent.length === 4) {
     if(pinCurrent === '9833') {
-      document.getElementById('btn-reset-history').style.display = 'flex';
+      const btn = document.getElementById('btn-reset-history');
+      btn.style.display = btn.style.display === 'flex' ? 'none' : 'flex';
+      pinCurrent = '';
       closeModal('modal-pin');
     } else {
       document.getElementById('pin-display').classList.add('pin-shake');
@@ -941,7 +955,6 @@ function pinInput(digit) {
         updatePinDisplay();
       }, 500);
     }
-    if(pinCurrent === '9833') pinCurrent = '';
   }
 }
 
