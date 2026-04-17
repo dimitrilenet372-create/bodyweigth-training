@@ -1444,7 +1444,7 @@ Object.assign(window, {
   // Historique navigation
   historyChangeDay, historySetDay,
   // PIN / reset
-  pinInput, pinBackspace,
+  pinInput, pinBackspace, resetAllHistory,
   // Programmes guidés
   openGuidedProgram,
   // Auth
