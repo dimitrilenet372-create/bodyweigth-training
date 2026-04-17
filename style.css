@@ -715,11 +715,13 @@ header { padding:24px 20px 16px; display:flex; align-items:center; justify-conte
 }
 .auth-btn-main {
   width: 100%;
+  flex: none;
   font-size: 18px;
   padding: 16px;
 }
 .auth-btn-secondary {
   width: 100%;
+  flex: none;
   padding: 14px;
   font-size: 14px;
 }
