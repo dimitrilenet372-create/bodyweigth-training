@@ -102,6 +102,26 @@ const EXERCISES_DB = [
   { id:'bearcrawl', name:'Bear Crawl',             emoji:'🐻', muscle:'Cardio',          tags:['Full Body','Core'],            gif:'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/High-Knees.gif/200px-High-Knees.gif',                                         desc:'À 4 pattes, genoux décollés, avance en diagonale.' },
   { id:'starhop',   name:'Star Jumps',             emoji:'🌟', muscle:'Cardio',          tags:['Full Body','Explosivité'],     gif:'https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/Jumping-Jacks.gif/200px-Jumping-Jacks.gif',                                   desc:'Squat puis saute en étoile, bras et jambes écartés.' },
   { id:'sprint',    name:'Sprint sur place',       emoji:'💨', muscle:'Cardio',          tags:['Cardio','Intensité max'],      gif:'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/High-Knees.gif/200px-High-Knees.gif',                                         desc:'Course sur place à 100% d\'intensité.' },
+
+  // ── CALLISTHÉNIE — SKILLS ──
+  { id:'frogstand',   name:'Frog Stand',             emoji:'🐸', muscle:'Gainage',         tags:['Équilibre','Débutant'],        gif:'https://upload.wikimedia.org/wikipedia/commons/thumb/f/fb/Crunch_-_Anatomy.gif/200px-Crunch_-_Anatomy.gif',         desc:'Mains au sol, genoux posés sur les coudes, équilibre statique.' },
+  { id:'crowstand',   name:'Crow Stand',             emoji:'🦅', muscle:'Gainage',         tags:['Équilibre','Intermédiaire'],   gif:'https://upload.wikimedia.org/wikipedia/commons/thumb/f/fb/Crunch_-_Anatomy.gif/200px-Crunch_-_Anatomy.gif',         desc:'Équilibre sur les mains, genoux sur les bras tendus.' },
+  { id:'tucplanche',  name:'Tuck Planche Hold',      emoji:'⚖️', muscle:'Gainage',         tags:['Isométrique','Avancé'],        gif:'https://upload.wikimedia.org/wikipedia/commons/thumb/f/fb/Crunch_-_Anatomy.gif/200px-Crunch_-_Anatomy.gif',         desc:'Hanches et genoux ramenés vers la poitrine, corps décollé du sol.' },
+  { id:'planchelean', name:'Planche Lean',           emoji:'🏄', muscle:'Gainage',         tags:['Isométrique','Avancé'],        gif:'https://upload.wikimedia.org/wikipedia/commons/thumb/f/fb/Crunch_-_Anatomy.gif/200px-Crunch_-_Anatomy.gif',         desc:'En planche, incline les épaules devant les mains. Progression planche.' },
+  { id:'hshold',      name:'Handstand Hold',         emoji:'🙃', muscle:'Épaules',         tags:['Équilibre','Avancé','Isométrique'], gif:'https://upload.wikimedia.org/wikipedia/commons/thumb/f/fb/Crunch_-_Anatomy.gif/200px-Crunch_-_Anatomy.gif',   desc:'Équilibre sur les mains, corps aligné. Commence contre le mur.' },
+  { id:'wallwalk',    name:'Wall Walk',              emoji:'🧗', muscle:'Épaules',         tags:['Force','Intermédiaire'],       gif:'https://upload.wikimedia.org/wikipedia/commons/thumb/f/fb/Crunch_-_Anatomy.gif/200px-Crunch_-_Anatomy.gif',         desc:'En pompe, marche les pieds au mur jusqu\'au handstand.' },
+  { id:'fronttuck',   name:'Front Lever Tuck',       emoji:'🎯', muscle:'Dos',             tags:['Isométrique','Avancé'],        gif:'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/Push_up.gif/220px-Push_up.gif',                          desc:'Suspendu à la barre, maintiens les genoux ramenés, corps horizontal.' },
+  { id:'backlev',     name:'Back Lever',             emoji:'🔙', muscle:'Dos',             tags:['Isométrique','Avancé'],        gif:'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/Push_up.gif/220px-Push_up.gif',                          desc:'Suspendu, corps horizontal face vers le bas. Skill de gymnastique.' },
+  { id:'skincat',     name:'Skin the Cat',           emoji:'🐱', muscle:'Dos',             tags:['Mobilité','Intermédiaire'],    gif:'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/Push_up.gif/220px-Push_up.gif',                          desc:'Barre ou anneaux : passe les jambes sous les bras en contrôlant.' },
+  { id:'typewpull',   name:'Typewriter Pull-up',     emoji:'⌨️', muscle:'Dos',             tags:['Grand dorsal','Avancé'],       gif:'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/Push_up.gif/220px-Push_up.gif',                          desc:'En haut de la traction, déplace ton buste latéralement.' },
+  { id:'archerpull',  name:'Archer Pull-up',         emoji:'🏹', muscle:'Dos',             tags:['Grand dorsal','Avancé'],       gif:'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/Push_up.gif/220px-Push_up.gif',                          desc:'Tire d\'un côté en gardant l\'autre bras tendu.' },
+  { id:'commpull',    name:'Commando Pull-up',       emoji:'🪖', muscle:'Dos',             tags:['Grand dorsal','Intermédiaire'],gif:'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/Push_up.gif/220px-Push_up.gif',                          desc:'Prise neutre, alterne la tête à gauche puis à droite de la barre.' },
+  { id:'negpull',     name:'Traction négative',      emoji:'⬇️', muscle:'Dos',             tags:['Grand dorsal','Débutant'],     gif:'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/Push_up.gif/220px-Push_up.gif',                          desc:'Monte à la barre puis descends très lentement (5-8 sec). Renforce la traction.' },
+  { id:'humanflag',   name:'Human Flag',             emoji:'🚩', muscle:'Obliques',        tags:['Isométrique','Avancé'],        gif:'https://upload.wikimedia.org/wikipedia/commons/thumb/f/fb/Crunch_-_Anatomy.gif/200px-Crunch_-_Anatomy.gif',         desc:'Corps horizontal à la verticale d\'un poteau. Le summum de la force latérale.' },
+  { id:'hangknee',    name:'Hanging Knee Raise',     emoji:'🦵', muscle:'Abdominaux',      tags:['Abdos','Intermédiaire'],       gif:'https://upload.wikimedia.org/wikipedia/commons/thumb/f/fb/Crunch_-_Anatomy.gif/200px-Crunch_-_Anatomy.gif',         desc:'Suspendu à la barre, ramène les genoux vers la poitrine.' },
+  { id:'toesbar',     name:'Toes to Bar',            emoji:'🎪', muscle:'Abdominaux',      tags:['Full Core','Avancé'],          gif:'https://upload.wikimedia.org/wikipedia/commons/thumb/f/fb/Crunch_-_Anatomy.gif/200px-Crunch_-_Anatomy.gif',         desc:'Suspendu, monte les pieds tendus jusqu\'à la barre.' },
+  { id:'ringpu',      name:'Ring Push-up',           emoji:'⭕', muscle:'Pecs',            tags:['Pectoraux','Instabilité'],     gif:'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/Push_up.gif/220px-Push_up.gif',                          desc:'Pompes sur anneaux. L\'instabilité recrute bien plus de muscles stabilisateurs.' },
+  { id:'ringdip',     name:'Ring Dip',               emoji:'💍', muscle:'Triceps',         tags:['Triceps','Avancé'],            gif:'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/Push_up.gif/220px-Push_up.gif',                          desc:'Dips sur anneaux. Stabilise en tournant les paumes vers l\'extérieur en haut.' },
 ];
 
 const MUSCLE_ORDER = [
@@ -335,6 +355,25 @@ const MUSCLE_MAPS = {
   'plank':     { front: {abs:1, shoulders:1}, back: {lowerback:1} },
   'plankup':   { front: {obliques:1, abs:1}, back: {lowerback:1} },
   'birddog':   { front: {abs:1}, back: {lowerback:1, glutes:1} },
+  // CALLISTHÉNIE SKILLS
+  'frogstand':  { front: {abs:1, shoulders:1} },
+  'crowstand':  { front: {abs:1, shoulders:1}, back: {triceps:1} },
+  'tucplanche': { front: {pecs:1, shoulders:1, abs:1}, back: {triceps:1} },
+  'planchelean':{ front: {pecs:1, shoulders:1, abs:1} },
+  'hshold':     { front: {shoulders:1}, back: {shoulders:1, triceps:1} },
+  'wallwalk':   { front: {shoulders:1, abs:1}, back: {shoulders:1} },
+  'fronttuck':  { back:  {lats:1, traps:1, lowerback:1} },
+  'backlev':    { back:  {lats:1, shoulders:1} },
+  'skincat':    { back:  {lats:1, shoulders:1} },
+  'typewpull':  { back:  {lats:1, traps:1} },
+  'archerpull': { front: {biceps:1}, back: {lats:1} },
+  'commpull':   { front: {biceps:1}, back: {lats:1} },
+  'negpull':    { back:  {lats:1, traps:1} },
+  'humanflag':  { front: {obliques:1, abs:1}, back: {lats:1} },
+  'hangknee':   { front: {abs:1} },
+  'toesbar':    { front: {abs:1, obliques:1}, back: {lats:1} },
+  'ringpu':     { front: {pecs:1, shoulders:1}, back: {triceps:1} },
+  'ringdip':    { back:  {triceps:1, shoulders:1} },
   // CARDIO
   'burpee':    { front: {pecs:1, quads:1, abs:1}, back: {glutes:1} },
   'jj':        { front: {shoulders:1, quads:1} },
@@ -470,6 +509,51 @@ async function seedDefaultWorkouts() {
 }
 function getExo(id) { return EXERCISES_DB.find(e => e.id === id); }
 function fmtTime(sec) { return `${Math.floor(sec/60)}:${(sec%60).toString().padStart(2,'0')}`; }
+
+function estimateDuration(exercises) {
+  if (!exercises.length) return null;
+  let sec = 5 * 60; // 5 min échauffement
+  exercises.forEach(we => {
+    const ex = getExo(we.exoId);
+    const isIso = ex && ex.tags.some(t => t === 'Isométrique');
+    we.sets.forEach(s => {
+      const reps = parseInt(s.reps) || 10;
+      sec += isIso ? reps + 45 : reps * 3.5 + 60;
+    });
+  });
+  return Math.ceil(sec / 60 / 5) * 5;
+}
+
+function estimateDays(exercises) {
+  if (!exercises.length) return null;
+  const totalSets = exercises.reduce((acc, we) => acc + we.sets.length, 0);
+  const muscles = new Set(exercises.map(we => getExo(we.exoId)?.muscle).filter(Boolean));
+  if (muscles.size >= 5 || totalSets > 24) return 3;
+  if (muscles.size >= 3 || totalSets > 12) return 4;
+  return 5;
+}
+
+function updateEstimates() {
+  const durEl  = document.getElementById('estimate-duration');
+  const daysEl = document.getElementById('estimate-days');
+  if (!durEl || !daysEl) return;
+  const dur  = estimateDuration(workoutExercises);
+  const days = estimateDays(workoutExercises);
+  if (dur) {
+    durEl.textContent = `~${dur} min`;
+    durEl.classList.remove('empty');
+  } else {
+    durEl.textContent = '—';
+    durEl.classList.add('empty');
+  }
+  if (days) {
+    daysEl.textContent = `${days}× / sem.`;
+    daysEl.classList.remove('empty');
+  } else {
+    daysEl.textContent = '—';
+    daysEl.classList.add('empty');
+  }
+}
 
 // ── PROGRAMMES GUIDÉS ──
 const GUIDED_PROGRAMS = [
@@ -1152,11 +1236,12 @@ function switchTab(id, btn) {
 }
 
 // ── WORKOUT MODAL ──
-function openNewWorkout(){editingWorkoutId=null;workoutExercises=[];document.getElementById('input-workout-name').value='';document.getElementById('input-workout-days').value='';document.getElementById('input-workout-duration').value='';document.getElementById('modal-workout-title').textContent='NOUVEAU PROGRAMME';renderWorkoutExoPicker();openModal('modal-workout');}
-function editWorkout(id){const w=workouts.find(x=>x.id===id);if(!w)return;editingWorkoutId=id;workoutExercises=w.exercises.map(e=>({exoId:e.exoId,sets:e.sets.map(s=>({...s}))}));document.getElementById('input-workout-name').value=w.name;document.getElementById('input-workout-days').value=w.days;document.getElementById('input-workout-duration').value=w.duration;document.getElementById('modal-workout-title').textContent='MODIFIER LE PROGRAMME';renderWorkoutExoPicker();openModal('modal-workout');}
+function openNewWorkout(){editingWorkoutId=null;workoutExercises=[];document.getElementById('input-workout-name').value='';document.getElementById('modal-workout-title').textContent='NOUVEAU PROGRAMME';renderWorkoutExoPicker();updateEstimates();openModal('modal-workout');}
+function editWorkout(id){const w=workouts.find(x=>x.id===id);if(!w)return;editingWorkoutId=id;workoutExercises=w.exercises.map(e=>({exoId:e.exoId,sets:e.sets.map(s=>({...s}))}));document.getElementById('input-workout-name').value=w.name;document.getElementById('modal-workout-title').textContent='MODIFIER LE PROGRAMME';renderWorkoutExoPicker();updateEstimates();openModal('modal-workout');}
 function deleteWorkout(id){if(!confirm('Supprimer ce programme ?'))return;deleteWorkoutFromDb(id);}
 
 function renderWorkoutExoPicker() {
+  updateEstimates();
   const c=document.getElementById('workout-exo-picker');
   if(!workoutExercises.length){c.innerHTML='';return;}
   c.innerHTML=workoutExercises.map((we,i)=>{
@@ -1190,15 +1275,16 @@ function updateSet(i,si,val){workoutExercises[i].sets[si].reps=parseInt(val)||10
 
 function saveWorkout(){
   const name=document.getElementById('input-workout-name').value.trim();
-  const days=parseInt(document.getElementById('input-workout-days').value)||3;
-  const duration=parseInt(document.getElementById('input-workout-duration').value)||40;
   if(!name){alert('Donne un nom au programme !');return;}
   if(!workoutExercises.length){alert('Ajoute au moins un exercice !');return;}
   const w = {
     id: editingWorkoutId || 'w'+Date.now(),
-    name, days, duration, exercises: workoutExercises
+    name,
+    days: estimateDays(workoutExercises) || 3,
+    duration: estimateDuration(workoutExercises) || 40,
+    exercises: workoutExercises
   };
-  saveWorkoutToDb(w); // Firestore → déclenche onSnapshot → renderWorkouts()
+  saveWorkoutToDb(w);
   closeModal('modal-workout');
 }
 
