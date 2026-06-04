@@ -579,7 +579,6 @@ const GUIDED_PROGRAMS = [
     level:'Débutant',
     duration:'6 semaines',
     freq:'3x / semaine',
-    price:'4.99€',
     desc:'Le programme idéal pour partir de zéro. Full body progressif, zéro matériel, résultats visibles en 6 semaines.',
     preview:['Pompes inclinées','Squats','Planche','Fentes avant','Crunchs','Hip Thrust sol'],
   },
@@ -592,7 +591,6 @@ const GUIDED_PROGRAMS = [
     level:'Débutant → Intermédiaire',
     duration:'4 semaines',
     freq:'3x / semaine',
-    price:'6.99€',
     desc:'Programme progressif pour réaliser ta première traction complète. De zéro à héros en 30 jours.',
     preview:['Rowing inversé','Chin-ups négatifs','Dead Hang','Tractions assistées','Tractions larges'],
   },
@@ -605,7 +603,6 @@ const GUIDED_PROGRAMS = [
     level:'Intermédiaire',
     duration:'6 semaines',
     freq:'4x / semaine',
-    price:'6.99€',
     desc:'Le défi ultime. Progression semaine par semaine jusqu\'à 100 pompes d\'affilée.',
     preview:['Pompes classiques','Pompes larges','Pompes diamant','Pompes explosives','Pompes Archer'],
   },
@@ -618,7 +615,6 @@ const GUIDED_PROGRAMS = [
     level:'Intermédiaire',
     duration:'8 semaines',
     freq:'5x / semaine',
-    price:'7.99€',
     desc:'Programme complet abdos + cardio HIIT pour révéler ta sangle abdominale en 8 semaines.',
     preview:['Crunchs','Levé de jambes','Mountain Climbers','Planche','V-ups','Russian Twist'],
   },
@@ -631,7 +627,6 @@ const GUIDED_PROGRAMS = [
     level:'Avancé',
     duration:'12 semaines',
     freq:'4x / semaine',
-    price:'9.99€',
     desc:'Hypertrophie maximale sans matériel. Programme PPL adapté au poids de corps pour prendre du volume.',
     preview:['Pompes Archer','Pistol Squat','Dips étroits','Tractions larges','Muscle-up'],
   },
@@ -657,7 +652,6 @@ const GUIDED_PROGRAMS = [
     level:'Intermédiaire',
     duration:'8 semaines',
     freq:'3x / semaine',
-    price:'7.99€',
     desc:'Combine renforcement et mobilité pour un corps performant et sans douleur au quotidien.',
     preview:['Bird Dog','Hip Thrust sol','Planche latérale','Good Morning','Clamshell','Dead Bug'],
   },
@@ -670,7 +664,6 @@ const GUIDED_PROGRAMS = [
     level:'Avancé',
     duration:'8 semaines',
     freq:'4x / semaine',
-    price:'9.99€',
     desc:'Apprends le handstand étape par étape. Du mur au freestand, progression structurée et sécurisée.',
     preview:['Pike Push-up','Crow Stand','Hollow Body Hold','Handstand Push-up','Planche'],
   },
@@ -695,13 +688,14 @@ function renderGuidedPrograms() {
         ? `<div class="guided-lock-icon guided-lock-icon--open"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0"/></svg></div>`
         : `<div class="guided-price-wrap">
              <div class="guided-price-lock"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg></div>
-             <div class="guided-price">${p.price}</div>
+             <div class="guided-price">${PREMIUM_PRICE}</div>
            </div>`
       }
     </div>
   `).join('');
 }
 
+const PREMIUM_PRICE  = '9.99€ / mois';
 const PREMIUM_EMAILS = ['prout@hotmail.fr', 'hirionne@gmail.com'];
 function isPremium() {
   const user = auth.currentUser;
