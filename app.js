@@ -1453,7 +1453,7 @@ function renderSession(){
       </div>`;
     }).join('')+
     `<button class="btn-end-session ${allDoneGlobal?'all-done':''}" onclick="endSession()">
-      ${allDoneGlobal?'🏆 SÉANCE TERMINÉE !':'⏹ TERMINER LA SÉANCE'}
+      ${allDoneGlobal?'SÉANCE TERMINÉE !':'TERMINER LA SÉANCE'}
     </button>`;
 }
 
@@ -1467,7 +1467,7 @@ function updateSessionProgress(){
 }
 function endSession(){
   const allDone=sessionExercises.every(e=>e.setsStatus.every(s=>s.done));
-  if(!confirm(allDone?'💪 GG ! Enregistrer cette séance ?':'Terminer maintenant ? (tous les exos ne sont pas validés)'))return;
+  if(!confirm(allDone?'GG ! Enregistrer cette séance ?':'Terminer maintenant ? (tous les exos ne sont pas validés)'))return;
   clearInterval(activeTimerInterval);
   const session = {id:'s'+Date.now(),name:currentWorkout.name,date:new Date().toISOString(),duration:sessionSeconds,exercises:sessionExercises.length};
   saveSessionToDb(session); // Firestore → déclenche onSnapshot → renderHistory() pour tous
