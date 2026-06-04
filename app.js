@@ -706,13 +706,58 @@ function openGuidedProgram(id) {
   document.getElementById('guided-modal-tag').innerHTML = `<span class="guided-tag-pill" style="color:${p.tagColor};border-color:${p.tagColor}20;background:${p.tagColor}15">${p.tag}</span>`;
   document.getElementById('guided-modal-meta').innerHTML = `<span>${p.level}</span> · <span>${p.duration}</span> · <span>${p.freq}</span>`;
   document.getElementById('guided-modal-desc').textContent = p.desc;
-  document.getElementById('guided-modal-preview').innerHTML = p.preview.map(e =>
-    `<div class="guided-preview-item"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>${e}</div>`
-  ).join('');
+  document.getElementById('guided-modal-preview').innerHTML = p.preview.map(name => {
+    const ex = EXERCISES_DB.find(e => e.name === name);
+    return ex
+      ? `<div class="guided-preview-item guided-preview-item--link" onclick="openExoFromGuided('${ex.id}')">
+          <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+          ${name}
+          <svg style="margin-left:auto;flex-shrink:0;opacity:.5" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8" fill="currentColor" stroke="none"/></svg>
+        </div>`
+      : `<div class="guided-preview-item"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>${name}</div>`;
+  }).join('');
   const premium = isPremium();
   document.getElementById('guided-lock').style.display    = premium ? 'none' : 'flex';
   document.getElementById('guided-start-btn').style.display = premium ? 'flex' : 'none';
   openModal('modal-guided');
+}
+
+function openExoFromGuided(exoId) {
+  const ex = getExo(exoId); if (!ex) return;
+  previewExoId = exoId;
+  const ytId = YOUTUBE_MAP[exoId];
+  const gif  = resolveExoImg(ex);
+
+  document.getElementById('preview-title').textContent  = ex.name;
+  document.getElementById('preview-desc').textContent   = ex.desc || '';
+  document.getElementById('preview-muscle').textContent = ex.muscle;
+  document.getElementById('preview-tags').innerHTML     = ex.tags.map(t=>`<span class="exo-tag">${t}</span>`).join('');
+
+  const mediaWrap = document.getElementById('preview-media-wrap');
+  if (ytId) {
+    mediaWrap.style.display = 'block';
+    mediaWrap.innerHTML = `<div class="preview-video-wrap"><iframe src="https://www.youtube.com/embed/${ytId}?autoplay=1&mute=1&loop=1&playlist=${ytId}&controls=1&rel=0&modestbranding=1" allow="autoplay; encrypted-media" allowfullscreen frameborder="0" class="preview-iframe"></iframe></div>`;
+  } else if (gif) {
+    mediaWrap.style.display = 'block';
+    mediaWrap.innerHTML = `<div class="preview-gif-wrap"><img src="${gif}" class="preview-gif-img" alt="${ex.name}"></div>`;
+  } else {
+    mediaWrap.style.display = 'none';
+    mediaWrap.innerHTML = '';
+  }
+
+  const backBtn = document.getElementById('preview-back-btn');
+  backBtn.textContent = '← Retour';
+  backBtn.onclick = () => {
+    document.getElementById('preview-media-wrap').innerHTML = '';
+    closeModal('modal-preview');
+    openModal('modal-guided');
+  };
+  backBtn.style.display = 'block';
+  document.getElementById('preview-standalone-btn').style.display = 'none';
+  document.getElementById('preview-add-btn').style.display = 'none';
+
+  closeModal('modal-guided');
+  openModal('modal-preview');
 }
 
 function startGuidedSession() {
@@ -978,6 +1023,7 @@ function openExoPreview(exoId) {
   }
   document.getElementById('preview-back-btn').style.display = 'none';
   document.getElementById('preview-standalone-btn').style.display = 'block';
+  document.getElementById('preview-add-btn').style.display = 'flex';
   openModal('modal-preview');
 }
 function addExoFromPreview() {
@@ -1401,7 +1447,10 @@ function openExoPreviewFromPicker(exoId) {
   const alreadyAdded = workoutExercises.some(we=>we.exoId===exoId);
   document.getElementById('preview-add-btn').textContent = alreadyAdded ? '✓ DÉJÀ AJOUTÉ' : '+ AJOUTER';
   document.getElementById('preview-add-btn').disabled = alreadyAdded;
+  document.getElementById('preview-add-btn').style.display = 'flex';
   document.getElementById('preview-back-btn').style.display = 'block';
+  document.getElementById('preview-back-btn').textContent = '← Retour';
+  document.getElementById('preview-back-btn').onclick = closePreviewBackToPicker;
   document.getElementById('preview-standalone-btn').style.display = 'none';
 
   closeModal('modal-exo-picker');
@@ -1600,7 +1649,7 @@ Object.assign(window, {
   // PIN / reset
   pinInput, pinBackspace, resetAllHistory,
   // Programmes guidés
-  openGuidedProgram, startGuidedSession,
+  openGuidedProgram, startGuidedSession, openExoFromGuided,
   // Auth
   openAuth, authSubmit, authSignOut, closeAuthScreen, togglePwd,
 });

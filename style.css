@@ -855,6 +855,8 @@ header { padding:24px 20px 16px; display:flex; align-items:center; justify-conte
 .guided-modal-desc { font-size: 14px; color: var(--muted); line-height: 1.6; margin-bottom: 20px; }
 .guided-preview-item { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text); padding: 8px 12px; background: var(--surface2); border-radius: 8px; margin-bottom: 6px; }
 .guided-preview-item svg { color: var(--accent); flex-shrink: 0; }
+.guided-preview-item--link { cursor: pointer; transition: background .15s, border-color .15s; border: 1px solid transparent; }
+.guided-preview-item--link:hover { background: var(--surface3); border-color: var(--border2); }
 .guided-coming-soon {
   display: flex;
   align-items: center;
