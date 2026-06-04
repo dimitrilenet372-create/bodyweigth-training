@@ -1549,19 +1549,19 @@ async function authSignOut() {
 onAuthStateChanged(auth, user => {
   const btn = document.getElementById('auth-header-btn');
   if(!btn) return;
-  if(user) {
-    const initials = (user.displayName || user.email).slice(0,2).toUpperCase();
+  if(user && !user.isAnonymous) {
+    const initials = (user.displayName || user.email || '?').slice(0,2).toUpperCase();
     btn.innerHTML = `<span class="auth-avatar">${initials}</span>`;
-    btn.title = user.email;
+    btn.title = user.email || '';
     btn.onclick = () => { if(confirm(`Déconnexion de ${user.email} ?`)) authSignOut(); };
     closeAuthScreen();
-    renderGuidedPrograms();
-  } else {
+  } else if(!user) {
     btn.innerHTML = `<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`;
     btn.title = 'Connexion / Inscription';
     btn.onclick = () => openAuth('welcome');
     openAuth('welcome');
   }
+  renderGuidedPrograms();
 });
 
 // ── EXPOSITION GLOBALE (requis pour type="module") ──
