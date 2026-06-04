@@ -1028,7 +1028,7 @@ function renderWorkouts() {
         <div class="meta-item"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>~${w.duration} min</div>
       </div>
       ${exos.length?`<div class="workout-exercises">${preview}${more}</div>`:''}
-      <div class="card-start-wrap"><button class="start-btn" onclick="event.stopPropagation();startSession('${w.id}')">▶ DÉMARRER</button></div>
+      <div class="card-start-wrap"><button class="start-btn" onclick="event.stopPropagation();startSession('${w.id}')">DÉMARRER</button></div>
     </div>`;
   }).join('');
 }
