@@ -1425,7 +1425,6 @@ function startSession(workoutId){
 function renderSession(){
   const total=sessionExercises.length;
   const done=sessionExercises.filter(e=>e.setsStatus.every(s=>s.done)).length;
-  const allDoneGlobal=done===total&&total>0;
   document.getElementById('session-exo-list').innerHTML=
     sessionExercises.map((we,i)=>{
       const ex=getExo(we.exoId);if(!ex)return'';
@@ -1444,20 +1443,35 @@ function renderSession(){
           ${we.setsStatus.map((s,si)=>`
           <div class="session-set-row${s.done?' session-set-row--done':''}">
             <div class="session-set-num">${si+1}</div>
-            <div class="session-set-reps${s.done?' session-set-reps--done':''}">${s.reps} reps</div>
-            <button onclick="toggleSet(${i},${si})" class="btn-validate${s.done?' btn-validate--done':''}">
-              ${s.done?'✓ OK':'Valider'}
+            ${s.done
+              ? `<div class="session-set-result"><span class="session-set-actual">${s.actualReps}</span><span class="session-set-target-done">/ ${s.reps}</span></div>`
+              : `<div class="session-set-target">${s.reps} reps</div>
+                 <input class="session-reps-input" type="number" id="actual-${i}-${si}" value="${s.reps}" min="0" max="999">`
+            }
+            <button onclick="${s.done?`undoSet(${i},${si})`:`validateSet(${i},${si})`}" class="btn-validate${s.done?' btn-validate--done':''}">
+              ${s.done?'✓':'OK'}
             </button>
           </div>`).join('')}
         </div>
       </div>`;
-    }).join('')+
-    `<button class="btn-end-session ${allDoneGlobal?'all-done':''}" onclick="endSession()">
-      ${allDoneGlobal?'SÉANCE TERMINÉE !':'TERMINER LA SÉANCE'}
-    </button>`;
+    }).join('');
 }
 
-function toggleSet(exoI,setI){sessionExercises[exoI].setsStatus[setI].done=!sessionExercises[exoI].setsStatus[setI].done;renderSession();updateSessionProgress();}
+function validateSet(exoI, setI) {
+  const input = document.getElementById(`actual-${exoI}-${setI}`);
+  const actual = parseInt(input?.value) || sessionExercises[exoI].setsStatus[setI].reps;
+  sessionExercises[exoI].setsStatus[setI].done = true;
+  sessionExercises[exoI].setsStatus[setI].actualReps = actual;
+  renderSession();
+  updateSessionProgress();
+}
+function undoSet(exoI, setI) {
+  sessionExercises[exoI].setsStatus[setI].done = false;
+  sessionExercises[exoI].setsStatus[setI].actualReps = undefined;
+  renderSession();
+  updateSessionProgress();
+}
+function toggleSet(exoI,setI){ sessionExercises[exoI].setsStatus[setI].done ? undoSet(exoI,setI) : validateSet(exoI,setI); }
 function updateSessionProgress(){
   const total=sessionExercises.length;
   const done=sessionExercises.filter(e=>e.setsStatus.every(s=>s.done)).length;
@@ -1578,7 +1592,7 @@ Object.assign(window, {
   // Sets
   removeWorkoutExo, addSet, removeSet, updateSet,
   // Session
-  toggleSet, endSession,
+  toggleSet, validateSet, undoSet, endSession,
   // Drag sections
   sectionDragStart,
   // Historique navigation
