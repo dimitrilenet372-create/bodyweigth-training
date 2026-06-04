@@ -992,7 +992,7 @@ function initChipPointerDrag() {
 }
 
 // ── PREVIEW avec YouTube ──
-function openExoPreview(exoId) {
+function openExoPreview(exoId, fromWorkout = false) {
   previewExoId = exoId;
   const ex = getExo(exoId); if (!ex) return;
   const gif    = resolveExoImg(ex);
@@ -1028,9 +1028,23 @@ function openExoPreview(exoId) {
     mediaWrap.style.display = 'none';
     mediaWrap.innerHTML = '';
   }
-  document.getElementById('preview-back-btn').style.display = 'none';
-  document.getElementById('preview-standalone-btn').style.display = 'block';
-  document.getElementById('preview-add-btn').style.display = 'flex';
+  if (fromWorkout) {
+    const backBtn = document.getElementById('preview-back-btn');
+    backBtn.textContent = '← Retour';
+    backBtn.onclick = () => {
+      document.getElementById('preview-media-wrap').innerHTML = '';
+      closeModal('modal-preview');
+      openModal('modal-workout');
+    };
+    backBtn.style.display = 'block';
+    document.getElementById('preview-standalone-btn').style.display = 'none';
+    document.getElementById('preview-add-btn').style.display = 'none';
+    closeModal('modal-workout');
+  } else {
+    document.getElementById('preview-back-btn').style.display = 'none';
+    document.getElementById('preview-standalone-btn').style.display = 'block';
+    document.getElementById('preview-add-btn').style.display = 'flex';
+  }
   openModal('modal-preview');
 }
 function addExoFromPreview() {
@@ -1353,8 +1367,8 @@ function renderWorkoutExoPicker() {
     const ex=getExo(we.exoId);if(!ex)return'';
     return `<div class="picker-exo-card">
       <div class="picker-exo-header">
-        <span class="picker-exo-emoji">${ex.emoji}</span>
-        <div class="picker-exo-info">
+        <span class="picker-exo-emoji" style="cursor:pointer" onclick="openExoPreview('${ex.id}',true)">${ex.emoji}</span>
+        <div class="picker-exo-info" style="cursor:pointer" onclick="openExoPreview('${ex.id}',true)">
           <div class="picker-exo-name">${ex.name}</div>
           <div class="picker-exo-muscle">${ex.muscle}</div>
         </div>
