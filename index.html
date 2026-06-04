@@ -112,8 +112,9 @@
       <p id="preview-desc" style="font-size:14px;color:var(--muted);line-height:1.6;margin-bottom:20px"></p>
     </div>
     <div class="modal-actions">
-      <button class="btn-cancel" onclick="closePreview()">Fermer</button>
-      <button class="btn-save"   onclick="addExoFromPreview()">+ AJOUTER</button>
+      <button class="btn-cancel" id="preview-back-btn" onclick="closePreviewBackToPicker()" style="display:none">← Retour</button>
+      <button class="btn-cancel" id="preview-standalone-btn" onclick="closePreview()">Fermer</button>
+      <button class="btn-save"   id="preview-add-btn" onclick="addExoFromPreview()">+ AJOUTER</button>
     </div>
   </div>
 </div>
