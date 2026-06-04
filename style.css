@@ -836,6 +836,8 @@ header { padding:24px 20px 16px; display:flex; align-items:center; justify-conte
   transition: border-color .2s, transform .15s, box-shadow .2s;
 }
 .guided-card:hover { border-color: var(--accent2); transform: translateY(-2px); box-shadow: 0 6px 24px rgba(45,143,255,.1); }
+.guided-card--locked { opacity: .85; }
+.guided-card--locked .guided-card-name { color: var(--muted); }
 .guided-card-left { display: flex; align-items: center; gap: 14px; flex: 1; min-width: 0; }
 .guided-card-emoji { font-size: 30px; flex-shrink: 0; }
 .guided-card-info { flex: 1; min-width: 0; }
@@ -846,6 +848,22 @@ header { padding:24px 20px 16px; display:flex; align-items:center; justify-conte
 .guided-card-stat::before { content: '·'; margin-right: 4px; color: var(--muted2); }
 .guided-lock-icon { color: var(--muted2); flex-shrink: 0; margin-left: 10px; }
 .guided-lock-icon--open { color: var(--success); }
+.guided-price-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  margin-left: 12px;
+  flex-shrink: 0;
+}
+.guided-price-lock { color: var(--muted2); }
+.guided-price {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--muted);
+  letter-spacing: .5px;
+  white-space: nowrap;
+}
 
 /* ── GUIDED MODAL ── */
 .guided-modal-header { display: flex; align-items: flex-start; gap: 16px; margin-bottom: 14px; }
