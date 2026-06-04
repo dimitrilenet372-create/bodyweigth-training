@@ -463,31 +463,44 @@ let pinCurrent          = '';
 // ── FIREBASE CRUD ──
 
 async function saveWorkoutToDb(w) {
-  await setDoc(doc(db, 'workouts', w.id), w);
-}
-async function deleteWorkoutFromDb(id) {
-  await deleteDoc(doc(db, 'workouts', id));
-}
-async function saveSessionToDb(session) {
-  await setDoc(doc(db, 'sessionHistory', session.id), session);
+  const list = JSON.parse(localStorage.getItem('zw_workouts') || '[]');
+  const idx  = list.findIndex(x => x.id === w.id);
+  if (idx >= 0) list[idx] = w; else list.push(w);
+  localStorage.setItem('zw_workouts', JSON.stringify(list));
+  workouts = list;
+  renderWorkouts();
+  if (auth.currentUser) setDoc(doc(db, 'workouts', w.id), w).catch(() => {});
 }
 
-// Garde save() pour compatibilité — ne fait plus rien (Firestore gère)
+async function deleteWorkoutFromDb(id) {
+  const list = JSON.parse(localStorage.getItem('zw_workouts') || '[]').filter(x => x.id !== id);
+  localStorage.setItem('zw_workouts', JSON.stringify(list));
+  workouts = list;
+  renderWorkouts();
+  if (auth.currentUser) deleteDoc(doc(db, 'workouts', id)).catch(() => {});
+}
+
+async function saveSessionToDb(session) {
+  const list = JSON.parse(localStorage.getItem('zw_history') || '[]');
+  list.unshift(session);
+  localStorage.setItem('zw_history', JSON.stringify(list));
+  sessionHistory = list;
+  renderHistory();
+  if (auth.currentUser) setDoc(doc(db, 'sessionHistory', session.id), session).catch(() => {});
+}
+
 function save() {}
 
-// ── LISTENERS TEMPS RÉEL ──
-// Workouts — écoute les changements pour tous les users
-onSnapshot(query(workoutsCol), (snap) => {
-  workouts = snap.docs.map(d => d.data());
+function loadWorkouts() {
+  workouts = JSON.parse(localStorage.getItem('zw_workouts') || '[]');
   if (workouts.length === 0) seedDefaultWorkouts();
-  renderWorkouts();
-});
+  else renderWorkouts();
+}
 
-// Historique — écoute les nouvelles séances
-onSnapshot(query(historyCol, orderBy('date', 'desc')), (snap) => {
-  sessionHistory = snap.docs.map(d => d.data());
+function loadHistory() {
+  sessionHistory = JSON.parse(localStorage.getItem('zw_history') || '[]');
   renderHistory();
-});
+}
 
 // ── SEED PROGRAMMES PAR DÉFAUT ──
 async function seedDefaultWorkouts() {
@@ -1277,9 +1290,6 @@ async function saveWorkout(){
   const name=document.getElementById('input-workout-name').value.trim();
   if(!name){alert('Donne un nom au programme !');return;}
   if(!workoutExercises.length){alert('Ajoute au moins un exercice !');return;}
-  if(!auth.currentUser){
-    try { await signInAnonymously(auth); } catch(e) { alert('Connexion impossible : '+e.message); return; }
-  }
   const w = {
     id: editingWorkoutId || 'w'+Date.now(),
     name,
@@ -1287,12 +1297,8 @@ async function saveWorkout(){
     duration: estimateDuration(workoutExercises) || 40,
     exercises: workoutExercises
   };
-  try {
-    await saveWorkoutToDb(w);
-    closeModal('modal-workout');
-  } catch(e) {
-    alert('Erreur sauvegarde : '+(e.code||e.message));
-  }
+  await saveWorkoutToDb(w);
+  closeModal('modal-workout');
 }
 
 // ── EXO PICKER ──
@@ -1546,6 +1552,7 @@ Object.assign(window, {
 });
 
 buildFilterChips();
-renderWorkouts();
+loadWorkouts();
+loadHistory();
 renderExercices();
 renderGuidedPrograms();
