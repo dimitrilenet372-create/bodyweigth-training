@@ -689,9 +689,18 @@ function renderGuidedPrograms() {
   `).join('');
 }
 
+const PREMIUM_EMAILS = ['prout@hotmail.fr', 'hirionne@gmail.com'];
+function isPremium() {
+  const user = auth.currentUser;
+  return !!(user && PREMIUM_EMAILS.includes((user.email || '').toLowerCase()));
+}
+
+let currentGuidedProgramId = null;
+
 function openGuidedProgram(id) {
   const p = GUIDED_PROGRAMS.find(x => x.id === id);
   if(!p) return;
+  currentGuidedProgramId = id;
   document.getElementById('guided-modal-emoji').textContent = p.emoji;
   document.getElementById('guided-modal-name').textContent = p.name;
   document.getElementById('guided-modal-tag').innerHTML = `<span class="guided-tag-pill" style="color:${p.tagColor};border-color:${p.tagColor}20;background:${p.tagColor}15">${p.tag}</span>`;
@@ -700,7 +709,37 @@ function openGuidedProgram(id) {
   document.getElementById('guided-modal-preview').innerHTML = p.preview.map(e =>
     `<div class="guided-preview-item"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>${e}</div>`
   ).join('');
+  const premium = isPremium();
+  document.getElementById('guided-lock').style.display    = premium ? 'none' : 'flex';
+  document.getElementById('guided-start-btn').style.display = premium ? 'flex' : 'none';
   openModal('modal-guided');
+}
+
+function startGuidedSession() {
+  const p = GUIDED_PROGRAMS.find(x => x.id === currentGuidedProgramId);
+  if (!p) return;
+  const exercises = p.preview
+    .map(name => EXERCISES_DB.find(e => e.name === name))
+    .filter(Boolean)
+    .map(ex => ({ exoId: ex.id, sets: [{reps:10},{reps:10},{reps:10}] }));
+  if (!exercises.length) return;
+  closeModal('modal-guided');
+  const w = { id:'guided_'+p.id, name:p.name, days:3, duration:45, exercises };
+  currentWorkout = w;
+  sessionSeconds = 0;
+  sessionExercises = exercises.map(e => ({...e, setsStatus: e.sets.map(s => ({...s, done:false}))}));
+  document.getElementById('session-title').textContent = w.name.toUpperCase();
+  renderSession(); updateSessionProgress(); openModal('modal-session');
+  clearInterval(activeTimerInterval);
+  activeTimerInterval = setInterval(() => {
+    sessionSeconds++;
+    const t = fmtTime(sessionSeconds);
+    document.getElementById('session-timer').textContent = t;
+    document.getElementById('active-bar-time').textContent = t;
+  }, 1000);
+  document.getElementById('active-bar-name').textContent = w.name;
+  document.getElementById('active-bar-exo').textContent  = 'Tap pour reprendre';
+  document.getElementById('active-bar').classList.add('visible');
 }
 
 // ── MUSCLE IMAGE MAP — SVG inline via data URI (no CORS issues) ──
@@ -1546,7 +1585,7 @@ Object.assign(window, {
   // PIN / reset
   pinInput, pinBackspace, resetAllHistory,
   // Programmes guidés
-  openGuidedProgram,
+  openGuidedProgram, startGuidedSession,
   // Auth
   openAuth, authSubmit, authSignOut, closeAuthScreen, togglePwd,
 });
