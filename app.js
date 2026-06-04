@@ -682,7 +682,9 @@ function renderGuidedPrograms() {
           </div>
         </div>
       </div>
-      ${isPremium() ? '' : `<div class="guided-lock-icon"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg></div>`}
+      ${isPremium()
+        ? `<div class="guided-lock-icon guided-lock-icon--open"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0"/></svg></div>`
+        : `<div class="guided-lock-icon"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg></div>`}
     </div>
   `).join('');
 }
