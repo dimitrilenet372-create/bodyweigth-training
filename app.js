@@ -426,7 +426,7 @@ function resolveExoImg(exo) {
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js';
 import { getFirestore, collection, doc, onSnapshot, setDoc, deleteDoc, query, orderBy }
   from 'https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js';
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut }
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, signInAnonymously }
   from 'https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js';
 
 const firebaseConfig = {
@@ -1273,10 +1273,13 @@ function addSet(i){const l=workoutExercises[i].sets.slice(-1)[0];workoutExercise
 function removeSet(i,si){if(workoutExercises[i].sets.length<=1)return;workoutExercises[i].sets.splice(si,1);renderWorkoutExoPicker();}
 function updateSet(i,si,val){workoutExercises[i].sets[si].reps=parseInt(val)||10;}
 
-function saveWorkout(){
+async function saveWorkout(){
   const name=document.getElementById('input-workout-name').value.trim();
   if(!name){alert('Donne un nom au programme !');return;}
   if(!workoutExercises.length){alert('Ajoute au moins un exercice !');return;}
+  if(!auth.currentUser){
+    try { await signInAnonymously(auth); } catch(e) { alert('Connexion impossible : '+e.message); return; }
+  }
   const w = {
     id: editingWorkoutId || 'w'+Date.now(),
     name,
@@ -1284,8 +1287,12 @@ function saveWorkout(){
     duration: estimateDuration(workoutExercises) || 40,
     exercises: workoutExercises
   };
-  saveWorkoutToDb(w);
-  closeModal('modal-workout');
+  try {
+    await saveWorkoutToDb(w);
+    closeModal('modal-workout');
+  } catch(e) {
+    alert('Erreur sauvegarde : '+(e.code||e.message));
+  }
 }
 
 // ── EXO PICKER ──
@@ -1454,6 +1461,7 @@ function openAuth(mode = 'welcome') {
 
 function closeAuthScreen() {
   document.getElementById('auth-screen').classList.remove('visible');
+  if (!auth.currentUser) signInAnonymously(auth).catch(() => {});
 }
 
 function togglePwd(id, el) {
