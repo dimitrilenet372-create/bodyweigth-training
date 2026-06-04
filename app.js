@@ -713,17 +713,30 @@ function openGuidedProgram(id) {
   document.getElementById('guided-modal-tag').innerHTML = `<span class="guided-tag-pill" style="color:${p.tagColor};border-color:${p.tagColor}20;background:${p.tagColor}15">${p.tag}</span>`;
   document.getElementById('guided-modal-meta').innerHTML = `<span>${p.level}</span> · <span>${p.duration}</span> · <span>${p.freq}</span>`;
   document.getElementById('guided-modal-desc').textContent = p.desc;
+  const premium = isPremium();
   document.getElementById('guided-modal-preview').innerHTML = p.preview.map(name => {
     const ex = EXERCISES_DB.find(e => e.name === name);
-    return ex
-      ? `<div class="guided-preview-item guided-preview-item--link" onclick="openExoFromGuided('${ex.id}')">
-          <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
-          ${name}
-          <svg style="margin-left:auto;flex-shrink:0;opacity:.5" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8" fill="currentColor" stroke="none"/></svg>
-        </div>`
-      : `<div class="guided-preview-item"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>${name}</div>`;
+    if (!ex) return `<div class="guided-preview-item"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>${name}</div>`;
+    if (premium) {
+      const img = resolveExoImg(ex);
+      return `<div class="guided-exo-card" onclick="openExoFromGuided('${ex.id}')">
+        <div class="guided-exo-thumb">
+          ${img ? `<img src="${img}" alt="${ex.name}">` : `<span>${ex.emoji}</span>`}
+        </div>
+        <div class="guided-exo-info">
+          <div class="guided-exo-name">${ex.name}</div>
+          <div class="guided-exo-muscle">${ex.muscle} · ${ex.tags.slice(0,2).join(', ')}</div>
+          <div class="guided-exo-desc">${ex.desc}</div>
+        </div>
+        <svg style="flex-shrink:0;opacity:.4" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8" fill="currentColor" stroke="none"/></svg>
+      </div>`;
+    }
+    return `<div class="guided-preview-item guided-preview-item--link" onclick="openExoFromGuided('${ex.id}')">
+        <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+        ${name}
+        <svg style="margin-left:auto;flex-shrink:0;opacity:.5" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8" fill="currentColor" stroke="none"/></svg>
+      </div>`;
   }).join('');
-  const premium = isPremium();
   document.getElementById('guided-lock').style.display    = premium ? 'none' : 'flex';
   document.getElementById('guided-start-btn').style.display = premium ? 'flex' : 'none';
   openModal('modal-guided');
