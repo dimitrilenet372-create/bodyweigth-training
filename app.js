@@ -497,10 +497,11 @@ function loadWorkouts() {
   else renderWorkouts();
 }
 
-function loadHistory() {
-  sessionHistory = JSON.parse(localStorage.getItem('zw_history') || '[]');
+// Historique — écoute les nouvelles séances
+onSnapshot(query(historyCol, orderBy('date', 'desc')), (snap) => {
+  sessionHistory = snap.docs.map(d => ({ ...d.data(), id: d.data().id || d.id }));
   renderHistory();
-}
+});
 
 // ── SEED PROGRAMMES PAR DÉFAUT ──
 async function seedDefaultWorkouts() {
@@ -1271,9 +1272,75 @@ function renderHistory() {
   }
   hl.innerHTML = daySessions.map(s => {
     const d = new Date(s.date);
-    return `<div class="history-item"><div class="history-dot"></div><div class="history-info"><div class="history-name">${s.name}</div><div class="history-date">${d.toLocaleDateString('fr-FR',{weekday:'short',day:'numeric',month:'short'})} · ${s.exercises} exercices</div></div><div class="history-duration">${Math.floor(s.duration/60)}min</div></div>`;
+    return `<div class="history-entry">
+      <div class="history-item" id="hist-${s.id}" onclick="toggleSessionDetail('${s.id}')">
+        <div class="history-dot"></div>
+        <div class="history-info">
+          <div class="history-name">${s.name}</div>
+          <div class="history-date">${d.toLocaleDateString('fr-FR',{weekday:'short',day:'numeric',month:'short'})} · ${s.exercises} exercice${s.exercises>1?'s':''}</div>
+        </div>
+        <div class="history-item-right">
+          <div class="history-duration">${Math.floor(s.duration/60)}min</div>
+          <svg class="history-chevron" width="14" height="14" fill="none" stroke="var(--muted)" stroke-width="2.5" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+        </div>
+      </div>
+      <div class="history-exo-expand" id="expand-${s.id}"></div>
+    </div>`;
   }).join('');
 }
+
+function buildSessionExoHTML(s) {
+  if (s.exercisesList && s.exercisesList.length) {
+    return s.exercisesList.map(e => {
+      const ex = getExo(e.exoId);
+      if (!ex) return '';
+      const pct = e.totalSets > 0 ? Math.round(e.setsCompleted / e.totalSets * 100) : 0;
+      return `<div class="expand-exo-row">
+        <span class="expand-exo-emoji">${ex.emoji}</span>
+        <div class="expand-exo-info">
+          <div class="expand-exo-name">${ex.name}</div>
+          <div class="expand-exo-sets">${e.setsCompleted}/${e.totalSets} séries</div>
+        </div>
+        <div class="expand-exo-badge${pct===100?' done':''}">${pct===100?'✓':pct+'%'}</div>
+      </div>`;
+    }).join('');
+  }
+  const matchingWorkout = workouts.find(w => w.name === s.name);
+  if (matchingWorkout && matchingWorkout.exercises && matchingWorkout.exercises.length) {
+    return `<div class="expand-exo-note">Programme (détail exact non disponible)</div>` +
+      matchingWorkout.exercises.map(e => {
+        const ex = getExo(e.exoId);
+        if (!ex) return '';
+        return `<div class="expand-exo-row">
+          <span class="expand-exo-emoji">${ex.emoji}</span>
+          <div class="expand-exo-info">
+            <div class="expand-exo-name">${ex.name}</div>
+            <div class="expand-exo-sets">${e.sets.length} série${e.sets.length>1?'s':''} · ${e.sets[0].reps} reps</div>
+          </div>
+          <div class="expand-exo-badge">—</div>
+        </div>`;
+      }).join('');
+  }
+  return `<div class="expand-exo-note" style="padding:14px 16px">Programme introuvable ou supprimé.</div>`;
+}
+
+function toggleSessionDetail(sessionId) {
+  const expand = document.getElementById('expand-' + sessionId);
+  const item   = document.getElementById('hist-'   + sessionId);
+  if (!expand || !item) return;
+  const isOpen = expand.classList.contains('open');
+  // Ferme tous les autres
+  document.querySelectorAll('.history-exo-expand.open').forEach(el => el.classList.remove('open'));
+  document.querySelectorAll('.history-item.expanded').forEach(el => el.classList.remove('expanded'));
+  if (!isOpen) {
+    const s = sessionHistory.find(x => x.id === sessionId);
+    if (s) expand.innerHTML = buildSessionExoHTML(s);
+    expand.classList.add('open');
+    item.classList.add('expanded');
+  }
+}
+
+function openSessionDetail(sessionId) { toggleSessionDetail(sessionId); }
 
 function historyChangeDay(delta) {
   const next = new Date(historyViewDate);
@@ -1566,7 +1633,18 @@ function endSession(){
   const allDone=sessionExercises.every(e=>e.setsStatus.every(s=>s.done));
   if(!confirm(allDone?'GG ! Enregistrer cette séance ?':'Terminer maintenant ? (tous les exos ne sont pas validés)'))return;
   clearInterval(activeTimerInterval);
-  const session = {id:'s'+Date.now(),name:currentWorkout.name,date:new Date().toISOString(),duration:sessionSeconds,exercises:sessionExercises.length};
+  const session = {
+    id:'s'+Date.now(),
+    name:currentWorkout.name,
+    date:new Date().toISOString(),
+    duration:sessionSeconds,
+    exercises:sessionExercises.length,
+    exercisesList:sessionExercises.map(e=>({
+      exoId:e.exoId,
+      setsCompleted:e.setsStatus.filter(s=>s.done).length,
+      totalSets:e.setsStatus.length
+    }))
+  };
   saveSessionToDb(session); // Firestore → déclenche onSnapshot → renderHistory() pour tous
   document.getElementById('active-bar').classList.remove('visible');
   closeModal('modal-session');
@@ -1678,8 +1756,8 @@ Object.assign(window, {
   toggleSet, validateSet, undoSet, endSession,
   // Drag sections
   sectionDragStart,
-  // Historique navigation
-  historyChangeDay, historySetDay,
+  // Historique navigation & détail
+  historyChangeDay, historySetDay, openSessionDetail, toggleSessionDetail,
   // PIN / reset
   pinInput, pinBackspace, resetAllHistory,
   // Programmes guidés
