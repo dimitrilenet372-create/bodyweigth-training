@@ -700,7 +700,7 @@ function isPremium() { return premiumStatus; }
 async function loadPremiumStatus(user) {
   if (!user || user.isAnonymous) { premiumStatus = false; return; }
   try {
-    const snap = await getDoc(doc(db, 'subscriptions', user.email.toLowerCase()));
+    const snap = await getDoc(doc(db, 'Subscriptions', user.email.toLowerCase()));
     const data = snap.exists() ? snap.data() : null;
     premiumStatus = !!(data && data.isPremium);
     console.log('[premium]', user.email, '→', premiumStatus, data);
@@ -1717,7 +1717,7 @@ async function authSubmit(mode) {
   try {
     if(mode === 'signup') {
       await createUserWithEmailAndPassword(auth, email, password);
-      const subRef = doc(db, 'subscriptions', email.toLowerCase());
+      const subRef = doc(db, 'Subscriptions', email.toLowerCase());
       const existing = await getDoc(subRef);
       if (!existing.exists()) {
         await setDoc(subRef, { isPremium: false, email: email.toLowerCase(), createdAt: new Date().toISOString() });
