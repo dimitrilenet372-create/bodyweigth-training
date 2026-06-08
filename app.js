@@ -424,7 +424,7 @@ function resolveExoImg(exo) {
 // Remplace localStorage — tout est synchronisé en temps réel
 
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js';
-import { getFirestore, collection, doc, onSnapshot, setDoc, deleteDoc, query, orderBy }
+import { getFirestore, collection, doc, onSnapshot, setDoc, deleteDoc, query, orderBy, getDoc }
   from 'https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js';
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, signInAnonymously }
   from 'https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js';
@@ -497,11 +497,8 @@ function loadWorkouts() {
   else renderWorkouts();
 }
 
-// Historique — écoute les nouvelles séances
-onSnapshot(query(historyCol, orderBy('date', 'desc')), (snap) => {
-  sessionHistory = snap.docs.map(d => ({ ...d.data(), id: d.data().id || d.id }));
-  renderHistory();
-});
+// Historique — listener géré dans onAuthStateChanged
+let historyUnsub = null;
 
 // ── SEED PROGRAMMES PAR DÉFAUT ──
 async function seedDefaultWorkouts() {
@@ -696,11 +693,21 @@ function renderGuidedPrograms() {
   `).join('');
 }
 
-const PREMIUM_PRICE  = '9.99€ / mois';
-const PREMIUM_EMAILS = ['prout@hotmail.fr', 'hirionne@gmail.com'];
-function isPremium() {
-  const user = auth.currentUser;
-  return !!(user && PREMIUM_EMAILS.includes((user.email || '').toLowerCase()));
+const PREMIUM_PRICE = '9.99€ / mois';
+let premiumStatus = false;
+function isPremium() { return premiumStatus; }
+
+async function loadPremiumStatus(user) {
+  if (!user || user.isAnonymous) { premiumStatus = false; return; }
+  try {
+    const snap = await getDoc(doc(db, 'subscriptions', user.email.toLowerCase()));
+    const data = snap.exists() ? snap.data() : null;
+    premiumStatus = !!(data && data.isPremium);
+    console.log('[premium]', user.email, '→', premiumStatus, data);
+  } catch(e) {
+    console.error('[premium] erreur lecture:', e);
+    premiumStatus = false;
+  }
 }
 
 let currentGuidedProgramId = null;
@@ -1708,8 +1715,16 @@ async function authSubmit(mode) {
   }
   const btn = document.getElementById(mode === 'signup' ? 'auth-signup-btn' : null);
   try {
-    if(mode === 'signup') await createUserWithEmailAndPassword(auth, email, password);
-    else                  await signInWithEmailAndPassword(auth, email, password);
+    if(mode === 'signup') {
+      await createUserWithEmailAndPassword(auth, email, password);
+      const subRef = doc(db, 'subscriptions', email.toLowerCase());
+      const existing = await getDoc(subRef);
+      if (!existing.exists()) {
+        await setDoc(subRef, { isPremium: false, email: email.toLowerCase(), createdAt: new Date().toISOString() });
+      }
+    } else {
+      await signInWithEmailAndPassword(auth, email, password);
+    }
     closeAuthScreen();
   } catch(e) {
     errEl.textContent = AUTH_ERRORS[e.code] || 'Une erreur est survenue.';
@@ -1721,20 +1736,34 @@ async function authSignOut() {
   openAuth('welcome');
 }
 
-onAuthStateChanged(auth, user => {
+onAuthStateChanged(auth, async user => {
   const btn = document.getElementById('auth-header-btn');
   if(!btn) return;
+
+  // Stoppe le listener historique précédent avant d'en créer un nouveau
+  if (historyUnsub) { historyUnsub(); historyUnsub = null; }
+
   if(user && !user.isAnonymous) {
     const initials = (user.displayName || user.email || '?').slice(0,2).toUpperCase();
     btn.innerHTML = `<span class="auth-avatar">${initials}</span>`;
     btn.title = user.email || '';
     btn.onclick = () => { if(confirm(`Déconnexion de ${user.email} ?`)) authSignOut(); };
     closeAuthScreen();
-  } else if(!user) {
-    btn.innerHTML = `<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`;
-    btn.title = 'Connexion / Inscription';
-    btn.onclick = () => openAuth('welcome');
-    openAuth('welcome');
+    await loadPremiumStatus(user);
+    historyUnsub = onSnapshot(query(historyCol, orderBy('date', 'desc')), (snap) => {
+      sessionHistory = snap.docs.map(d => ({ ...d.data(), id: d.data().id || d.id }));
+      renderHistory();
+    });
+  } else {
+    premiumStatus = false;
+    sessionHistory = [];
+    renderHistory();
+    if(!user) {
+      btn.innerHTML = `<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`;
+      btn.title = 'Connexion / Inscription';
+      btn.onclick = () => openAuth('welcome');
+      openAuth('welcome');
+    }
   }
   renderGuidedPrograms();
 });
@@ -1768,6 +1797,5 @@ Object.assign(window, {
 
 buildFilterChips();
 loadWorkouts();
-loadHistory();
 renderExercices();
 renderGuidedPrograms();
