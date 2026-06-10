@@ -426,6 +426,8 @@ function resolveExoImg(exo) {
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js';
 import { getFirestore, collection, doc, onSnapshot, setDoc, deleteDoc, query, orderBy, getDoc }
   from 'https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js';
+import { getFunctions, httpsCallable }
+  from 'https://www.gstatic.com/firebasejs/12.11.0/firebase-functions.js';
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, signInAnonymously, sendPasswordResetEmail, GoogleAuthProvider, signInWithPopup }
   from 'https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js';
 
@@ -438,9 +440,10 @@ const firebaseConfig = {
   appId:             "1:830641664692:web:fc1eed3ad8da709f635de1"
 };
 
-const app  = initializeApp(firebaseConfig);
-const db   = getFirestore(app);
-const auth = getAuth(app);
+const app       = initializeApp(firebaseConfig);
+const db        = getFirestore(app);
+const auth      = getAuth(app);
+const functions = getFunctions(app, 'europe-west1');
 
 // Collections Firestore
 const workoutsCol = collection(db, 'workouts');
@@ -693,22 +696,60 @@ function renderGuidedPrograms() {
   `).join('');
 }
 
-const PREMIUM_PRICE = '9.99€ / mois';
+const PREMIUM_PRICE   = '9.99€ / mois';
+const PREMIUM_EMAILS  = ['prout@hotmail.fr', 'hirionne@gmail.com'];
 let premiumStatus = false;
 function isPremium() { return premiumStatus; }
 
 async function loadPremiumStatus(user) {
   if (!user || user.isAnonymous) { premiumStatus = false; return; }
+  // Admins hardcodés
+  if (PREMIUM_EMAILS.includes((user.email || '').toLowerCase())) { premiumStatus = true; return; }
+  // Lecture Firestore (mis à jour par le webhook Stripe)
   try {
-    const snap = await getDoc(doc(db, 'Subscriptions', user.email.toLowerCase()));
-    const data = snap.exists() ? snap.data() : null;
-    premiumStatus = !!(data && data.isPremium);
-    console.log('[premium]', user.email, '→', premiumStatus, data);
+    const snap = await getDoc(doc(db, 'users', user.uid));
+    premiumStatus = !!(snap.exists() && snap.data().isPremium);
   } catch(e) {
-    console.error('[premium] erreur lecture:', e);
     premiumStatus = false;
   }
 }
+
+async function startCheckout() {
+  const user = auth.currentUser;
+  if (!user) { openAuth('login'); return; }
+  const btn = document.getElementById('btn-subscribe');
+  if (btn) { btn.textContent = 'Chargement…'; btn.disabled = true; }
+  try {
+    const fn = httpsCallable(functions, 'createCheckoutSession');
+    const { data } = await fn();
+    window.location.href = data.url;
+  } catch(e) {
+    alert('Erreur : ' + e.message);
+    if (btn) { btn.textContent = 'Devenir Premium — ' + PREMIUM_PRICE; btn.disabled = false; }
+  }
+}
+
+async function openCustomerPortal() {
+  const btn = document.getElementById('btn-portal');
+  if (btn) { btn.textContent = 'Chargement…'; btn.disabled = true; }
+  try {
+    const fn = httpsCallable(functions, 'createPortalLink');
+    const { data } = await fn();
+    window.location.href = data.url;
+  } catch(e) {
+    alert('Erreur : ' + e.message);
+    if (btn) { btn.textContent = 'Gérer mon abonnement'; btn.disabled = false; }
+  }
+}
+
+// Retour depuis Stripe Checkout
+(function handleStripeReturn() {
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('premium') === 'success') {
+    history.replaceState({}, '', window.location.pathname);
+    setTimeout(() => alert('Paiement réussi ! Bienvenue dans le Premium.'), 500);
+  }
+})();
 
 let currentGuidedProgramId = null;
 
@@ -745,8 +786,9 @@ function openGuidedProgram(id) {
         <svg style="margin-left:auto;flex-shrink:0;opacity:.5" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8" fill="currentColor" stroke="none"/></svg>
       </div>`;
   }).join('');
-  document.getElementById('guided-lock').style.display    = premium ? 'none' : 'flex';
-  document.getElementById('guided-start-btn').style.display = premium ? 'flex' : 'none';
+  document.getElementById('guided-lock').style.display       = premium ? 'none' : 'flex';
+  document.getElementById('guided-start-btn').style.display  = premium ? 'flex' : 'none';
+  document.getElementById('btn-subscribe').style.display     = premium ? 'none' : 'flex';
   openModal('modal-guided');
 }
 
@@ -1820,6 +1862,8 @@ Object.assign(window, {
   openGuidedProgram, startGuidedSession, openExoFromGuided,
   // Auth
   openAuth, authSubmit, authSignOut, authReset, authGoogle, closeAuthScreen, togglePwd,
+  // Stripe
+  startCheckout, openCustomerPortal,
 });
 
 buildFilterChips();
