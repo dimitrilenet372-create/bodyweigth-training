@@ -831,6 +831,18 @@ header { padding:24px 20px 16px; display:flex; align-items:center; justify-conte
   display: none;
 }
 .auth-error:not(:empty) { display: block; }
+.auth-success {
+  font-size: 13px;
+  color: var(--success);
+  min-height: 18px;
+  margin-bottom: 10px;
+  text-align: center;
+  background: rgba(61,232,160,.08);
+  border-radius: 8px;
+  padding: 6px 10px;
+  display: none;
+}
+.auth-success:not(:empty) { display: block; }
 .auth-toggle {
   font-size: 13px;
   color: var(--muted);

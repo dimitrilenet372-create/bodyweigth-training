@@ -426,7 +426,7 @@ function resolveExoImg(exo) {
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js';
 import { getFirestore, collection, doc, onSnapshot, setDoc, deleteDoc, query, orderBy, getDoc }
   from 'https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js';
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, signInAnonymously }
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, signInAnonymously, sendPasswordResetEmail }
   from 'https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js';
 
 const firebaseConfig = {
@@ -1679,7 +1679,7 @@ const AUTH_ERRORS = {
 function openAuth(mode = 'welcome') {
   const screen = document.getElementById('auth-screen');
   screen.classList.add('visible');
-  ['welcome','signup','login'].forEach(s => {
+  ['welcome','signup','login','reset'].forEach(s => {
     document.getElementById(`auth-slide-${s}`).classList.toggle('auth-slide--hidden', s !== mode);
   });
   document.getElementById('auth-error-signup') && (document.getElementById('auth-error-signup').textContent = '');
@@ -1726,6 +1726,21 @@ async function authSubmit(mode) {
       await signInWithEmailAndPassword(auth, email, password);
     }
     closeAuthScreen();
+  } catch(e) {
+    errEl.textContent = AUTH_ERRORS[e.code] || 'Une erreur est survenue.';
+  }
+}
+
+async function authReset() {
+  const email  = document.getElementById('auth-reset-email').value.trim();
+  const errEl  = document.getElementById('auth-error-reset');
+  const okEl   = document.getElementById('auth-success-reset');
+  errEl.textContent = ''; okEl.textContent = '';
+  if (!email) { errEl.textContent = 'Entre ton adresse email.'; return; }
+  try {
+    await sendPasswordResetEmail(auth, email);
+    okEl.textContent = 'Email envoyé ! Vérifie ta boîte mail.';
+    document.getElementById('auth-reset-email').value = '';
   } catch(e) {
     errEl.textContent = AUTH_ERRORS[e.code] || 'Une erreur est survenue.';
   }
@@ -1792,7 +1807,7 @@ Object.assign(window, {
   // Programmes guidés
   openGuidedProgram, startGuidedSession, openExoFromGuided,
   // Auth
-  openAuth, authSubmit, authSignOut, closeAuthScreen, togglePwd,
+  openAuth, authSubmit, authSignOut, authReset, closeAuthScreen, togglePwd,
 });
 
 buildFilterChips();

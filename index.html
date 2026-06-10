@@ -318,7 +318,30 @@
       </div>
       <div class="auth-error" id="auth-error-login"></div>
       <button class="btn-save auth-btn-main" onclick="authSubmit('login')">SE CONNECTER</button>
-      <div class="auth-toggle" style="margin-top:16px">Pas de compte ? <a onclick="openAuth('signup')" style="color:var(--accent);cursor:pointer;font-weight:600">S'inscrire gratuitement</a></div>
+      <div style="text-align:center;margin-top:12px">
+        <a onclick="openAuth('reset')" style="color:var(--muted);cursor:pointer;font-size:13px">Mot de passe oublié ?</a>
+      </div>
+      <div class="auth-toggle" style="margin-top:12px">Pas de compte ? <a onclick="openAuth('signup')" style="color:var(--accent);cursor:pointer;font-weight:600">S'inscrire gratuitement</a></div>
+    </div>
+  </div>
+
+  <!-- ÉCRAN 4 : MOT DE PASSE OUBLIÉ -->
+  <div class="auth-slide auth-slide--hidden" id="auth-slide-reset">
+    <div class="auth-form-screen">
+      <button class="auth-back-btn" onclick="openAuth('login')">
+        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+      </button>
+      <div class="auth-form-logo">ZERO<span>WEIGHT</span></div>
+      <div class="auth-form-title">Mot de passe oublié</div>
+      <div class="auth-form-sub">Entre ton email, on t'envoie un lien de réinitialisation</div>
+      <div class="form-group">
+        <label class="form-label">Email</label>
+        <input type="email" class="form-input auth-input" id="auth-reset-email" placeholder="ton@email.com" autocomplete="email">
+      </div>
+      <div class="auth-error" id="auth-error-reset"></div>
+      <div class="auth-success" id="auth-success-reset"></div>
+      <button class="btn-save auth-btn-main" onclick="authReset()">ENVOYER LE LIEN</button>
+      <div class="auth-toggle" style="margin-top:16px"><a onclick="openAuth('login')" style="color:var(--accent);cursor:pointer;font-weight:600">← Retour à la connexion</a></div>
     </div>
   </div>
 
