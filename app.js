@@ -428,7 +428,7 @@ import { getFirestore, collection, doc, onSnapshot, setDoc, deleteDoc, query, or
   from 'https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js';
 import { getFunctions, httpsCallable }
   from 'https://www.gstatic.com/firebasejs/12.11.0/firebase-functions.js';
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, signInAnonymously, sendPasswordResetEmail, GoogleAuthProvider, signInWithPopup }
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, signInAnonymously, sendPasswordResetEmail, GoogleAuthProvider, signInWithRedirect, getRedirectResult }
   from 'https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js';
 
 const firebaseConfig = {
@@ -1786,14 +1786,14 @@ async function authSubmit(mode) {
 async function authGoogle() {
   try {
     const provider = new GoogleAuthProvider();
-    await signInWithPopup(auth, provider);
-    closeAuthScreen();
+    await signInWithRedirect(auth, provider);
   } catch(e) {
-    if (e.code !== 'auth/popup-closed-by-user') {
-      alert(AUTH_ERRORS[e.code] || 'Erreur Google : ' + e.message);
-    }
+    alert(AUTH_ERRORS[e.code] || 'Erreur Google : ' + e.message);
   }
 }
+
+// Récupère le résultat après le redirect Google
+getRedirectResult(auth).catch(() => {});
 
 async function authReset() {
   const email  = document.getElementById('auth-reset-email').value.trim();
