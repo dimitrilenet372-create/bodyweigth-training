@@ -697,7 +697,7 @@ function renderGuidedPrograms() {
 }
 
 const PREMIUM_PRICE   = '9.99€ / mois';
-const PREMIUM_EMAILS  = ['prout@hotmail.fr', 'hirionne@gmail.com'];
+const PREMIUM_EMAILS  = ['prout@hotmail.fr', 'hirionne@gmail.com', 'dimitrilenet372@gmail.com'];
 let premiumStatus = false;
 function isPremium() { return premiumStatus; }
 
