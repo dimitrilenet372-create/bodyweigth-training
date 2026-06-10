@@ -1730,7 +1730,6 @@ function openAuth(mode = 'welcome') {
 
 function closeAuthScreen() {
   document.getElementById('auth-screen').classList.remove('visible');
-  if (!auth.currentUser) signInAnonymously(auth).catch(() => {});
 }
 
 function togglePwd(id, el) {
