@@ -848,6 +848,41 @@ header { padding:24px 20px 16px; display:flex; align-items:center; justify-conte
   color: var(--muted);
   text-align: center;
 }
+.btn-google {
+  width: 100%;
+  flex: none;
+  padding: 14px;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  color: #1a1a2e;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: background .15s, transform .15s;
+}
+.btn-google:hover { background: #f1f5f9; }
+.btn-google:active { transform: scale(.98); }
+.auth-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 16px 0;
+  color: var(--muted2);
+  font-size: 12px;
+}
+.auth-divider::before,
+.auth-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
 
 /* Header avatar */
 .auth-avatar {
