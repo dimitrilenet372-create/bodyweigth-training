@@ -707,8 +707,19 @@ async function loadPremiumStatus(user) {
   if (PREMIUM_EMAILS.includes((user.email || '').toLowerCase())) { premiumStatus = true; return; }
   // Lecture Firestore (mis à jour par le webhook Stripe)
   try {
-    const snap = await getDoc(doc(db, 'users', user.uid));
-    premiumStatus = !!(snap.exists() && snap.data().isPremium);
+    const userRef = doc(db, 'users', user.uid);
+    const snap    = await getDoc(userRef);
+    if (snap.exists()) {
+      premiumStatus = !!(snap.data().isPremium);
+    } else {
+      // Première connexion : créer le document avec isPremium: false
+      await setDoc(userRef, {
+        email:     user.email || '',
+        isPremium: false,
+        createdAt: new Date().toISOString(),
+      });
+      premiumStatus = false;
+    }
   } catch(e) {
     premiumStatus = false;
   }
