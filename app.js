@@ -701,6 +701,27 @@ const PREMIUM_EMAILS  = ['prout@hotmail.fr', 'hirionne@gmail.com', 'dimitrilenet
 let premiumStatus = false;
 function isPremium() { return premiumStatus; }
 
+// ── LOADING / ANIMATIONS ──
+let splashDismissed = false;
+function dismissSplash() {
+  if (splashDismissed) return;
+  splashDismissed = true;
+  document.getElementById('splash').classList.add('hide');
+}
+function showAppLoader() { document.getElementById('app-loader').classList.add('visible'); }
+function hideAppLoader()  { document.getElementById('app-loader').classList.remove('visible'); }
+function showWelcomeAnim(user) {
+  if (localStorage.getItem('zw_welcomed')) return;
+  localStorage.setItem('zw_welcomed', '1');
+  const name = user.displayName
+    ? user.displayName.split(' ')[0]
+    : (user.email ? user.email.split('@')[0] : '');
+  document.getElementById('welcome-name').textContent = name ? `Bienvenue, ${name} !` : 'Bienvenue !';
+  const el = document.getElementById('welcome-anim');
+  el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 2400);
+}
+
 async function loadPremiumStatus(user) {
   if (!user || user.isAnonymous) { premiumStatus = false; return; }
   // Admins hardcodés
@@ -1774,6 +1795,12 @@ async function authSubmit(mode) {
 }
 
 async function authGoogle() {
+  const btns = document.querySelectorAll('.btn-google');
+  const orig = btns[0]?.innerHTML;
+  btns.forEach(b => {
+    b.disabled = true;
+    b.innerHTML = `<div class="app-loader-spinner" style="width:20px;height:20px;border-width:2px;margin:0 auto"></div>`;
+  });
   try {
     const provider = new GoogleAuthProvider();
     await signInWithPopup(auth, provider);
@@ -1781,6 +1808,8 @@ async function authGoogle() {
     if (e.code !== 'auth/popup-closed-by-user' && e.code !== 'auth/cancelled-popup-request') {
       alert(AUTH_ERRORS[e.code] || 'Erreur Google : ' + e.message);
     }
+  } finally {
+    btns.forEach(b => { b.disabled = false; if(orig) b.innerHTML = orig; });
   }
 }
 
@@ -1805,6 +1834,7 @@ async function authSignOut() {
 }
 
 onAuthStateChanged(auth, async user => {
+  dismissSplash();
   const btn = document.getElementById('auth-header-btn');
   if(!btn) return;
 
@@ -1817,11 +1847,15 @@ onAuthStateChanged(auth, async user => {
     btn.title = user.email || '';
     btn.onclick = () => { if(confirm(`Déconnexion de ${user.email} ?`)) authSignOut(); };
     closeAuthScreen();
+    const isFirst = !localStorage.getItem('zw_welcomed');
+    if (!isFirst) showAppLoader();
     await loadPremiumStatus(user);
     historyUnsub = onSnapshot(query(historyCol, orderBy('date', 'desc')), (snap) => {
       sessionHistory = snap.docs.map(d => ({ ...d.data(), id: d.data().id || d.id }));
       renderHistory();
     });
+    if (!isFirst) hideAppLoader();
+    if (isFirst) showWelcomeAnim(user);
   } else {
     premiumStatus = false;
     sessionHistory = [];
