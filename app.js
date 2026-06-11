@@ -428,7 +428,7 @@ import { getFirestore, collection, doc, onSnapshot, setDoc, deleteDoc, query, or
   from 'https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js';
 import { getFunctions, httpsCallable }
   from 'https://www.gstatic.com/firebasejs/12.11.0/firebase-functions.js';
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, signInAnonymously, sendPasswordResetEmail, GoogleAuthProvider, signInWithRedirect, getRedirectResult }
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, signInAnonymously, sendPasswordResetEmail, GoogleAuthProvider, signInWithPopup }
   from 'https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js';
 
 const firebaseConfig = {
@@ -1769,11 +1769,6 @@ async function authSubmit(mode) {
   try {
     if(mode === 'signup') {
       await createUserWithEmailAndPassword(auth, email, password);
-      const subRef = doc(db, 'Subscriptions', email.toLowerCase());
-      const existing = await getDoc(subRef);
-      if (!existing.exists()) {
-        await setDoc(subRef, { isPremium: false, email: email.toLowerCase(), createdAt: new Date().toISOString() });
-      }
     } else {
       await signInWithEmailAndPassword(auth, email, password);
     }
@@ -1786,14 +1781,13 @@ async function authSubmit(mode) {
 async function authGoogle() {
   try {
     const provider = new GoogleAuthProvider();
-    await signInWithRedirect(auth, provider);
+    await signInWithPopup(auth, provider);
   } catch(e) {
-    alert(AUTH_ERRORS[e.code] || 'Erreur Google : ' + e.message);
+    if (e.code !== 'auth/popup-closed-by-user' && e.code !== 'auth/cancelled-popup-request') {
+      alert(AUTH_ERRORS[e.code] || 'Erreur Google : ' + e.message);
+    }
   }
 }
-
-// Récupère le résultat après le redirect Google
-getRedirectResult(auth).catch(() => {});
 
 async function authReset() {
   const email  = document.getElementById('auth-reset-email').value.trim();
