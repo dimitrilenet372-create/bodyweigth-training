@@ -694,12 +694,38 @@ function renderGuidedPrograms() {
       }
     </div>
   `).join('');
+  animateList(document.getElementById('guided-list'));
 }
 
 const PREMIUM_PRICE   = '9.99€ / mois';
 const PREMIUM_EMAILS  = ['prout@hotmail.fr', 'hirionne@gmail.com', 'dimitrilenet372@gmail.com'];
 let premiumStatus = false;
 function isPremium() { return premiumStatus; }
+
+// ── HELPERS UI ──
+function emptyStateHTML(svgPath, title, sub) {
+  return `<div class="empty-state">
+    <div class="empty-icon-wrap"><svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">${svgPath}</svg></div>
+    <div class="empty-title">${title}</div>
+    <div class="empty-sub">${sub}</div>
+  </div>`;
+}
+function animateList(el) {
+  [...el.children].forEach((child, i) => {
+    child.classList.add('anim-item');
+    child.style.animationDelay = `${Math.min(i, 7) * 0.048}s`;
+  });
+}
+function countUp(el, target) {
+  const dur = 550, t0 = performance.now();
+  const tick = now => {
+    const p = Math.min((now - t0) / dur, 1);
+    const ease = 1 - Math.pow(1 - p, 3);
+    el.textContent = Math.round(target * ease);
+    if (p < 1) requestAnimationFrame(tick);
+  };
+  requestAnimationFrame(tick);
+}
 
 // ── LOADING / ANIMATIONS ──
 let splashDismissed = false;
@@ -1162,7 +1188,7 @@ function closePreviewBackToPicker() {
 // ── RENDER PROGRAMMES ──
 function renderWorkouts() {
   const list = document.getElementById('workout-list');
-  if (!workouts.length) { list.innerHTML=`<div class="empty-state"><div class="big-icon">🏋️</div><p>Aucun programme.<br>Crée ton premier entraînement !</p></div>`; return; }
+  if (!workouts.length) { list.innerHTML = emptyStateHTML('<rect x="2" y="5" width="5" height="14" rx="1.5"/><rect x="17" y="5" width="5" height="14" rx="1.5"/><path d="M7 9h10M7 15h10"/>', 'Aucun programme', 'Crée ton premier entraînement !'); return; }
   list.innerHTML = workouts.map(w => {
     const exos = w.exercises||[];
     const preview = exos.slice(0,3).map(e=>{const ex=getExo(e.exoId);return ex?`<div class="exo-preview"><span class="exo-preview-name">${ex.emoji} ${ex.name}</span><span class="exo-preview-sets">${e.sets.length} série${e.sets.length>1?'s':''}</span></div>`:''}).join('');
@@ -1190,6 +1216,7 @@ function renderWorkouts() {
       <div class="card-start-wrap"><button class="start-btn" onclick="event.stopPropagation();startSession('${w.id}')">DÉMARRER</button></div>
     </div>`;
   }).join('');
+  animateList(list);
 }
 
 // ── RENDER EXERCICES ──
@@ -1205,7 +1232,7 @@ function renderExercices(muscleFilter='Tous', search='') {
   let f = EXERCISES_DB;
   if (muscleFilter !== 'Tous') f = f.filter(e => e.muscle === muscleFilter);
   if (search) f = f.filter(e => e.name.toLowerCase().includes(search.toLowerCase()) || e.tags.some(t=>t.toLowerCase().includes(search.toLowerCase())));
-  if (!f.length) { list.innerHTML=`<div class="empty-state"><div class="big-icon">🔍</div><p>Aucun exercice trouvé.</p></div>`; return; }
+  if (!f.length) { list.innerHTML = emptyStateHTML('<circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/><path d="M8.5 13.5l5-5M13.5 13.5l-5-5"/>', 'Aucun exercice trouvé', 'Essaie un autre filtre ou terme'); return; }
 
   const groups = buildGroups(f);
   const muscleKeys = Object.entries(groups).filter(([,exos])=>exos.length>0).map(([m])=>m);
@@ -1244,6 +1271,7 @@ function renderExercices(muscleFilter='Tous', search='') {
     </div>`;
   }).join('');
 
+  animateList(list);
   // Init drag order from current muscle order
   updateSectionOrder(muscleKeys);
 }
@@ -1309,7 +1337,7 @@ function renderHistory() {
   const today = new Date(); today.setHours(0,0,0,0);
 
   // Global stats
-  document.getElementById('stat-sessions').textContent = all.filter(s => new Date(s.date).getMonth() === new Date().getMonth()).length;
+  countUp(document.getElementById('stat-sessions'), all.filter(s => new Date(s.date).getMonth() === new Date().getMonth()).length);
   let streak = 0;
   for(let i = 0; i < 30; i++){
     const d = new Date(today); d.setDate(d.getDate()-i);
@@ -1343,7 +1371,11 @@ function renderHistory() {
   const daySessions = all.filter(s => new Date(s.date).toDateString() === historyViewDate.toDateString());
   const hl = document.getElementById('history-list');
   if(!daySessions.length){
-    hl.innerHTML = `<div class="empty-state"><div class="big-icon">📋</div><p>${isToday ? 'Aucune séance aujourd\'hui.<br>Lance ton premier entraînement !' : 'Aucune séance ce jour-là.'}</p></div>`;
+    hl.innerHTML = emptyStateHTML(
+      '<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01"/>',
+      isToday ? 'Aucune séance aujourd\'hui' : 'Aucune séance ce jour-là',
+      isToday ? 'Lance ton premier entraînement !' : 'Choisis un autre jour'
+    );
     return;
   }
   hl.innerHTML = daySessions.map(s => {
@@ -1363,6 +1395,7 @@ function renderHistory() {
       <div class="history-exo-expand" id="expand-${s.id}"></div>
     </div>`;
   }).join('');
+  animateList(hl);
 }
 
 function buildSessionExoHTML(s) {
@@ -1429,6 +1462,10 @@ function historySetDay(iso) {
   historyViewDate = new Date(iso);
   historyViewDate.setHours(0,0,0,0);
   renderHistory();
+  requestAnimationFrame(() => {
+    const sel = document.querySelector('.streak-day.selected');
+    if (sel) { sel.classList.add('bouncing'); sel.addEventListener('animationend', () => sel.classList.remove('bouncing'), {once:true}); }
+  });
   document.getElementById('history-list').scrollIntoView({behavior:'smooth', block:'start'});
 }
 
