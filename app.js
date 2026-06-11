@@ -1879,4 +1879,3 @@ Object.assign(window, {
 buildFilterChips();
 loadWorkouts();
 renderExercices();
-renderGuidedPrograms();
