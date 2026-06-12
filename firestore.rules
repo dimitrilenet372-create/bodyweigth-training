@@ -7,7 +7,7 @@ service cloud.firestore {
     match /sessionHistory/{doc} {
       allow read, write: if true;
     }
-    match /users/{email} {
+    match /Subscriptions/{email} {
       allow read: if request.auth != null
                   && request.auth.token.email != null
                   && request.auth.token.email.lower() == email;

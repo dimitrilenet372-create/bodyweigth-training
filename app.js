@@ -933,7 +933,7 @@ async function loadPremiumStatus(user) {
   if (!user || user.isAnonymous || !user.email) { premiumStatus = false; return; }
   try {
     const email = user.email.toLowerCase();
-    const snap  = await getDocFromServer(doc(db, 'users', email));
+    const snap  = await getDocFromServer(doc(db, 'Subscriptions', email));
     premiumStatus = snap.exists() ? !!(snap.data().isPremium) : false;
     console.log('[premium]', email, '→', premiumStatus);
   } catch(e) {
