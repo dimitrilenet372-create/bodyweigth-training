@@ -7,14 +7,11 @@ service cloud.firestore {
     match /sessionHistory/{doc} {
       allow read, write: if true;
     }
-    match /users/{uid} {
-      allow read: if request.auth != null && request.auth.uid == uid;
-      // Le client peut créer son document initial uniquement avec isPremium: false
-      allow create: if request.auth != null
-                    && request.auth.uid == uid
-                    && request.resource.data.isPremium == false;
-      // Seul le webhook Stripe (Admin SDK) peut modifier isPremium
-      allow update: if false;
+    match /users/{email} {
+      allow read: if request.auth != null
+                  && request.auth.token.email != null
+                  && request.auth.token.email.lower() == email;
+      allow write: if false;
     }
   }
 }

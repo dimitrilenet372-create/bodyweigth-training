@@ -930,11 +930,12 @@ function showWelcomeAnim(user) {
 }
 
 async function loadPremiumStatus(user) {
-  if (!user || user.isAnonymous) { premiumStatus = false; return; }
+  if (!user || user.isAnonymous || !user.email) { premiumStatus = false; return; }
   try {
-    const snap = await getDocFromServer(doc(db, 'users', user.uid));
+    const email = user.email.toLowerCase();
+    const snap  = await getDocFromServer(doc(db, 'users', email));
     premiumStatus = snap.exists() ? !!(snap.data().isPremium) : false;
-    console.log('[premium]', user.uid, '→', premiumStatus, snap.exists() ? snap.data() : 'doc inexistant');
+    console.log('[premium]', email, '→', premiumStatus);
   } catch(e) {
     console.error('[premium] ERREUR:', e.code, e.message);
     premiumStatus = false;
