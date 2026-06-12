@@ -1031,10 +1031,10 @@ function openExoFromGuided(exoId) {
   document.getElementById('preview-muscle').textContent = ex.muscle;
   document.getElementById('preview-tags').innerHTML     = ex.tags.map(t=>`<span class="exo-tag">${t}</span>`).join('');
 
+  document.getElementById('preview-progression').innerHTML = buildProgressionPanel(exoId);
   const mediaWrap = document.getElementById('preview-media-wrap');
   mediaWrap.style.display = 'none';
   mediaWrap.innerHTML = '';
-  document.getElementById('preview-progression').innerHTML = '';
 
   const backBtn = document.getElementById('preview-back-btn');
   backBtn.textContent = '← Retour';
@@ -1434,12 +1434,11 @@ function openExoPreview(exoId, fromWorkout = false) {
   document.getElementById('preview-desc').textContent   = ex.desc || '';
   document.getElementById('preview-muscle').textContent = ex.muscle;
   document.getElementById('preview-tags').innerHTML     = ex.tags.map(t=>`<span class="exo-tag">${t}</span>`).join('');
-  document.getElementById('preview-progression').innerHTML = fromWorkout ? '' : buildProgressionPanel(exoId);
+  document.getElementById('preview-progression').innerHTML = buildProgressionPanel(exoId);
 
   const mediaWrap = document.getElementById('preview-media-wrap');
 
   if (fromWorkout) {
-    // Pas de vidéo ni image hors onglet Exercices
     mediaWrap.style.display = 'none';
     mediaWrap.innerHTML = '';
   } else if (ytId) {
@@ -1952,10 +1951,10 @@ function openExoPreviewFromPicker(exoId) {
   document.getElementById('preview-muscle').textContent = ex.muscle;
   document.getElementById('preview-tags').innerHTML     = ex.tags.map(t=>`<span class="exo-tag">${t}</span>`).join('');
 
+  document.getElementById('preview-progression').innerHTML = buildProgressionPanel(exoId);
   const mediaWrap = document.getElementById('preview-media-wrap');
   mediaWrap.style.display = 'none';
   mediaWrap.innerHTML = '';
-  document.getElementById('preview-progression').innerHTML = '';
 
   // Bouton ajouter adapté
   const alreadyAdded = workoutExercises.some(we=>we.exoId===exoId);
