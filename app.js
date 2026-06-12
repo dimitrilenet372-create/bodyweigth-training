@@ -1404,8 +1404,7 @@ function renderSkillTree() {
 
         return `${connectorHTML}
           <div class="st-node ${locked ? 'st-node--locked' : 'st-node--unlocked'} ${!locked && isLast ? 'st-node--elite' : ''}"
-               onclick="${locked ? '' : `closeSkillTree();openExoPreview('${step.exoId}')`}"
-               style="${locked ? 'cursor:default' : 'cursor:pointer'}">
+               style="cursor:default">
             <div class="st-node-circle">
               ${locked
                 ? `<svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>`
