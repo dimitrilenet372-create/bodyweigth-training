@@ -466,13 +466,14 @@ header { padding:24px 20px 16px; display:flex; align-items:center; justify-conte
 .skill-tree-body {
   flex: 1;
   overflow-x: auto;
-  overflow-y: hidden;
+  overflow-y: auto;
   display: flex;
   gap: 16px;
-  padding: 24px 20px;
+  padding: 24px 20px 60px;
   align-items: flex-start;
+  -webkit-overflow-scrolling: touch;
 }
-.skill-tree-body::-webkit-scrollbar { height: 4px; }
+.skill-tree-body::-webkit-scrollbar { height: 4px; width: 4px; }
 .skill-tree-body::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
 
 /* ── CHAIN ── */
