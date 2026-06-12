@@ -1939,10 +1939,9 @@ function renderPickerExos(search){
     </div>
     ${exos.map(e=>{
       const already=workoutExercises.some(we=>we.exoId===e.id);
-      const gif=resolveExoImg(e);
       return `<div class="exo-item${already?' exo-already':''}">
         <div class="exo-icon-wrap" onclick="openExoPreviewFromPicker('${e.id}')">
-          ${gif?`<img src="${gif}" class="exo-thumb" loading="lazy" onerror="this.style.display='none';this.nextSibling.style.display='flex'"><div class="exo-icon" style="display:none">${e.emoji}</div>`:`<div class="exo-icon">${e.emoji}</div>`}
+          <div class="exo-icon">${e.emoji}</div>
         </div>
         <div class="exo-info" onclick="openExoPreviewFromPicker('${e.id}')">
           <div class="exo-name">${e.name}</div>
@@ -2018,10 +2017,9 @@ function renderSession(){
     sessionExercises.map((we,i)=>{
       const ex=getExo(we.exoId);if(!ex)return'';
       const allDone=we.setsStatus.every(s=>s.done);
-      const gif=resolveExoImg(ex);
       return `<div class="session-exo-card${allDone?' session-exo-card--done':''}">
         <div class="session-exo-top">
-          ${gif?`<img src="${gif}" class="session-exo-img" loading="lazy" onerror="this.style.display='none'">`:` <span class="session-exo-emoji">${ex.emoji}</span>`}
+          <span class="session-exo-emoji">${ex.emoji}</span>
           <div class="session-exo-info">
             <div class="session-exo-name">${ex.name}</div>
             <div class="session-exo-muscle">${ex.muscle}</div>
