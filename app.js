@@ -1936,6 +1936,32 @@ Object.assign(window, {
   startCheckout, openCustomerPortal,
 });
 
+function skCard() {
+  return `<div class="sk-card">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px">
+      <div class="sk sk-title"></div>
+      <div class="sk sk-badge"></div>
+    </div>
+    <div class="sk sk-line" style="width:80%"></div>
+    <div class="sk sk-line sk-line-sm"></div>
+    <div class="sk sk-btn"></div>
+  </div>`;
+}
+
+function skGuidedCard() {
+  return `<div class="sk-card" style="display:flex;align-items:center;gap:14px;padding:16px 18px;border-radius:16px;margin-bottom:10px">
+    <div class="sk" style="width:42px;height:42px;border-radius:12px;flex-shrink:0"></div>
+    <div style="flex:1">
+      <div class="sk sk-title" style="height:16px;margin-bottom:8px"></div>
+      <div class="sk" style="height:12px;width:60%;border-radius:8px"></div>
+    </div>
+  </div>`;
+}
+
+// Affiche les skeletons immédiatement
+document.getElementById('guided-list').innerHTML  = skGuidedCard().repeat(4);
+document.getElementById('workout-list').innerHTML  = skCard().repeat(2);
+
 buildFilterChips();
 loadWorkouts();
 renderExercices();
