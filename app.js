@@ -932,22 +932,11 @@ function showWelcomeAnim(user) {
 async function loadPremiumStatus(user) {
   if (!user || user.isAnonymous) { premiumStatus = false; return; }
   try {
-    const userRef = doc(db, 'users', user.uid);
-    const snap    = await getDocFromServer(userRef); // force serveur, ignore le cache
-    if (snap.exists()) {
-      premiumStatus = !!(snap.data().isPremium);
-      console.log('[premium] uid:', user.uid, '→ isPremium:', premiumStatus, snap.data());
-    } else {
-      console.log('[premium] doc inexistant pour uid:', user.uid, '→ création avec isPremium:false');
-      await setDoc(userRef, {
-        email:     user.email || '',
-        isPremium: false,
-        createdAt: new Date().toISOString(),
-      });
-      premiumStatus = false;
-    }
+    const snap = await getDocFromServer(doc(db, 'users', user.uid));
+    premiumStatus = snap.exists() ? !!(snap.data().isPremium) : false;
+    console.log('[premium]', user.uid, '→', premiumStatus, snap.exists() ? snap.data() : 'doc inexistant');
   } catch(e) {
-    console.error('[premium] ERREUR lecture Firestore:', e.code, e.message);
+    console.error('[premium] ERREUR:', e.code, e.message);
     premiumStatus = false;
   }
 }
