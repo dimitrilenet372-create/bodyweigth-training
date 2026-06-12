@@ -1032,21 +1032,13 @@ function openExoFromGuided(exoId) {
   document.getElementById('preview-tags').innerHTML     = ex.tags.map(t=>`<span class="exo-tag">${t}</span>`).join('');
 
   const mediaWrap = document.getElementById('preview-media-wrap');
-  if (ytId) {
-    mediaWrap.style.display = 'block';
-    mediaWrap.innerHTML = `<div class="preview-video-wrap"><iframe src="https://www.youtube.com/embed/${ytId}?autoplay=1&mute=1&loop=1&playlist=${ytId}&controls=1&rel=0&modestbranding=1" allow="autoplay; encrypted-media" allowfullscreen frameborder="0" class="preview-iframe"></iframe></div>`;
-  } else if (gif) {
-    mediaWrap.style.display = 'block';
-    mediaWrap.innerHTML = `<div class="preview-gif-wrap"><img src="${gif}" class="preview-gif-img" alt="${ex.name}"></div>`;
-  } else {
-    mediaWrap.style.display = 'none';
-    mediaWrap.innerHTML = '';
-  }
+  mediaWrap.style.display = 'none';
+  mediaWrap.innerHTML = '';
+  document.getElementById('preview-progression').innerHTML = '';
 
   const backBtn = document.getElementById('preview-back-btn');
   backBtn.textContent = '← Retour';
   backBtn.onclick = () => {
-    document.getElementById('preview-media-wrap').innerHTML = '';
     closeModal('modal-preview');
     openModal('modal-guided');
   };
@@ -1442,29 +1434,20 @@ function openExoPreview(exoId, fromWorkout = false) {
   document.getElementById('preview-desc').textContent   = ex.desc || '';
   document.getElementById('preview-muscle').textContent = ex.muscle;
   document.getElementById('preview-tags').innerHTML     = ex.tags.map(t=>`<span class="exo-tag">${t}</span>`).join('');
-  document.getElementById('preview-progression').innerHTML = buildProgressionPanel(exoId);
+  document.getElementById('preview-progression').innerHTML = fromWorkout ? '' : buildProgressionPanel(exoId);
 
   const mediaWrap = document.getElementById('preview-media-wrap');
 
-  if (ytId) {
-    // YouTube embed — autoplay, muted, loop
+  if (fromWorkout) {
+    // Pas de vidéo ni image hors onglet Exercices
+    mediaWrap.style.display = 'none';
+    mediaWrap.innerHTML = '';
+  } else if (ytId) {
     mediaWrap.style.display = 'block';
-    mediaWrap.innerHTML = `
-      <div class="preview-video-wrap">
-        <iframe
-          src="https://www.youtube.com/embed/${ytId}?autoplay=1&mute=1&loop=1&playlist=${ytId}&controls=1&rel=0&modestbranding=1"
-          allow="autoplay; encrypted-media"
-          allowfullscreen
-          frameborder="0"
-          class="preview-iframe">
-        </iframe>
-      </div>`;
+    mediaWrap.innerHTML = `<div class="preview-video-wrap"><iframe src="https://www.youtube.com/embed/${ytId}?autoplay=1&mute=1&loop=1&playlist=${ytId}&controls=1&rel=0&modestbranding=1" allow="autoplay; encrypted-media" allowfullscreen frameborder="0" class="preview-iframe"></iframe></div>`;
   } else if (gif) {
     mediaWrap.style.display = 'block';
-    mediaWrap.innerHTML = `
-      <div class="preview-gif-wrap">
-        <img src="${gif}" class="preview-gif-img" alt="${ex.name}">
-      </div>`;
+    mediaWrap.innerHTML = `<div class="preview-gif-wrap"><img src="${gif}" class="preview-gif-img" alt="${ex.name}"></div>`;
   } else {
     mediaWrap.style.display = 'none';
     mediaWrap.innerHTML = '';
@@ -1970,16 +1953,9 @@ function openExoPreviewFromPicker(exoId) {
   document.getElementById('preview-tags').innerHTML     = ex.tags.map(t=>`<span class="exo-tag">${t}</span>`).join('');
 
   const mediaWrap = document.getElementById('preview-media-wrap');
-  if (ytId) {
-    mediaWrap.style.display = 'block';
-    mediaWrap.innerHTML = `<div class="preview-video-wrap"><iframe src="https://www.youtube.com/embed/${ytId}?autoplay=1&mute=1&loop=1&playlist=${ytId}&controls=1&rel=0&modestbranding=1" allow="autoplay; encrypted-media" allowfullscreen frameborder="0" class="preview-iframe"></iframe></div>`;
-  } else if (gif) {
-    mediaWrap.style.display = 'block';
-    mediaWrap.innerHTML = `<div class="preview-gif-wrap"><img src="${gif}" class="preview-gif-img" alt="${ex.name}"></div>`;
-  } else {
-    mediaWrap.style.display = 'none';
-    mediaWrap.innerHTML = '';
-  }
+  mediaWrap.style.display = 'none';
+  mediaWrap.innerHTML = '';
+  document.getElementById('preview-progression').innerHTML = '';
 
   // Bouton ajouter adapté
   const alreadyAdded = workoutExercises.some(we=>we.exoId===exoId);
