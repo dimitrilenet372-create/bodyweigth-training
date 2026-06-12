@@ -697,8 +697,7 @@ function renderGuidedPrograms() {
   animateList(document.getElementById('guided-list'));
 }
 
-const PREMIUM_PRICE   = '9.99€ / mois';
-const PREMIUM_EMAILS  = ['prout@hotmail.fr', 'hirionne@gmail.com', 'dimitrilenet372@gmail.com'];
+const PREMIUM_PRICE = '9.99€ / mois';
 let premiumStatus = false;
 function isPremium() { return premiumStatus; }
 
@@ -750,16 +749,17 @@ function showWelcomeAnim(user) {
 
 async function loadPremiumStatus(user) {
   if (!user || user.isAnonymous) { premiumStatus = false; return; }
-  // Admins hardcodés
-  if (PREMIUM_EMAILS.includes((user.email || '').toLowerCase())) { premiumStatus = true; return; }
-  // Lecture Firestore — collection Subscriptions, document = email
   try {
-    const subRef = doc(db, 'Subscriptions', user.email.toLowerCase());
-    const snap   = await getDoc(subRef);
+    const userRef = doc(db, 'users', user.uid);
+    const snap    = await getDoc(userRef);
     if (snap.exists()) {
       premiumStatus = !!(snap.data().isPremium);
     } else {
-      await setDoc(subRef, { email: user.email.toLowerCase(), isPremium: false, createdAt: new Date().toISOString() });
+      await setDoc(userRef, {
+        email:     user.email || '',
+        isPremium: false,
+        createdAt: new Date().toISOString(),
+      });
       premiumStatus = false;
     }
   } catch(e) {
