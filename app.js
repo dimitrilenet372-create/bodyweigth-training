@@ -936,7 +936,9 @@ async function loadPremiumStatus(user) {
     const snap    = await getDoc(userRef);
     if (snap.exists()) {
       premiumStatus = !!(snap.data().isPremium);
+      console.log('[premium] uid:', user.uid, '→ isPremium:', premiumStatus, snap.data());
     } else {
+      console.log('[premium] doc inexistant pour uid:', user.uid, '→ création avec isPremium:false');
       await setDoc(userRef, {
         email:     user.email || '',
         isPremium: false,
@@ -945,6 +947,7 @@ async function loadPremiumStatus(user) {
       premiumStatus = false;
     }
   } catch(e) {
+    console.error('[premium] ERREUR lecture Firestore:', e.code, e.message);
     premiumStatus = false;
   }
 }
