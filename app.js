@@ -1050,6 +1050,34 @@ function openExoFromGuided(exoId) {
   openModal('modal-preview');
 }
 
+function openExoFromSkillTree(exoId) {
+  const ex = getExo(exoId); if (!ex) return;
+  previewExoId = exoId;
+
+  document.getElementById('preview-title').textContent  = ex.name;
+  document.getElementById('preview-desc').textContent   = ex.desc || '';
+  document.getElementById('preview-muscle').textContent = ex.muscle;
+  document.getElementById('preview-tags').innerHTML     = ex.tags.map(t=>`<span class="exo-tag">${t}</span>`).join('');
+
+  document.getElementById('preview-progression').innerHTML = buildProgressionPanel(exoId);
+  const mediaWrap = document.getElementById('preview-media-wrap');
+  mediaWrap.style.display = 'none';
+  mediaWrap.innerHTML = '';
+
+  const backBtn = document.getElementById('preview-back-btn');
+  backBtn.textContent = '← Arbre';
+  backBtn.onclick = () => {
+    closeModal('modal-preview');
+    document.getElementById('skill-tree').classList.add('open');
+  };
+  backBtn.style.display = 'block';
+  document.getElementById('preview-standalone-btn').style.display = 'none';
+  document.getElementById('preview-add-btn').style.display = 'none';
+
+  document.getElementById('skill-tree').classList.remove('open');
+  openModal('modal-preview');
+}
+
 function startGuidedSession() {
   const p = GUIDED_PROGRAMS.find(x => x.id === currentGuidedProgramId);
   if (!p) return;
@@ -1396,7 +1424,7 @@ function renderSkillTree() {
 
         return `${connectorHTML}
           <div class="st-node ${locked ? 'st-node--locked' : 'st-node--unlocked'} ${!locked && isLast ? 'st-node--elite' : ''}"
-               style="cursor:default">
+               style="cursor:${locked ? 'default' : 'pointer'}" ${!locked ? `onclick="openExoFromSkillTree('${step.exoId}')"` : ''}>
             <div class="st-node-circle">
               ${locked
                 ? `<svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>`
@@ -2231,7 +2259,7 @@ Object.assign(window, {
   // PIN / reset
   pinInput, pinBackspace, resetAllHistory,
   // Programmes guidés
-  openGuidedProgram, startGuidedSession, openExoFromGuided,
+  openGuidedProgram, startGuidedSession, openExoFromGuided, openExoFromSkillTree,
   // Auth
   openAuth, authSubmit, authSignOut, authReset, authGoogle, closeAuthScreen, togglePwd,
   // Stripe
