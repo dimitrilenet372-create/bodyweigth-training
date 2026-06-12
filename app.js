@@ -1375,6 +1375,73 @@ function showUnlockNotif(exoIds) {
   setTimeout(() => { notif.classList.remove('visible'); setTimeout(() => notif.remove(), 400); }, 4000);
 }
 
+// ══════════════════════════════════════════
+//  SKILL TREE
+// ══════════════════════════════════════════
+
+function openSkillTree() {
+  renderSkillTree();
+  document.getElementById('skill-tree').classList.add('open');
+}
+function closeSkillTree() {
+  document.getElementById('skill-tree').classList.remove('open');
+}
+
+function renderSkillTree() {
+  const progress = getProgress();
+  const { unlocked, total } = getGlobalLevel();
+
+  document.getElementById('skill-tree-global').innerHTML =
+    `<div class="st-global-badge">${unlocked}<span>/${total}</span></div>`;
+
+  document.getElementById('skill-tree-body').innerHTML =
+    PROGRESSION_CHAINS.map(chain => {
+      const nodesHTML = chain.steps.map((step, i) => {
+        const ex       = getExo(step.exoId);
+        if (!ex) return '';
+        const exoP     = progress[step.exoId] || { pr:0, totalSets:0 };
+        const locked   = !isExoUnlocked(step.exoId);
+        const isLast   = i === chain.steps.length - 1;
+        const pct      = step.pr_unlock
+          ? Math.min(100, Math.round(((progress[chain.steps[i-1]?.exoId]?.pr||0) / step.pr_unlock) * 100))
+          : 100;
+
+        const connectorHTML = i > 0 ? `
+          <div class="st-connector ${locked ? 'st-connector--locked' : 'st-connector--done'}">
+            <div class="st-connector-line"></div>
+            <div class="st-connector-label">${chain.steps[i-1].pr_unlock} reps</div>
+          </div>` : '';
+
+        return `${connectorHTML}
+          <div class="st-node ${locked ? 'st-node--locked' : 'st-node--unlocked'} ${!locked && isLast ? 'st-node--elite' : ''}"
+               onclick="${locked ? '' : `closeSkillTree();openExoPreview('${step.exoId}')`}"
+               style="${locked ? 'cursor:default' : 'cursor:pointer'}">
+            <div class="st-node-circle">
+              ${locked
+                ? `<svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>`
+                : `<span>${ex.emoji}</span>`
+              }
+              ${!locked && step.pr_unlock && !isLast ? `<div class="st-node-ring" style="--pct:${exoP.pr > 0 ? Math.min(100, Math.round(exoP.pr / step.pr_unlock * 100)) : 0}%"></div>` : ''}
+            </div>
+            <div class="st-node-info">
+              <div class="st-node-name">${ex.name}</div>
+              <div class="st-node-label ${locked ? 'st-node-label--locked' : ''}">${locked ? `🔒 ${step.label}` : `✓ ${step.label}`}</div>
+              ${!locked && exoP.pr > 0 ? `<div class="st-node-pr">PR : ${exoP.pr} reps</div>` : ''}
+            </div>
+          </div>`;
+      }).join('');
+
+      return `<div class="st-chain">
+        <div class="st-chain-header">
+          <span class="st-chain-emoji">${chain.emoji}</span>
+          <span class="st-chain-name">${chain.name}</span>
+          <span class="st-chain-count">${chain.steps.filter(s => isExoUnlocked(s.exoId)).length}/${chain.steps.length}</span>
+        </div>
+        <div class="st-chain-nodes">${nodesHTML}</div>
+      </div>`;
+    }).join('');
+}
+
 // ── PREVIEW avec YouTube ──
 function openExoPreview(exoId, fromWorkout = false) {
   previewExoId = exoId;
@@ -2207,6 +2274,8 @@ Object.assign(window, {
   openAuth, authSubmit, authSignOut, authReset, authGoogle, closeAuthScreen, togglePwd,
   // Stripe
   startCheckout, openCustomerPortal,
+  // Skill tree
+  openSkillTree, closeSkillTree,
 });
 
 function skCard() {

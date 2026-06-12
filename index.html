@@ -17,6 +17,9 @@
       <div class="icon-btn" id="auth-header-btn" title="Connexion / Inscription">
         <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
       </div>
+      <div class="icon-btn" onclick="openSkillTree()" title="Arbre de progression">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><circle cx="12" cy="5" r="2"/><circle cx="5" cy="19" r="2"/><circle cx="19" cy="19" r="2"/><path d="M12 7v4M12 11l-5 6M12 11l5 6"/></svg>
+      </div>
       <div class="icon-btn" onclick="openNewWorkout()" title="Nouveau programme">
         <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
       </div>
@@ -87,6 +90,18 @@
     </button>
   </div>
 
+</div>
+
+<!-- SKILL TREE -->
+<div class="skill-tree-overlay" id="skill-tree">
+  <div class="skill-tree-header">
+    <button class="skill-tree-back" onclick="closeSkillTree()">
+      <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+    </button>
+    <div class="skill-tree-title">ARBRE DE PROGRESSION</div>
+    <div class="skill-tree-global" id="skill-tree-global"></div>
+  </div>
+  <div class="skill-tree-body" id="skill-tree-body"></div>
 </div>
 
 <!-- ACTIVE BAR -->
