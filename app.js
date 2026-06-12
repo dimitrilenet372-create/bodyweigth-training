@@ -521,7 +521,7 @@ function resolveExoImg(exo) {
 // Remplace localStorage — tout est synchronisé en temps réel
 
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js';
-import { getFirestore, collection, doc, onSnapshot, setDoc, deleteDoc, query, orderBy, getDoc }
+import { getFirestore, collection, doc, onSnapshot, setDoc, deleteDoc, query, orderBy, getDoc, getDocFromServer }
   from 'https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js';
 import { getFunctions, httpsCallable }
   from 'https://www.gstatic.com/firebasejs/12.11.0/firebase-functions.js';
@@ -933,7 +933,7 @@ async function loadPremiumStatus(user) {
   if (!user || user.isAnonymous) { premiumStatus = false; return; }
   try {
     const userRef = doc(db, 'users', user.uid);
-    const snap    = await getDoc(userRef);
+    const snap    = await getDocFromServer(userRef); // force serveur, ignore le cache
     if (snap.exists()) {
       premiumStatus = !!(snap.data().isPremium);
       console.log('[premium] uid:', user.uid, '→ isPremium:', premiumStatus, snap.data());
