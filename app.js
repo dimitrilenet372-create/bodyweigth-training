@@ -124,6 +124,103 @@ const EXERCISES_DB = [
   { id:'ringdip',     name:'Ring Dip',               emoji:'💍', muscle:'Triceps',         tags:['Triceps','Avancé'],            gif:'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/Push_up.gif/220px-Push_up.gif',                          desc:'Dips sur anneaux. Stabilise en tournant les paumes vers l\'extérieur en haut.' },
 ];
 
+// ══════════════════════════════════════════
+//  CHAÎNES DE PROGRESSION CALLISTHÉNIE
+//  pr_unlock = PR (max reps/sec) requis pour débloquer l'étape suivante
+// ══════════════════════════════════════════
+const PROGRESSION_CHAINS = [
+  {
+    id:'push', name:'Pompes', emoji:'💪',
+    steps:[
+      { exoId:'incline',   label:'Débutant',      pr_unlock:15 },
+      { exoId:'pu',        label:'Intermédiaire', pr_unlock:20 },
+      { exoId:'puw',       label:'Intermédiaire', pr_unlock:20 },
+      { exoId:'pud',       label:'Avancé',        pr_unlock:15 },
+      { exoId:'decline',   label:'Avancé',        pr_unlock:15 },
+      { exoId:'pue',       label:'Avancé',        pr_unlock:10 },
+      { exoId:'puarch',    label:'Expert',        pr_unlock:8  },
+      { exoId:'pseudo',    label:'Expert',        pr_unlock:8  },
+      { exoId:'pu1arm',    label:'Elite',         pr_unlock:null },
+    ]
+  },
+  {
+    id:'pull', name:'Tractions', emoji:'🏋️',
+    steps:[
+      { exoId:'invrow',    label:'Débutant',      pr_unlock:15 },
+      { exoId:'negpull',   label:'Intermédiaire', pr_unlock:5  },
+      { exoId:'chinup',    label:'Intermédiaire', pr_unlock:10 },
+      { exoId:'row',       label:'Intermédiaire', pr_unlock:12 },
+      { exoId:'widepull',  label:'Avancé',        pr_unlock:10 },
+      { exoId:'commpull',  label:'Avancé',        pr_unlock:8  },
+      { exoId:'archerpull',label:'Expert',        pr_unlock:6  },
+      { exoId:'typewpull', label:'Expert',        pr_unlock:5  },
+      { exoId:'muscleup',  label:'Elite',         pr_unlock:null },
+    ]
+  },
+  {
+    id:'squat', name:'Squats', emoji:'🦵',
+    steps:[
+      { exoId:'sq',        label:'Débutant',      pr_unlock:20 },
+      { exoId:'sqj',       label:'Intermédiaire', pr_unlock:15 },
+      { exoId:'stepup',    label:'Intermédiaire', pr_unlock:15 },
+      { exoId:'lunge',     label:'Intermédiaire', pr_unlock:15 },
+      { exoId:'bsq',       label:'Avancé',        pr_unlock:12 },
+      { exoId:'lungej',    label:'Avancé',        pr_unlock:10 },
+      { exoId:'shrimp',    label:'Expert',        pr_unlock:8  },
+      { exoId:'pistol',    label:'Elite',         pr_unlock:null },
+    ]
+  },
+  {
+    id:'handstand', name:'Handstand', emoji:'🤸',
+    steps:[
+      { exoId:'pike',      label:'Débutant',      pr_unlock:10 },
+      { exoId:'wallwalk',  label:'Intermédiaire', pr_unlock:5  },
+      { exoId:'hshold',    label:'Avancé',        pr_unlock:15 },
+      { exoId:'hs',        label:'Elite',         pr_unlock:null },
+    ]
+  },
+  {
+    id:'core', name:'Abdos / Core', emoji:'🔥',
+    steps:[
+      { exoId:'crunch',    label:'Débutant',      pr_unlock:20 },
+      { exoId:'lleg',      label:'Débutant',      pr_unlock:15 },
+      { exoId:'hollow',    label:'Intermédiaire', pr_unlock:20 },
+      { exoId:'hangknee',  label:'Intermédiaire', pr_unlock:15 },
+      { exoId:'vup',       label:'Avancé',        pr_unlock:15 },
+      { exoId:'dragon',    label:'Avancé',        pr_unlock:10 },
+      { exoId:'toesbar',   label:'Expert',        pr_unlock:8  },
+      { exoId:'lsit',      label:'Elite',         pr_unlock:null },
+    ]
+  },
+  {
+    id:'planche', name:'Planche', emoji:'⚖️',
+    steps:[
+      { exoId:'plank',     label:'Débutant',      pr_unlock:45 },
+      { exoId:'planchelean',label:'Intermédiaire',pr_unlock:10 },
+      { exoId:'frogstand', label:'Intermédiaire', pr_unlock:10 },
+      { exoId:'crowstand', label:'Avancé',        pr_unlock:15 },
+      { exoId:'tucplanche',label:'Elite',         pr_unlock:null },
+    ]
+  },
+  {
+    id:'pull_adv', name:'Levers', emoji:'🎯',
+    steps:[
+      { exoId:'skincat',   label:'Débutant',      pr_unlock:8  },
+      { exoId:'fronttuck', label:'Intermédiaire', pr_unlock:10 },
+      { exoId:'backlev',   label:'Avancé',        pr_unlock:10 },
+      { exoId:'humanflag', label:'Elite',         pr_unlock:null },
+    ]
+  },
+];
+
+// Lookup rapide : exoId → { chainId, stepIndex }
+const EXO_CHAIN_MAP = {};
+PROGRESSION_CHAINS.forEach(chain => {
+  chain.steps.forEach((step, i) => {
+    EXO_CHAIN_MAP[step.exoId] = { chainId: chain.id, stepIndex: i };
+  });
+});
+
 const MUSCLE_ORDER = [
   'Pecs','Épaules','Triceps','Dos','Biceps',
   'Quadriceps','Fessiers','Ischio-jambiers','Mollets',
@@ -523,6 +620,91 @@ async function seedDefaultWorkouts() {
 }
 function getExo(id) { return EXERCISES_DB.find(e => e.id === id); }
 function fmtTime(sec) { return `${Math.floor(sec/60)}:${(sec%60).toString().padStart(2,'0')}`; }
+
+// ══════════════════════════════════════════
+//  SYSTÈME DE PROGRESSION
+// ══════════════════════════════════════════
+
+function getProgress() {
+  return JSON.parse(localStorage.getItem('zw_progress') || '{}');
+}
+
+function saveProgress(p) {
+  localStorage.setItem('zw_progress', JSON.stringify(p));
+}
+
+// Met à jour le progrès après une séance et retourne les exos débloqués
+function updateProgressAfterSession(sessionExercises) {
+  const progress = getProgress();
+  const newUnlocks = [];
+
+  // 1. Mise à jour des stats par exercice
+  sessionExercises.forEach(we => {
+    if (!progress[we.exoId]) progress[we.exoId] = { pr: 0, totalSets: 0, totalReps: 0 };
+    const p = progress[we.exoId];
+    we.setsStatus.forEach(s => {
+      if (s.done) {
+        const reps = s.actualReps ?? s.reps ?? 0;
+        p.totalSets++;
+        p.totalReps += reps;
+        if (reps > p.pr) p.pr = reps;
+      }
+    });
+  });
+
+  // 2. Vérification des déblocages dans chaque chaîne
+  PROGRESSION_CHAINS.forEach(chain => {
+    chain.steps.forEach((step, i) => {
+      if (i === 0) return; // première étape toujours débloquée
+      const prev = chain.steps[i - 1];
+      const prevProgress = progress[prev.exoId];
+      const alreadyUnlocked = progress[step.exoId]?.unlocked;
+      if (!alreadyUnlocked && prevProgress && prev.pr_unlock && prevProgress.pr >= prev.pr_unlock) {
+        if (!progress[step.exoId]) progress[step.exoId] = { pr: 0, totalSets: 0, totalReps: 0 };
+        progress[step.exoId].unlocked = true;
+        newUnlocks.push(step.exoId);
+      }
+    });
+    // Première étape toujours débloquée
+    const first = chain.steps[0];
+    if (!progress[first.exoId]) progress[first.exoId] = { pr: 0, totalSets: 0, totalReps: 0 };
+    progress[first.exoId].unlocked = true;
+  });
+
+  saveProgress(progress);
+  return newUnlocks;
+}
+
+function isExoUnlocked(exoId) {
+  const info = EXO_CHAIN_MAP[exoId];
+  if (!info) return true; // pas dans une chaîne = toujours dispo
+  if (info.stepIndex === 0) return true; // 1ère étape toujours débloquée
+  const progress = getProgress();
+  return !!(progress[exoId]?.unlocked);
+}
+
+function getExoLevel(exoId) {
+  const info = EXO_CHAIN_MAP[exoId];
+  if (!info) return null;
+  const chain = PROGRESSION_CHAINS.find(c => c.id === info.chainId);
+  return chain?.steps[info.stepIndex];
+}
+
+function getExoProgress(exoId) {
+  return getProgress()[exoId] || { pr: 0, totalSets: 0, totalReps: 0, unlocked: false };
+}
+
+function getGlobalLevel() {
+  const progress = getProgress();
+  let unlocked = 0, total = 0;
+  PROGRESSION_CHAINS.forEach(chain => {
+    chain.steps.forEach((step, i) => {
+      total++;
+      if (i === 0 || progress[step.exoId]?.unlocked) unlocked++;
+    });
+  });
+  return { unlocked, total, pct: total ? Math.round(unlocked / total * 100) : 0 };
+}
 
 function estimateDuration(exercises) {
   if (!exercises.length) return null;
@@ -1107,6 +1289,89 @@ function initChipPointerDrag() {
   }, { passive: true });
 }
 
+// ══════════════════════════════════════════
+//  UI PROGRESSION
+// ══════════════════════════════════════════
+
+function buildProgressionPanel(exoId) {
+  const info = EXO_CHAIN_MAP[exoId];
+  if (!info) return '';
+  const chain    = PROGRESSION_CHAINS.find(c => c.id === info.chainId);
+  const step     = chain.steps[info.stepIndex];
+  const exoP     = getExoProgress(exoId);
+  const unlocked = isExoUnlocked(exoId);
+
+  if (!unlocked) {
+    const prevStep = chain.steps[info.stepIndex - 1];
+    const prevP    = getExoProgress(prevStep.exoId);
+    const needed   = prevStep.pr_unlock;
+    const pct      = Math.min(100, Math.round((prevP.pr / needed) * 100));
+    return `<div class="prog-panel prog-panel--locked">
+      <div class="prog-header">
+        <span class="prog-chain">${chain.emoji} ${chain.name}</span>
+        <span class="prog-badge prog-badge--locked">🔒 Verrouillé</span>
+      </div>
+      <div class="prog-unlock-msg">Atteins <strong>${needed} reps</strong> sur <strong>${getExo(prevStep.exoId)?.name}</strong> pour débloquer</div>
+      <div class="prog-bar-wrap">
+        <div class="prog-bar-fill" style="width:${pct}%"></div>
+      </div>
+      <div class="prog-bar-label">${prevP.pr} / ${needed} reps — ton meilleur</div>
+    </div>`;
+  }
+
+  const nextStep = chain.steps[info.stepIndex + 1];
+  const pr = exoP.pr;
+
+  if (!nextStep) {
+    return `<div class="prog-panel prog-panel--elite">
+      <div class="prog-header">
+        <span class="prog-chain">${chain.emoji} ${chain.name}</span>
+        <span class="prog-badge prog-badge--elite">⭐ Elite</span>
+      </div>
+      <div class="prog-stats-row">
+        <div class="prog-stat"><div class="prog-stat-val">${pr}</div><div class="prog-stat-lbl">PR reps</div></div>
+        <div class="prog-stat"><div class="prog-stat-val">${exoP.totalSets}</div><div class="prog-stat-lbl">Séries totales</div></div>
+      </div>
+    </div>`;
+  }
+
+  const needed = step.pr_unlock || 0;
+  const pct    = needed ? Math.min(100, Math.round((pr / needed) * 100)) : 100;
+  const nextEx = getExo(nextStep.exoId);
+
+  return `<div class="prog-panel">
+    <div class="prog-header">
+      <span class="prog-chain">${chain.emoji} ${chain.name}</span>
+      <span class="prog-badge prog-badge--${step.label.toLowerCase().replace('é','e').replace('è','e')}">${step.label}</span>
+    </div>
+    <div class="prog-stats-row">
+      <div class="prog-stat"><div class="prog-stat-val">${pr}</div><div class="prog-stat-lbl">PR reps</div></div>
+      <div class="prog-stat"><div class="prog-stat-val">${exoP.totalSets}</div><div class="prog-stat-lbl">Séries</div></div>
+      <div class="prog-stat"><div class="prog-stat-val">${pct}%</div><div class="prog-stat-lbl">Vers niveau sup.</div></div>
+    </div>
+    <div class="prog-bar-wrap">
+      <div class="prog-bar-fill" style="width:${pct}%"></div>
+    </div>
+    <div class="prog-bar-label">Prochain : <strong>${nextEx?.name}</strong> — ${pr} / ${needed} reps</div>
+  </div>`;
+}
+
+function updateHeaderLevel() {
+  const { unlocked, total, pct } = getGlobalLevel();
+  const el = document.getElementById('header-level');
+  if (el) el.innerHTML = `<div class="header-lvl-bar" style="--p:${pct}%"></div><span>${unlocked}/${total}</span>`;
+}
+
+function showUnlockNotif(exoIds) {
+  const names = exoIds.map(id => getExo(id)?.name).filter(Boolean).join(', ');
+  const notif = document.createElement('div');
+  notif.className = 'unlock-notif';
+  notif.innerHTML = `<div class="unlock-notif-inner">🔓 Nouveau débloqué !<br><strong>${names}</strong></div>`;
+  document.body.appendChild(notif);
+  setTimeout(() => notif.classList.add('visible'), 50);
+  setTimeout(() => { notif.classList.remove('visible'); setTimeout(() => notif.remove(), 400); }, 4000);
+}
+
 // ── PREVIEW avec YouTube ──
 function openExoPreview(exoId, fromWorkout = false) {
   previewExoId = exoId;
@@ -1118,6 +1383,7 @@ function openExoPreview(exoId, fromWorkout = false) {
   document.getElementById('preview-desc').textContent   = ex.desc || '';
   document.getElementById('preview-muscle').textContent = ex.muscle;
   document.getElementById('preview-tags').innerHTML     = ex.tags.map(t=>`<span class="exo-tag">${t}</span>`).join('');
+  document.getElementById('preview-progression').innerHTML = buildProgressionPanel(exoId);
 
   const mediaWrap = document.getElementById('preview-media-wrap');
 
@@ -1758,10 +2024,14 @@ function endSession(){
       totalSets:e.setsStatus.length
     }))
   };
-  saveSessionToDb(session); // Firestore → déclenche onSnapshot → renderHistory() pour tous
+  saveSessionToDb(session);
+  // Mise à jour de la progression et vérification des déblocages
+  const newUnlocks = updateProgressAfterSession(sessionExercises);
   document.getElementById('active-bar').classList.remove('visible');
   closeModal('modal-session');
-  currentWorkout=null;
+  currentWorkout = null;
+  updateHeaderLevel();
+  if (newUnlocks.length) showUnlockNotif(newUnlocks);
 }
 
 function openActiveSession(){if(currentWorkout)openModal('modal-session');}
@@ -1963,5 +2233,6 @@ document.getElementById('guided-list').innerHTML  = skGuidedCard().repeat(4);
 document.getElementById('workout-list').innerHTML  = skCard().repeat(2);
 
 buildFilterChips();
+updateHeaderLevel();
 loadWorkouts();
 renderExercices();

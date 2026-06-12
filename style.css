@@ -336,6 +336,84 @@ header { padding:24px 20px 16px; display:flex; align-items:center; justify-conte
   to   { opacity:1; transform:scale(1) translateY(0); }
 }
 
+/* ── HEADER LEVEL ── */
+.header-level {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--muted);
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 5px 10px;
+  position: relative;
+  overflow: hidden;
+}
+.header-lvl-bar {
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: var(--p, 0%);
+  background: rgba(77,184,255,.15);
+  transition: width .6s ease;
+}
+.header-level span { position: relative; z-index: 1; }
+
+/* ── PANNEAU PROGRESSION (fiche exo) ── */
+.prog-panel {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px 14px;
+  margin-bottom: 14px;
+}
+.prog-panel--locked { border-color: rgba(255,79,106,.25); background: rgba(255,79,106,.05); }
+.prog-panel--elite  { border-color: rgba(255,200,0,.25);  background: rgba(255,200,0,.05); }
+.prog-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+.prog-chain  { font-size: 12px; font-weight: 600; color: var(--muted); }
+.prog-badge  { font-size: 10px; font-weight: 700; letter-spacing: 1px; padding: 3px 8px; border-radius: 20px; text-transform: uppercase; }
+.prog-badge--debutant     { background: rgba(61,232,160,.15); color: var(--success); }
+.prog-badge--intermediaire{ background: rgba(77,184,255,.15); color: var(--accent); }
+.prog-badge--avance       { background: rgba(255,159,67,.15); color: #ff9f43; }
+.prog-badge--expert       { background: rgba(162,155,254,.15);color: #a29bfe; }
+.prog-badge--elite        { background: rgba(255,200,0,.15);  color: #ffd700; }
+.prog-badge--locked       { background: rgba(255,79,106,.15); color: var(--danger); }
+.prog-stats-row { display: flex; gap: 0; margin-bottom: 10px; }
+.prog-stat { flex: 1; text-align: center; border-right: 1px solid var(--border); }
+.prog-stat:last-child { border-right: none; }
+.prog-stat-val { font-family: 'Bebas Neue', sans-serif; font-size: 22px; color: var(--accent); }
+.prog-stat-lbl { font-size: 10px; color: var(--muted); margin-top: 2px; text-transform: uppercase; letter-spacing: .5px; }
+.prog-bar-wrap { height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; margin-bottom: 6px; }
+.prog-bar-fill { height: 100%; background: linear-gradient(90deg, var(--accent2), var(--accent)); border-radius: 3px; transition: width .6s ease; }
+.prog-bar-label { font-size: 11px; color: var(--muted); }
+.prog-unlock-msg { font-size: 12px; color: var(--muted); margin-bottom: 8px; }
+
+/* ── NOTIFICATION DÉBLOCAGE ── */
+.unlock-notif {
+  position: fixed;
+  bottom: 100px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  z-index: 9999;
+  opacity: 0;
+  transition: opacity .3s, transform .3s;
+  pointer-events: none;
+}
+.unlock-notif.visible { opacity: 1; transform: translateX(-50%) translateY(0); }
+.unlock-notif-inner {
+  background: #1e4a34;
+  border: 1px solid var(--success);
+  color: var(--success);
+  padding: 14px 20px;
+  border-radius: 14px;
+  font-size: 14px;
+  font-weight: 600;
+  text-align: center;
+  box-shadow: 0 8px 30px rgba(61,232,160,.25);
+  white-space: nowrap;
+}
+
 /* ── SKELETON LOADER ── */
 @keyframes shimmer {
   0%   { background-position: -400px 0; }
