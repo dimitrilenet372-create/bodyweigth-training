@@ -1643,20 +1643,19 @@ header { padding:24px 20px 16px; display:flex; align-items:center; justify-conte
 
   /* Skill tree limité à la largeur de l'app */
   .skill-tree-overlay {
-    max-width: 480px;
-    left: 50%;
+    left: calc(50% - 240px);
     right: auto;
-    transform: translateX(calc(-50% + 100vw));
+    width: 480px;
+    transform: translateX(480px); /* caché à droite */
   }
   .skill-tree-overlay.open {
-    transform: translateX(-50%);
+    transform: translateX(0);
   }
 
   /* Auth plein écran contrainte à la colonne */
   .auth-screen {
-    max-width: 480px;
-    left: 50%;
+    left: calc(50% - 240px);
     right: auto;
-    transform: translateX(-50%);
+    width: 480px;
   }
 }
