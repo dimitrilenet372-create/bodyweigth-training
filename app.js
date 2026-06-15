@@ -1390,6 +1390,55 @@ function showUnlockNotif(exoIds) {
 //  SKILL TREE
 // ══════════════════════════════════════════
 
+// ── OBJECTIF ──
+function getGoal() { return localStorage.getItem('zw_goal') || null; }
+
+function setGoalExo(exoId) {
+  localStorage.setItem('zw_goal', exoId);
+  updateGoalBanner();
+  renderSkillTree();
+}
+
+function clearGoal() {
+  localStorage.removeItem('zw_goal');
+  updateGoalBanner();
+  renderSkillTree();
+}
+
+function renderGoalBanner() {
+  const exoId = getGoal();
+  if (!exoId) return '';
+  const info = EXO_CHAIN_MAP[exoId];
+  if (!info) return '';
+  const chain = PROGRESSION_CHAINS.find(c => c.id === info.chainId);
+  if (!chain) return '';
+  const ex = getExo(exoId);
+  const prevStep = chain.steps[info.stepIndex - 1];
+  if (!prevStep) return '';
+  const prevEx = getExo(prevStep.exoId);
+  const current = (getProgress()[prevStep.exoId]?.pr) || 0;
+  const needed  = prevStep.pr_unlock;
+  const pct     = Math.min(100, Math.round((current / needed) * 100));
+
+  return `<div class="goal-card">
+    <div class="goal-card-top">
+      <span class="goal-card-label">OBJECTIF</span>
+      <button class="goal-cancel-btn" onclick="clearGoal()">×</button>
+    </div>
+    <div class="goal-card-name">${chain.emoji} ${ex.name}</div>
+    <div class="goal-card-sub">Atteins <strong>${needed} reps</strong> de ${prevEx.name}</div>
+    <div class="goal-bar-wrap">
+      <div class="goal-bar-fill" style="width:${pct}%"></div>
+    </div>
+    <div class="goal-bar-label">${current} / ${needed} reps — ton meilleur</div>
+  </div>`;
+}
+
+function updateGoalBanner() {
+  const el = document.getElementById('goal-banner');
+  if (el) el.innerHTML = renderGoalBanner();
+}
+
 function openSkillTree() {
   renderSkillTree();
   document.getElementById('skill-tree').classList.add('open');
@@ -1405,7 +1454,9 @@ function renderSkillTree() {
   document.getElementById('skill-tree-global').innerHTML =
     `<div class="st-global-badge">${unlocked}<span>/${total}</span></div>`;
 
+  const goalBannerHTML = renderGoalBanner();
   document.getElementById('skill-tree-body').innerHTML =
+    (goalBannerHTML ? `<div class="st-goal-banner">${goalBannerHTML}</div>` : '') +
     PROGRESSION_CHAINS.map(chain => {
       const nodesHTML = chain.steps.map((step, i) => {
         const ex       = getExo(step.exoId);
@@ -1423,8 +1474,10 @@ function renderSkillTree() {
             <div class="st-connector-label">${chain.steps[i-1].pr_unlock} reps</div>
           </div>` : '';
 
+        const isGoal = getGoal() === step.exoId;
+
         return `${connectorHTML}
-          <div class="st-node ${locked ? 'st-node--locked' : 'st-node--unlocked'} ${!locked && isLast ? 'st-node--elite' : ''}"
+          <div class="st-node ${locked ? 'st-node--locked' : 'st-node--unlocked'} ${!locked && isLast ? 'st-node--elite' : ''} ${isGoal ? 'st-node--goal' : ''}"
                style="cursor:${locked ? 'default' : 'pointer'}" ${!locked ? `onclick="openExoFromSkillTree('${step.exoId}')"` : ''}>
             <div class="st-node-circle">
               ${locked
@@ -1437,6 +1490,9 @@ function renderSkillTree() {
               <div class="st-node-name">${ex.name}</div>
               <div class="st-node-label ${locked ? 'st-node-label--locked' : ''}">${locked ? `🔒 ${step.label}` : `✓ ${step.label}`}</div>
               ${!locked && exoP.pr > 0 ? `<div class="st-node-pr">PR : ${exoP.pr} reps</div>` : ''}
+              ${locked ? `<button class="st-goal-btn${isGoal ? ' st-goal-btn--active' : ''}" onclick="event.stopPropagation(); setGoalExo('${step.exoId}')">
+                ${isGoal ? '★ Objectif' : '☆ Objectif'}
+              </button>` : ''}
             </div>
           </div>`;
       }).join('');
@@ -2092,7 +2148,22 @@ function endSession(){
   closeModal('modal-session');
   currentWorkout = null;
   updateHeaderLevel();
+  updateGoalBanner();
   if (newUnlocks.length) showUnlockNotif(newUnlocks);
+  // Vérifier si l'objectif est atteint
+  const goalId = getGoal();
+  if (goalId && isExoUnlocked(goalId)) {
+    clearGoal();
+    const goalEx = getExo(goalId);
+    if (goalEx) {
+      const notif = document.createElement('div');
+      notif.className = 'unlock-notif';
+      notif.innerHTML = `<div class="unlock-notif-inner">🎯 Objectif atteint !<br><strong>${goalEx.name}</strong> est débloqué</div>`;
+      document.body.appendChild(notif);
+      setTimeout(() => notif.classList.add('visible'), 50);
+      setTimeout(() => { notif.classList.remove('visible'); setTimeout(() => notif.remove(), 400); }, 5000);
+    }
+  }
 }
 
 function openActiveSession(){if(currentWorkout)openModal('modal-session');}
@@ -2266,7 +2337,7 @@ Object.assign(window, {
   // Stripe
   startCheckout, openCustomerPortal,
   // Skill tree
-  openSkillTree, closeSkillTree,
+  openSkillTree, closeSkillTree, setGoalExo, clearGoal,
 });
 
 function skCard() {
@@ -2297,5 +2368,6 @@ document.getElementById('workout-list').innerHTML  = skCard().repeat(2);
 
 buildFilterChips();
 updateHeaderLevel();
+updateGoalBanner();
 loadWorkouts();
 renderExercices();
