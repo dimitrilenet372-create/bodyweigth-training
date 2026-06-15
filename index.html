@@ -17,6 +17,10 @@
       <div class="icon-btn" id="auth-header-btn" title="Connexion / Inscription">
         <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
       </div>
+      <div class="icon-btn" id="goal-header-btn" onclick="openGoalOverlay()" title="Objectif actif" style="display:none; position:relative;">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+        <span class="goal-header-dot"></span>
+      </div>
       <div class="icon-btn" onclick="openSkillTree()" title="Arbre de progression">
         <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><circle cx="12" cy="5" r="2"/><circle cx="5" cy="19" r="2"/><circle cx="19" cy="19" r="2"/><path d="M12 7v4M12 11l-5 6M12 11l5 6"/></svg>
       </div>
@@ -26,7 +30,10 @@
     </div>
   </header>
 
-  <div id="goal-banner"></div>
+  <!-- GOAL OVERLAY -->
+  <div class="goal-overlay" id="goal-overlay" onclick="if(event.target===this)closeGoalOverlay()">
+    <div class="goal-overlay-box" id="goal-overlay-box"></div>
+  </div>
 
   <div class="tabs">
     <button class="tab active" onclick="switchTab('programmes', this)">Programmes</button>

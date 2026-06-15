@@ -1405,7 +1405,7 @@ function clearGoal() {
   renderSkillTree();
 }
 
-function renderGoalBanner() {
+function renderGoalContent() {
   const exoId = getGoal();
   if (!exoId) return '';
   const info = EXO_CHAIN_MAP[exoId];
@@ -1420,23 +1420,40 @@ function renderGoalBanner() {
   const needed  = prevStep.pr_unlock;
   const pct     = Math.min(100, Math.round((current / needed) * 100));
 
-  return `<div class="goal-card">
-    <div class="goal-card-top">
-      <span class="goal-card-label">OBJECTIF</span>
-      <button class="goal-cancel-btn" onclick="clearGoal()">×</button>
+  return `
+    <div class="goal-ov-label">OBJECTIF EN COURS</div>
+    <div class="goal-ov-name">${chain.emoji} ${ex.name}</div>
+    <div class="goal-ov-chain">${chain.name}</div>
+    <div class="goal-ov-section">
+      <div class="goal-ov-sub">Pour débloquer :</div>
+      <div class="goal-ov-req">Atteins <strong>${needed} reps</strong> sur <strong>${prevEx.name}</strong></div>
+      <div class="goal-bar-wrap" style="margin-top:10px">
+        <div class="goal-bar-fill" style="width:${pct}%"></div>
+      </div>
+      <div class="goal-bar-label">${current} / ${needed} reps — ton meilleur</div>
     </div>
-    <div class="goal-card-name">${chain.emoji} ${ex.name}</div>
-    <div class="goal-card-sub">Atteins <strong>${needed} reps</strong> de ${prevEx.name}</div>
-    <div class="goal-bar-wrap">
-      <div class="goal-bar-fill" style="width:${pct}%"></div>
-    </div>
-    <div class="goal-bar-label">${current} / ${needed} reps — ton meilleur</div>
-  </div>`;
+    <button class="btn-cancel" style="width:100%;margin-top:18px" onclick="clearGoal();closeGoalOverlay()">Supprimer l'objectif</button>`;
 }
 
 function updateGoalBanner() {
-  const el = document.getElementById('goal-banner');
-  if (el) el.innerHTML = renderGoalBanner();
+  const exoId = getGoal();
+  const btn = document.getElementById('goal-header-btn');
+  if (btn) btn.style.display = exoId ? 'flex' : 'none';
+  // Mettre à jour l'overlay s'il est ouvert
+  const box = document.getElementById('goal-overlay-box');
+  if (box && document.getElementById('goal-overlay')?.classList.contains('open')) {
+    box.innerHTML = renderGoalContent();
+  }
+}
+
+function openGoalOverlay() {
+  const box = document.getElementById('goal-overlay-box');
+  if (box) box.innerHTML = renderGoalContent();
+  document.getElementById('goal-overlay')?.classList.add('open');
+}
+
+function closeGoalOverlay() {
+  document.getElementById('goal-overlay')?.classList.remove('open');
 }
 
 function openSkillTree() {
@@ -1454,9 +1471,7 @@ function renderSkillTree() {
   document.getElementById('skill-tree-global').innerHTML =
     `<div class="st-global-badge">${unlocked}<span>/${total}</span></div>`;
 
-  const goalBannerHTML = renderGoalBanner();
   document.getElementById('skill-tree-body').innerHTML =
-    (goalBannerHTML ? `<div class="st-goal-banner">${goalBannerHTML}</div>` : '') +
     PROGRESSION_CHAINS.map(chain => {
       const nodesHTML = chain.steps.map((step, i) => {
         const ex       = getExo(step.exoId);
@@ -2337,7 +2352,7 @@ Object.assign(window, {
   // Stripe
   startCheckout, openCustomerPortal,
   // Skill tree
-  openSkillTree, closeSkillTree, setGoalExo, clearGoal,
+  openSkillTree, closeSkillTree, setGoalExo, clearGoal, openGoalOverlay, closeGoalOverlay,
 });
 
 function skCard() {
