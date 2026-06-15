@@ -680,7 +680,8 @@ function isExoUnlocked(exoId) {
   if (!info) return true; // pas dans une chaîne = toujours dispo
   if (info.stepIndex === 0) return true; // 1ère étape toujours débloquée
   const progress = getProgress();
-  return !!(progress[exoId]?.unlocked);
+  // Débloqué via la chaîne OU si l'utilisateur a déjà fait cet exercice
+  return !!(progress[exoId]?.unlocked) || (progress[exoId]?.pr > 0);
 }
 
 function getExoLevel(exoId) {
