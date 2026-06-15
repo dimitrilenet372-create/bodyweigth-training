@@ -1054,6 +1054,7 @@ function openExoFromGuided(exoId) {
 function openExoFromSkillTree(exoId) {
   const ex = getExo(exoId); if (!ex) return;
   previewExoId = exoId;
+  const locked = !isExoUnlocked(exoId);
 
   document.getElementById('preview-title').textContent  = ex.name;
   document.getElementById('preview-desc').textContent   = ex.desc || '';
@@ -1065,15 +1066,36 @@ function openExoFromSkillTree(exoId) {
   mediaWrap.style.display = 'none';
   mediaWrap.innerHTML = '';
 
-  const backBtn = document.getElementById('preview-back-btn');
+  const backBtn        = document.getElementById('preview-back-btn');
+  const standaloneBtn  = document.getElementById('preview-standalone-btn');
+  const addBtn         = document.getElementById('preview-add-btn');
+
   backBtn.textContent = '← Arbre';
   backBtn.onclick = () => {
     closeModal('modal-preview');
     document.getElementById('skill-tree').classList.add('open');
   };
   backBtn.style.display = 'block';
-  document.getElementById('preview-standalone-btn').style.display = 'none';
-  document.getElementById('preview-add-btn').style.display = 'none';
+  standaloneBtn.style.display = 'none';
+
+  if (locked) {
+    const isGoal = getGoal() === exoId;
+    addBtn.textContent = isGoal ? '★ Objectif défini' : '☆ Définir comme objectif';
+    addBtn.onclick = () => {
+      if (getGoal() === exoId) {
+        clearGoal();
+        addBtn.textContent = '☆ Définir comme objectif';
+      } else {
+        setGoalExo(exoId);
+        addBtn.textContent = '★ Objectif défini';
+      }
+    };
+    addBtn.style.display = 'flex';
+  } else {
+    addBtn.style.display = 'none';
+    standaloneBtn.textContent = 'Fermer';
+    standaloneBtn.style.display = 'flex';
+  }
 
   document.getElementById('skill-tree').classList.remove('open');
   openModal('modal-preview');
@@ -1493,7 +1515,7 @@ function renderSkillTree() {
 
         return `${connectorHTML}
           <div class="st-node ${locked ? 'st-node--locked' : 'st-node--unlocked'} ${!locked && isLast ? 'st-node--elite' : ''} ${isGoal ? 'st-node--goal' : ''}"
-               style="cursor:${locked ? 'default' : 'pointer'}" ${!locked ? `onclick="openExoFromSkillTree('${step.exoId}')"` : ''}>
+               style="cursor:pointer" onclick="openExoFromSkillTree('${step.exoId}')">
             <div class="st-node-circle">
               ${locked
                 ? `<svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>`
@@ -1505,9 +1527,7 @@ function renderSkillTree() {
               <div class="st-node-name">${ex.name}</div>
               <div class="st-node-label ${locked ? 'st-node-label--locked' : ''}">${locked ? `🔒 ${step.label}` : `✓ ${step.label}`}</div>
               ${!locked && exoP.pr > 0 ? `<div class="st-node-pr">PR : ${exoP.pr} reps</div>` : ''}
-              ${locked ? `<button class="st-goal-btn${isGoal ? ' st-goal-btn--active' : ''}" onclick="event.stopPropagation(); setGoalExo('${step.exoId}')">
-                ${isGoal ? '★ Objectif' : '☆ Objectif'}
-              </button>` : ''}
+              ${isGoal ? `<div class="st-node-goal-dot">★ Objectif</div>` : ''}
             </div>
           </div>`;
       }).join('');

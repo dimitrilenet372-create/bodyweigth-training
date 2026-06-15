@@ -480,24 +480,16 @@ header { padding:24px 20px 16px; display:flex; align-items:center; justify-conte
 }
 .goal-bar-label { font-size: 12px; color: var(--muted); }
 
-/* Bouton objectif sur noeud verrouillé */
-.st-goal-btn {
-  margin-top: 6px;
-  background: none;
-  border: 1px solid var(--border);
-  border-radius: 20px;
-  color: var(--muted);
+/* Indicateur objectif sur le noeud */
+.st-node-goal-dot {
   font-size: 10px;
   font-weight: 700;
+  color: var(--accent);
+  margin-top: 4px;
   letter-spacing: .5px;
-  padding: 3px 8px;
-  cursor: pointer;
-  transition: border-color .2s, color .2s;
 }
-.st-goal-btn:hover { border-color: var(--accent); color: var(--accent); }
-.st-goal-btn--active { border-color: var(--accent); color: var(--accent); background: rgba(77,184,255,.08); }
 /* Noeud objectif mis en avant */
-.st-node--goal.st-node--locked { border-color: rgba(77,184,255,.4); background: rgba(77,184,255,.05); }
+.st-node--goal { border-color: rgba(77,184,255,.5) !important; background: rgba(77,184,255,.06) !important; }
 
 .unlock-notif {
   position: fixed;
