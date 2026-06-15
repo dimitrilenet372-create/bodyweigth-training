@@ -971,12 +971,30 @@ async function openCustomerPortal() {
   }
 }
 
-// Retour depuis Stripe Checkout
+// Retour depuis Stripe Checkout — attend que Firestore confirme le premium
 (function handleStripeReturn() {
   const params = new URLSearchParams(window.location.search);
   if (params.get('premium') === 'success') {
     history.replaceState({}, '', window.location.pathname);
-    setTimeout(() => alert('Paiement réussi ! Bienvenue dans le Premium.'), 500);
+    let attempts = 0;
+    const poll = async () => {
+      attempts++;
+      const user = auth.currentUser;
+      if (user) {
+        await loadPremiumStatus(user);
+        if (isPremium()) {
+          renderGuidedPrograms();
+          alert('🎉 Premium activé ! Bienvenue dans le Premium.');
+          return;
+        }
+      }
+      if (attempts < 12) {
+        setTimeout(poll, 3000);
+      } else {
+        alert('Paiement reçu, mais l\'activation peut prendre quelques minutes. Recharge la page si nécessaire.');
+      }
+    };
+    setTimeout(poll, 2000);
   }
 })();
 
