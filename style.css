@@ -1571,3 +1571,72 @@ header { padding:24px 20px 16px; display:flex; align-items:center; justify-conte
   to   { opacity:1; transform:translateY(0); }
 }
 .anim-item { animation:item-in .28s ease both; }
+
+/* ══════════════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════════════ */
+
+/* Très petits écrans (< 360px) */
+@media (max-width: 360px) {
+  header { padding: 14px 12px 12px; }
+  .logo  { font-size: 22px; letter-spacing: 2px; }
+  .icon-btn { width: 32px; height: 32px; }
+  .header-actions { gap: 6px; }
+
+  #goal-banner { padding: 0 10px; }
+  .goal-card   { padding: 10px 12px; }
+  .goal-card-name { font-size: 13px; }
+
+  .view { padding: 12px; gap: 12px; padding-bottom: 90px; }
+  .workout-name { font-size: 20px; }
+  .workout-card-header { padding: 14px 14px 10px; }
+  .workout-meta { padding: 0 14px 12px; gap: 10px; }
+  .workout-exercises { padding: 10px 14px; }
+
+  .st-node { width: 115px; padding: 10px 8px; }
+  .st-node-name { font-size: 11px; }
+  .st-node-circle { width: 50px; height: 50px; }
+
+  .modal-box { padding: 20px 14px; border-radius: 20px; }
+  .session-exo-card { padding: 14px; }
+}
+
+/* Petits mobiles (360px – 480px) : layout de base, quelques ajustements */
+@media (max-width: 480px) {
+  .app { max-width: 100%; }
+}
+
+/* Desktop et tablettes (> 480px) */
+@media (min-width: 481px) {
+  .app { max-width: 480px; }
+
+  /* Modals centrées dans la colonne app */
+  .modal-overlay {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+  }
+  .modal-box {
+    max-width: 480px;
+    width: 100%;
+  }
+
+  /* Skill tree limité à la largeur de l'app */
+  .skill-tree-overlay {
+    max-width: 480px;
+    left: 50%;
+    right: auto;
+    transform: translateX(calc(-50% + 100vw));
+  }
+  .skill-tree-overlay.open {
+    transform: translateX(-50%);
+  }
+
+  /* Auth plein écran contrainte à la colonne */
+  .auth-screen {
+    max-width: 480px;
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%);
+  }
+}
