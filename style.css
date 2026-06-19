@@ -1722,6 +1722,9 @@ header { padding:24px 20px 16px; display:flex; align-items:center; justify-conte
 
 /* ── DESKTOP RESPONSIVE ── */
 @media (min-width: 768px) {
+  /* body décalé pour laisser place à la sidebar */
+  body { padding-left: 220px; }
+
   .bottom-nav {
     position: fixed;
     left: 0;
@@ -1755,10 +1758,16 @@ header { padding:24px 20px 16px; display:flex; align-items:center; justify-conte
     background: rgba(77,184,255,.1);
     border: 1px solid rgba(77,184,255,.15);
   }
+
+  /* app centrée dans l'espace restant */
   .app {
-    margin-left: 220px;
-    max-width: min(600px, calc(100vw - 220px));
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 700px;
+    width: 100%;
   }
+
+  /* barre session dans l'espace restant (viewport-relative) */
   .active-workout-bar {
     left: 220px;
     right: 0;
@@ -1766,13 +1775,21 @@ header { padding:24px 20px 16px; display:flex; align-items:center; justify-conte
     max-width: none;
     bottom: 0;
   }
+
+  /* modals centrées dans l'espace restant */
   .modal-overlay { left: 220px; align-items: center; }
   .modal {
     border-radius: 20px;
     margin: 20px auto;
-    max-width: 520px;
+    max-width: 560px;
     transform: translateY(20px) scale(.97);
     transition: transform .3s cubic-bezier(.32,0,.67,0);
   }
   .modal-overlay.open .modal { transform: translateY(0) scale(1); }
+
+  /* auth screen dans l'espace restant */
+  .auth-screen { left: 220px; }
+
+  /* skill tree dans l'espace restant */
+  .skill-tree-overlay { left: 220px; }
 }
