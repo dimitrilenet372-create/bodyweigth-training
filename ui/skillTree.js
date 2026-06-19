@@ -356,7 +356,7 @@ export function renderSkillTree() {
               <div class="st-node-label ${locked ? 'st-node-label--locked' : ''}">${locked ? `🔒 ${step.label}` : `✓ ${step.label}`}</div>
               ${!locked && exoP.pr > 0 ? `<div class="st-node-pr">PR : ${exoP.pr} reps</div>` : ''}
               ${locked ? `<button class="st-goal-btn${isGoal ? ' st-goal-btn--active' : ''}" onclick="event.stopPropagation(); toggleGoalExo('${step.exoId}')">
-                ${isGoal ? '★ Objectif actif' : '☆ Objectif'}
+                ${isGoal ? '★ Actif' : '☆ Objectif'}
               </button>` : ''}
             </div>
           </div>`;
