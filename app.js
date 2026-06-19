@@ -21,7 +21,10 @@ import { openAuth, closeAuthScreen, togglePwd, authSubmit, authGoogle, authReset
   from './auth.js';
 
 // UI — modals
-import { openModal, closeModal, initModalOverlays } from './ui/modals.js';
+import { openModal, closeModal, initModalOverlays,
+         openSkillTree, closeSkillTree,
+         openGoalOverlay, closeGoalOverlay }
+  from './ui/modals.js';
 
 // UI — preview
 import { openExoPreview, openExoFromGuided, openExoPreviewFromPicker,
@@ -179,6 +182,8 @@ renderExercices();
 Object.assign(window, {
   // Tabs
   switchTab, openActiveSession, openModal, closeModal,
+  // Skill tree & Goal overlay
+  openSkillTree, closeSkillTree, openGoalOverlay, closeGoalOverlay,
   // Programmes
   openNewWorkout, editWorkout, deleteWorkout, saveWorkout, startSession,
   // Exercices
