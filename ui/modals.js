@@ -1,11 +1,6 @@
 export function openModal(id)  { document.getElementById(id).classList.add('open'); }
 export function closeModal(id) { document.getElementById(id).classList.remove('open'); }
 
-export function openSkillTree()  { document.getElementById('skill-tree').classList.add('open'); }
-export function closeSkillTree() { document.getElementById('skill-tree').classList.remove('open'); }
-
-export function openGoalOverlay()  { document.getElementById('goal-overlay').classList.add('open'); }
-export function closeGoalOverlay() { document.getElementById('goal-overlay').classList.remove('open'); }
 
 function initSwipeToClose(overlay) {
   const modal = overlay.querySelector('.modal');

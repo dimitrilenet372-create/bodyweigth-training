@@ -1,6 +1,7 @@
 import { state }                       from '../state.js';
 import { getExo, resolveExoImg, YOUTUBE_MAP } from '../data/exercises.js';
 import { openModal, closeModal }        from './modals.js';
+import { buildProgressionPanel }        from './skillTree.js';
 
 // Single internal implementation — callers pass what changes
 function _showPreview(exoId, opts = {}) {
@@ -15,6 +16,7 @@ function _showPreview(exoId, opts = {}) {
   document.getElementById('preview-desc').textContent   = ex.desc || '';
   document.getElementById('preview-muscle').textContent = ex.muscle;
   document.getElementById('preview-tags').innerHTML     = ex.tags.map(t => `<span class="exo-tag">${t}</span>`).join('');
+  document.getElementById('preview-progression').innerHTML = buildProgressionPanel(exoId);
 
   const mediaWrap = document.getElementById('preview-media-wrap');
   if (ytId) {

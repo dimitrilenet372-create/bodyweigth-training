@@ -21,10 +21,14 @@ import { openAuth, closeAuthScreen, togglePwd, authSubmit, authGoogle, authReset
   from './auth.js';
 
 // UI — modals
-import { openModal, closeModal, initModalOverlays,
-         openSkillTree, closeSkillTree,
-         openGoalOverlay, closeGoalOverlay }
-  from './ui/modals.js';
+import { openModal, closeModal, initModalOverlays } from './ui/modals.js';
+
+// Skill tree & goal overlay
+import { openSkillTree, closeSkillTree, renderSkillTree,
+         openGoalOverlay, closeGoalOverlay, updateGoalBanner,
+         setGoalExo, clearGoal, openExoFromSkillTree,
+         updateProgressAfterSession, showUnlockNotif }
+  from './ui/skillTree.js';
 
 // UI — preview
 import { openExoPreview, openExoFromGuided, openExoPreviewFromPicker,
@@ -177,6 +181,7 @@ initHistoryResetGestures();
 buildFilterChips();
 renderWorkouts();
 renderExercices();
+updateGoalBanner();
 
 // ── Global exports for inline onclick handlers ──
 Object.assign(window, {
@@ -184,6 +189,7 @@ Object.assign(window, {
   switchTab, openActiveSession, openModal, closeModal,
   // Skill tree & Goal overlay
   openSkillTree, closeSkillTree, openGoalOverlay, closeGoalOverlay,
+  setGoalExo, clearGoal, openExoFromSkillTree,
   // Programmes
   openNewWorkout, editWorkout, deleteWorkout, saveWorkout, startSession,
   // Exercices
