@@ -254,9 +254,35 @@ export function clearGoal() {
   renderSkillTree();
 }
 
-export function toggleGoalExo(exoId) {
-  if (getGoal() === exoId) clearGoal();
-  else setGoalExo(exoId);
+function _animateGoalSet(btn) {
+  const info = btn.closest('.st-node-info');
+  if (info) {
+    const star = document.createElement('span');
+    star.textContent = '★';
+    star.style.cssText = 'position:absolute;bottom:105%;left:50%;transform:translateX(-50%);font-size:14px;color:var(--accent);pointer-events:none;z-index:10;';
+    info.appendChild(star);
+    star.animate(
+      [{ opacity:1, transform:'translateX(-50%) translateY(0) scale(1)' },
+       { opacity:0, transform:'translateX(-50%) translateY(-26px) scale(1.7)' }],
+      { duration:480, easing:'ease-out', fill:'forwards' }
+    );
+    setTimeout(() => star.remove(), 500);
+  }
+  btn.animate(
+    [{ transform:'scale(1)' },{ transform:'scale(1.18)' },{ transform:'scale(0.95)' },{ transform:'scale(1)' }],
+    { duration:360, easing:'ease-out' }
+  );
+}
+
+export function toggleGoalExo(exoId, btn) {
+  if (getGoal() === exoId) {
+    clearGoal();
+  } else {
+    localStorage.setItem('zw_goal', exoId);
+    updateGoalBanner();
+    if (btn) _animateGoalSet(btn);
+    setTimeout(() => renderSkillTree(), btn ? 420 : 0);
+  }
 }
 
 function renderGoalContent() {
@@ -355,7 +381,7 @@ export function renderSkillTree() {
               <div class="st-node-name">${ex.name}</div>
               <div class="st-node-label ${locked ? 'st-node-label--locked' : ''}">${locked ? `🔒 ${step.label}` : `✓ ${step.label}`}</div>
               ${!locked && exoP.pr > 0 ? `<div class="st-node-pr">PR : ${exoP.pr} reps</div>` : ''}
-              ${locked ? `<button class="st-goal-btn${isGoal ? ' st-goal-btn--active' : ''}" onclick="event.stopPropagation(); toggleGoalExo('${step.exoId}')">
+              ${locked ? `<button class="st-goal-btn${isGoal ? ' st-goal-btn--active' : ''}" onclick="event.stopPropagation(); toggleGoalExo('${step.exoId}', this)">
                 ${isGoal ? '★ Actif' : '☆ Objectif'}
               </button>` : ''}
             </div>

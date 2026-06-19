@@ -718,37 +718,40 @@ header { padding:24px 20px 16px; display:flex; align-items:center; justify-conte
 .st-node-label { font-size: 10px; font-weight: 700; letter-spacing: .8px; text-transform: uppercase; color: var(--accent); }
 .st-node-label--locked { color: var(--muted2); }
 .st-node-pr    { font-size: 11px; color: var(--success); font-weight: 700; margin-top: 2px; }
+.st-node-info  { position: relative; }
 
 .st-goal-btn {
   width: 100%;
-  margin-top: 7px;
-  padding: 4px 6px;
-  border-radius: 20px;
-  border: 1px solid var(--border2);
-  background: transparent;
-  color: var(--muted2);
+  margin-top: 8px;
+  padding: 5px 8px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--surface2);
+  color: var(--muted);
   font-size: 10px;
   font-weight: 600;
-  letter-spacing: .4px;
+  letter-spacing: .5px;
   cursor: pointer;
-  transition: border-color .15s, color .15s, background .15s;
+  transition: border-color .2s, color .2s, background .2s, box-shadow .2s;
   font-family: 'DM Sans', sans-serif;
-  white-space: nowrap;
 }
 .st-goal-btn:hover {
   border-color: var(--accent);
   color: var(--accent);
-  background: rgba(77,184,255,.06);
+  background: rgba(77,184,255,.07);
+  box-shadow: 0 0 10px var(--accent-glow);
 }
 .st-goal-btn--active {
   border-color: var(--accent);
   color: var(--accent);
   background: rgba(77,184,255,.12);
+  box-shadow: 0 0 8px var(--accent-glow);
 }
 .st-goal-btn--active:hover {
-  border-color: rgba(255,100,100,.5);
-  color: #ff6464;
-  background: rgba(255,100,100,.06);
+  border-color: var(--danger);
+  color: var(--danger);
+  background: rgba(255,79,106,.08);
+  box-shadow: 0 0 8px rgba(255,79,106,.2);
 }
 
 /* ── SKELETON LOADER ── */
