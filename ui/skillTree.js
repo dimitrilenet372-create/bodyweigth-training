@@ -254,6 +254,11 @@ export function clearGoal() {
   renderSkillTree();
 }
 
+export function toggleGoalExo(exoId) {
+  if (getGoal() === exoId) clearGoal();
+  else setGoalExo(exoId);
+}
+
 function renderGoalContent() {
   const exoId = getGoal();
   if (!exoId) return '';
@@ -350,8 +355,8 @@ export function renderSkillTree() {
               <div class="st-node-name">${ex.name}</div>
               <div class="st-node-label ${locked ? 'st-node-label--locked' : ''}">${locked ? `🔒 ${step.label}` : `✓ ${step.label}`}</div>
               ${!locked && exoP.pr > 0 ? `<div class="st-node-pr">PR : ${exoP.pr} reps</div>` : ''}
-              ${locked ? `<button class="st-goal-btn${isGoal ? ' st-goal-btn--active' : ''}" onclick="event.stopPropagation(); setGoalExo('${step.exoId}')">
-                ${isGoal ? '★ Objectif' : '☆ Objectif'}
+              ${locked ? `<button class="st-goal-btn${isGoal ? ' st-goal-btn--active' : ''}" onclick="event.stopPropagation(); toggleGoalExo('${step.exoId}')">
+                ${isGoal ? '★ Objectif actif' : '☆ Objectif'}
               </button>` : ''}
             </div>
           </div>`;

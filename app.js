@@ -26,7 +26,7 @@ import { openModal, closeModal, initModalOverlays } from './ui/modals.js';
 // Skill tree & goal overlay
 import { openSkillTree, closeSkillTree, renderSkillTree,
          openGoalOverlay, closeGoalOverlay, updateGoalBanner,
-         setGoalExo, clearGoal, openExoFromSkillTree,
+         setGoalExo, clearGoal, toggleGoalExo, openExoFromSkillTree,
          updateProgressAfterSession, showUnlockNotif }
   from './ui/skillTree.js';
 
@@ -189,7 +189,7 @@ Object.assign(window, {
   switchTab, openActiveSession, openModal, closeModal,
   // Skill tree & Goal overlay
   openSkillTree, closeSkillTree, openGoalOverlay, closeGoalOverlay,
-  setGoalExo, clearGoal, openExoFromSkillTree,
+  setGoalExo, clearGoal, toggleGoalExo, openExoFromSkillTree,
   // Programmes
   openNewWorkout, editWorkout, deleteWorkout, saveWorkout, startSession,
   // Exercices
