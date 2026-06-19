@@ -1,17 +1,39 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
+
     match /workouts/{doc} {
-      allow read, write: if true;
+      // Lecture et suppression : uniquement le propriétaire du document
+      allow read, delete: if request.auth != null
+                          && resource.data.userId == request.auth.uid;
+      // Création : le champ userId doit correspondre à l'utilisateur connecté
+      allow create: if request.auth != null
+                    && request.resource.data.userId == request.auth.uid;
+      // Mise à jour : propriétaire uniquement, sans pouvoir changer le userId
+      allow update: if request.auth != null
+                    && resource.data.userId == request.auth.uid
+                    && request.resource.data.userId == request.auth.uid;
     }
+
     match /sessionHistory/{doc} {
-      allow read, write: if true;
+      allow read, delete: if request.auth != null
+                          && resource.data.userId == request.auth.uid;
+      allow create: if request.auth != null
+                    && request.resource.data.userId == request.auth.uid;
+      allow update: if request.auth != null
+                    && resource.data.userId == request.auth.uid
+                    && request.resource.data.userId == request.auth.uid;
     }
-    match /Subscriptions/{email} {
-      allow read: if request.auth != null
-                  && request.auth.token.email != null
-                  && request.auth.token.email.lower() == email;
-      allow write: if false;
+
+    match /users/{uid} {
+      allow read: if request.auth != null && request.auth.uid == uid;
+      // Le client peut créer son document initial uniquement avec isPremium: false
+      allow create: if request.auth != null
+                    && request.auth.uid == uid
+                    && request.resource.data.isPremium == false;
+      // Seul le webhook Stripe (Admin SDK) peut modifier isPremium
+      allow update: if false;
     }
+
   }
 }

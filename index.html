@@ -12,18 +12,18 @@
 
   <header>
     <div class="logo">ZERO<span>WEIGHT</span></div>
-<div class="header-actions">
-      <div class="icon-btn" id="auth-header-btn" title="Connexion / Inscription">
+    <div class="header-actions">
+      <div class="icon-btn" id="auth-header-btn" title="Connexion / Inscription" aria-label="Connexion / Inscription" role="button" tabindex="0">
         <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
       </div>
-      <div class="icon-btn" id="goal-header-btn" onclick="openGoalOverlay()" title="Objectif actif" style="display:none; position:relative;">
+      <div class="icon-btn" id="goal-header-btn" onclick="openGoalOverlay()" title="Objectif actif" aria-label="Objectif actif" role="button" tabindex="0" style="display:none; position:relative;">
         <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
         <span class="goal-header-dot"></span>
       </div>
-      <div class="icon-btn" onclick="openSkillTree()" title="Arbre de progression">
+      <div class="icon-btn" onclick="openSkillTree()" title="Arbre de progression" aria-label="Arbre de progression" role="button" tabindex="0">
         <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><circle cx="12" cy="5" r="2"/><circle cx="5" cy="19" r="2"/><circle cx="19" cy="19" r="2"/><path d="M12 7v4M12 11l-5 6M12 11l5 6"/></svg>
       </div>
-      <div class="icon-btn" onclick="openNewWorkout()" title="Nouveau programme">
+      <div class="icon-btn" onclick="openNewWorkout()" title="Créer un nouveau programme" aria-label="Créer un nouveau programme" role="button" tabindex="0">
         <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
       </div>
     </div>
@@ -34,20 +34,15 @@
     <div class="goal-overlay-box" id="goal-overlay-box"></div>
   </div>
 
-  <div class="tabs">
-    <button class="tab active" onclick="switchTab('programmes', this)">Programmes</button>
-    <button class="tab"        onclick="switchTab('exercices', this)">Exercices</button>
-    <button class="tab"        onclick="switchTab('historique', this)">Historique</button>
-  </div>
 
   <!-- PROGRAMMES -->
   <div id="view-programmes" class="view active">
     <div class="section-title">PROGRAMMES GUIDÉS</div>
     <div class="guided-subtitle">Programmes complets prêts à l'emploi</div>
     <div id="guided-list"></div>
-    <div class="section-title" style="margin-top:8px">MES PROGRAMMES</div>
+    <div class="section-title section-title--mt">MES PROGRAMMES</div>
     <div id="workout-list"></div>
-    <div class="add-card" onclick="openNewWorkout()">
+    <div class="add-card" onclick="openNewWorkout()" role="button" tabindex="0" aria-label="Créer un nouveau programme">
       <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
       Créer un nouveau programme
     </div>
@@ -129,12 +124,12 @@
   <div class="modal">
     <div class="modal-handle"></div>
     <div id="preview-media-wrap"></div>
-    <div style="padding:4px 0 0">
-      <div style="font-size:11px;font-weight:700;letter-spacing:1.5px;color:var(--accent);text-transform:uppercase;margin-bottom:6px" id="preview-muscle"></div>
-      <div class="modal-title" id="preview-title" style="margin-bottom:6px"></div>
-      <div id="preview-tags" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px"></div>
+    <div class="preview-body">
+      <div id="preview-muscle"></div>
+      <div class="modal-title" id="preview-title"></div>
+      <div id="preview-tags" class="preview-tags"></div>
       <div id="preview-progression"></div>
-      <p id="preview-desc" style="font-size:14px;color:var(--muted);line-height:1.6;margin-bottom:20px"></p>
+      <p id="preview-desc"></p>
     </div>
     <div class="modal-actions">
       <button class="btn-cancel" id="preview-back-btn" onclick="closePreviewBackToPicker()" style="display:none">← Retour</button>
@@ -164,9 +159,9 @@
       </div>
     </div>
     <div>
-      <div class="section-title" style="margin-bottom:12px">EXERCICES</div>
-      <div id="workout-exo-picker" style="max-height:220px;overflow-y:auto;margin-bottom:10px"></div>
-      <div class="add-card" style="padding:12px;border-radius:12px" onclick="switchToExoPickerMode()">
+      <div class="section-title section-title--mb">EXERCICES</div>
+      <div id="workout-exo-picker"></div>
+      <div class="add-card add-card--compact" onclick="switchToExoPickerMode()" role="button" tabindex="0" aria-label="Ajouter un exercice">
         <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
         Ajouter un exercice
       </div>
@@ -187,7 +182,7 @@
       <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
       <input type="text" id="picker-search" placeholder="Rechercher..." oninput="filterPickerExos(this.value)">
     </div>
-    <div id="picker-exo-list" style="max-height:60vh;overflow-y:auto"></div>
+    <div id="picker-exo-list"></div>
     <div class="modal-actions">
       <button class="btn-cancel" onclick="closeModal('modal-exo-picker'); openModal('modal-workout')">← Retour</button>
     </div>
@@ -214,7 +209,7 @@
     <div class="session-progress-bar-wrap">
       <div class="session-progress-bar-fill" id="session-progress-bar" style="width:0%"></div>
     </div>
-    <div id="session-exo-list" style="overflow-y:auto;flex:1;padding-right:2px;padding-bottom:8px"></div>
+    <div id="session-exo-list"></div>
   </div>
 </div>
 
@@ -230,7 +225,7 @@
     <div class="confirm-title" id="confirm-end-title">FIN DE SÉANCE</div>
     <div class="confirm-desc" id="confirm-end-desc">Es-tu sûr de vouloir terminer l'entraînement ?</div>
     <div class="confirm-stats-row" id="confirm-end-stats"></div>
-    <div class="modal-actions" style="gap:10px">
+    <div class="modal-actions">
       <button class="btn-cancel" onclick="closeModal('modal-confirm-end');openModal('modal-session')">← Reprendre</button>
       <button class="btn-end-confirm" id="btn-confirm-end">TERMINER</button>
     </div>
@@ -249,7 +244,7 @@
     <div class="confirm-title">Supprimer ce programme ?</div>
     <div class="confirm-name" id="confirm-delete-name"></div>
     <div class="confirm-desc">Cette action est irréversible.<br>Toutes les séances associées seront conservées.</div>
-    <div class="modal-actions" style="gap:10px">
+    <div class="modal-actions">
       <button class="btn-cancel" onclick="closeModal('modal-confirm-delete')">Annuler</button>
       <button class="btn-danger-confirm" id="btn-confirm-delete">SUPPRIMER</button>
     </div>
@@ -398,11 +393,11 @@
       </div>
     </div>
     <p class="guided-modal-desc" id="guided-modal-desc"></p>
-    <div class="section-title" style="margin-bottom:10px;font-size:14px">APERÇU DU CONTENU</div>
+    <div class="section-title section-title--sm section-title--mb">APERÇU DU CONTENU</div>
     <div id="guided-modal-preview"></div>
     <div class="guided-coming-soon" id="guided-lock">
       <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 11V7A5 5 0 007 7v4M5 11h14a2 2 0 012 2v7a2 2 0 01-2 2H5a2 2 0 01-2-2v-7a2 2 0 012-2z"/></svg>
-      Pour un entraînement, résultats assurés
+      Réservé aux membres Premium
     </div>
     <div class="modal-actions" id="guided-modal-actions">
       <button class="btn-cancel" onclick="closeModal('modal-guided')">Fermer</button>
@@ -419,9 +414,9 @@
     <div class="modal-title" id="session-detail-title"></div>
     <div class="session-detail-date" id="session-detail-date"></div>
     <div class="session-detail-stats" id="session-detail-stats"></div>
-    <div class="section-title" style="margin:16px 0 10px;font-size:12px" id="session-detail-exo-title">EXERCICES</div>
-    <div id="session-detail-exo-list" style="max-height:55vh;overflow-y:auto"></div>
-    <div class="modal-actions" style="margin-top:16px">
+    <div class="section-title section-title--sm section-title--mv" id="session-detail-exo-title">EXERCICES</div>
+    <div id="session-detail-exo-list"></div>
+    <div class="modal-actions modal-actions--mt">
       <button class="btn-cancel" onclick="closeModal('modal-session-detail')">Fermer</button>
     </div>
   </div>
@@ -470,6 +465,23 @@
   <div class="welcome-logo">ZERO<span>WEIGHT</span></div>
   <div class="welcome-name" id="welcome-name">Bienvenue !</div>
 </div>
+
+<!-- BOTTOM NAV -->
+<nav class="bottom-nav" role="navigation" aria-label="Navigation principale">
+  <div class="nav-brand">ZERO<span>WEIGHT</span></div>
+  <button class="tab nav-tab active" onclick="switchTab('programmes', this)" aria-label="Programmes">
+    <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+    <span>Programmes</span>
+  </button>
+  <button class="tab nav-tab" onclick="switchTab('exercices', this)" aria-label="Exercices">
+    <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 4v16M18 4v16M4 8h4M16 8h4M4 16h4M16 16h4M8 12h8"/></svg>
+    <span>Exercices</span>
+  </button>
+  <button class="tab nav-tab" onclick="switchTab('historique', this)" aria-label="Historique">
+    <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+    <span>Historique</span>
+  </button>
+</nav>
 
 <script type="module" src="app.js"></script>
 </body>

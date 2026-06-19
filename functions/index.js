@@ -17,6 +17,11 @@ exports.createCheckoutSession = onCall({ cors: true }, async (req) => {
   if (!user) throw new HttpsError('unauthenticated', 'Connexion requise.');
 
   const userDoc = await db.collection('users').doc(user.uid).get();
+
+  if (userDoc.exists && userDoc.data().isPremium) {
+    throw new HttpsError('already-exists', 'Vous êtes déjà abonné.');
+  }
+
   let customerId = userDoc.exists ? userDoc.data().stripeCustomerId : null;
 
   if (!customerId) {
@@ -81,6 +86,8 @@ exports.stripeWebhook = onRequest({ rawBody: true }, async (req, res) => {
   switch (event.type) {
     case 'checkout.session.completed': {
       const session = event.data.object;
+      // Ne pas accorder le premium si le paiement n'est pas encore confirmé
+      if (session.payment_status !== 'paid') break;
       const uid = await getUIDFromCustomer(session.customer);
       if (uid) {
         await db.collection('users').doc(uid).set({
