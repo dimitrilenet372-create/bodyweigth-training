@@ -12,11 +12,16 @@ const STRIPE_WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET;
 const APP_URL = process.env.APP_URL || 'http://localhost';
 
 // ── 1. Créer une session Stripe Checkout ──
-exports.createCheckoutSession = onCall({ cors: true }, async (req) => {
+exports.createCheckoutSession = onCall({ cors: true, invoker: 'public' }, async (req) => {
   const user = req.auth;
   if (!user) throw new HttpsError('unauthenticated', 'Connexion requise.');
 
   const userDoc = await db.collection('users').doc(user.uid).get();
+
+  if (userDoc.exists && userDoc.data().isPremium) {
+    throw new HttpsError('already-exists', 'Vous êtes déjà abonné.');
+  }
+
   let customerId = userDoc.exists ? userDoc.data().stripeCustomerId : null;
 
   if (!customerId) {
@@ -45,7 +50,7 @@ exports.createCheckoutSession = onCall({ cors: true }, async (req) => {
 });
 
 // ── 2. Portail client Stripe (gérer l'abonnement) ──
-exports.createPortalLink = onCall({ cors: true }, async (req) => {
+exports.createPortalLink = onCall({ cors: true, invoker: 'public' }, async (req) => {
   const user = req.auth;
   if (!user) throw new HttpsError('unauthenticated', 'Connexion requise.');
 
@@ -81,6 +86,8 @@ exports.stripeWebhook = onRequest({ rawBody: true }, async (req, res) => {
   switch (event.type) {
     case 'checkout.session.completed': {
       const session = event.data.object;
+      // Ne pas accorder le premium si le paiement n'est pas encore confirmé
+      if (session.payment_status !== 'paid') break;
       const uid = await getUIDFromCustomer(session.customer);
       if (uid) {
         await db.collection('users').doc(uid).set({
