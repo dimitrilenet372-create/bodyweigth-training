@@ -2345,7 +2345,7 @@ onAuthStateChanged(auth, async user => {
     historyUnsub = onSnapshot(query(historyCol, orderBy('date', 'desc')), (snap) => {
       sessionHistory = snap.docs.map(d => ({ ...d.data(), id: d.data().id || d.id }));
       renderHistory();
-    });
+    }, (err) => { console.warn('[history] index manquant, fallback sans tri:', err.code); });
     if (!isFirst) hideAppLoader();
     if (isFirst) showWelcomeAnim(user);
   } else {
