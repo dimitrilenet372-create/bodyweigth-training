@@ -450,6 +450,58 @@ header { padding:24px 20px 16px; display:flex; align-items:center; justify-conte
 }
 
 /* Overlay */
+/* ── ONBOARDING ── */
+#ob-overlay {
+  position: fixed; inset: 0;
+  background: rgba(4,8,16,.92);
+  z-index: 400;
+  display: none;
+  align-items: flex-end;
+  justify-content: center;
+}
+#ob-overlay.active { display: flex; }
+#ob-box {
+  width: 100%; max-width: 480px;
+  background: #0f1923;
+  border-radius: 20px 20px 0 0;
+  padding: 28px 20px 36px;
+  animation: slideUp .3s ease;
+}
+.ob-header { margin-bottom: 24px; }
+.ob-dots { display: flex; gap: 6px; margin-bottom: 16px; }
+.ob-dot {
+  height: 4px; flex: 1; border-radius: 2px;
+  background: rgba(255,255,255,.15);
+  transition: background .2s;
+}
+.ob-dot--active { background: #4db8ff; }
+.ob-dot--done   { background: rgba(77,184,255,.4); }
+.ob-title { font-size: 1.2rem; font-weight: 700; color: #f0f4f8; }
+.ob-options { display: flex; flex-direction: column; gap: 10px; }
+.ob-option {
+  display: flex; align-items: center; gap: 14px;
+  background: rgba(255,255,255,.05);
+  border: 1.5px solid rgba(255,255,255,.08);
+  border-radius: 14px;
+  padding: 14px 16px;
+  cursor: pointer; text-align: left;
+  transition: border-color .15s, background .15s;
+  color: inherit;
+}
+.ob-option:active, .ob-option--selected {
+  border-color: #4db8ff;
+  background: rgba(77,184,255,.1);
+}
+.ob-option-emoji { font-size: 1.5rem; flex-shrink: 0; }
+.ob-option-text  { display: flex; flex-direction: column; gap: 2px; }
+.ob-option-label { font-size: .95rem; font-weight: 600; color: #f0f4f8; }
+.ob-option-sub   { font-size: .78rem; color: rgba(255,255,255,.45); }
+.ob-back {
+  margin-top: 16px; background: none; border: none;
+  color: rgba(255,255,255,.4); font-size: .85rem; cursor: pointer; padding: 4px 0;
+}
+.ob-back:hover { color: rgba(255,255,255,.7); }
+
 .goal-overlay {
   position: fixed;
   inset: 0;

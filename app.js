@@ -12,6 +12,9 @@ import { state }               from './state.js';
 // DB
 import { seedDefaultWorkouts } from './db.js';
 
+// Onboarding
+import { needsOnboarding, openOnboarding } from './onboarding.js';
+
 // Stripe
 import { loadPremiumStatus, handleStripeReturn, startCheckout, openCustomerPortal }
   from './stripe.js';
@@ -145,6 +148,7 @@ onAuthStateChanged(auth, async user => {
 
     if (!isFirst) hideAppLoader();
     if (isFirst)  showWelcomeAnim(user);
+    if (needsOnboarding()) setTimeout(openOnboarding, 800);
   } else {
     state.premiumStatus  = false;
     state.workouts       = [];
