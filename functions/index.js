@@ -1,7 +1,8 @@
 const { onCall, onRequest, HttpsError } = require('firebase-functions/v2/https');
 const { setGlobalOptions } = require('firebase-functions/v2');
 const admin = require('firebase-admin');
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+let _stripe = null;
+const stripe = () => { if (!_stripe) _stripe = require('stripe')(process.env.STRIPE_SECRET_KEY); return _stripe; };
 
 admin.initializeApp();
 const db = admin.firestore();
@@ -25,7 +26,7 @@ exports.createCheckoutSession = onCall({ cors: true, invoker: 'public' }, async 
   let customerId = userDoc.exists ? userDoc.data().stripeCustomerId : null;
 
   if (!customerId) {
-    const customer = await stripe.customers.create({
+    const customer = await stripe().customers.create({
       email: user.token.email,
       metadata: { firebaseUID: user.uid },
     });
@@ -33,7 +34,7 @@ exports.createCheckoutSession = onCall({ cors: true, invoker: 'public' }, async 
     await db.collection('users').doc(user.uid).set({ stripeCustomerId: customerId }, { merge: true });
   }
 
-  const session = await stripe.checkout.sessions.create({
+  const session = await stripe().checkout.sessions.create({
     customer: customerId,
     payment_method_types: ['card'],
     mode: 'subscription',
@@ -58,7 +59,7 @@ exports.createPortalLink = onCall({ cors: true, invoker: 'public' }, async (req)
   const customerId = userDoc.exists ? userDoc.data().stripeCustomerId : null;
   if (!customerId) throw new HttpsError('not-found', 'Aucun abonnement trouvé.');
 
-  const session = await stripe.billingPortal.sessions.create({
+  const session = await stripe().billingPortal.sessions.create({
     customer: customerId,
     return_url: APP_URL,
   });
@@ -72,7 +73,7 @@ exports.stripeWebhook = onRequest({ rawBody: true }, async (req, res) => {
   let event;
 
   try {
-    event = stripe.webhooks.constructEvent(req.rawBody, sig, STRIPE_WEBHOOK_SECRET);
+    event = stripe().webhooks.constructEvent(req.rawBody, sig, STRIPE_WEBHOOK_SECRET);
   } catch (e) {
     console.error('Webhook signature invalide:', e.message);
     return res.status(400).send(`Webhook Error: ${e.message}`);
