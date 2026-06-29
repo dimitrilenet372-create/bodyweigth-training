@@ -1879,7 +1879,7 @@ header { padding:24px 20px 16px; display:flex; align-items:center; justify-conte
   .modal-overlay.open .modal { transform: translateY(0) scale(1); }
 
   /* auth screen dans l'espace restant */
-  .auth-screen { left: 220px; }
+  .auth-screen { left: 220px; right: 0; width: auto; }
 
   /* skill tree : annule le rétrécissement 480px du breakpoint 481px */
   .skill-tree-overlay {
